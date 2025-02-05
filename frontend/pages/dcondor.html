@@ -161,8 +161,10 @@
           />
           <label for="fileInputContabilidade" class="file-label">...</label>
         </div>
-        <button class="process-btn">Processar</button>
-        <button class="json-btn">CFOPS</button>
+        <div class="json-btns">
+          <button class="process-btn">Processar</button>
+          <button class="json-btn">CFOPS</button>
+        </div>
       </section>
 
       <!-- Novo container para Naturezas -->
@@ -170,6 +172,13 @@
         <h1>Naturezas</h1>
         <!-- Tabela editável com rolagem -->
         <div class="table-container">
+          <div id="loadingGif" style="display: none">
+            <img
+              src="../assets/animations/loading.gif"
+              alt="Carregando..."
+              height="150px"
+            />
+          </div>
           <table id="cfop-table" class="table table-dark table-striped">
             <thead>
               <tr>
@@ -178,24 +187,7 @@
                 <th scope="col">Ações</th>
               </tr>
             </thead>
-            <tbody id="cfopTableBody">
-              <tr>
-                <td>5101</td>
-                <td>Venda de mercadoria</td>
-                <td>
-                  <button class="edit-btn">
-                    <i class="fas fa-edit"></i></button
-                  ><button class="delete-btn">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td contenteditable="true">6202</td>
-                <td contenteditable="true">Prestação de serviço</td>
-                <td><button class="edit-btn"></button></td>
-              </tr>
-            </tbody>
+            <tbody id="cfopTableBody"></tbody>
           </table>
         </div>
         <button class="add-btn">Adicionar Natureza</button>

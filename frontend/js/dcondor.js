@@ -81,36 +81,28 @@ const addBtn = document.querySelector(".add-btn");
 const modal = document.getElementById("modal");
 const saveBtn = document.querySelector(".save-btn");
 const cancelBtn = document.querySelector(".cancel-btn");
-const cfopInput = document.getElementById("cfopInput");
-const descInput = document.getElementById("descInput");
 
 jsonBtn.addEventListener("click", async () => {
   if (jsonContainer.style.display === "none") {
-    jsonContainer.style.display = "block";
+    jsonContainer.style.display = "flex";
   } else {
     jsonContainer.style.display = "none";
   }
+
+  // Exibe o gif de carregamento e esconde a tabela
+  document.getElementById("loadingGif").style.display = "block";
+  const cfopTable = document.getElementById("cfop-table");
+  cfopTable.style.display = "none"; // Esconde a tabela enquanto os dados estão carregando
 
   // Chama o IPC para obter os CFOPs
   try {
     const cfops = await window.electronAPI.obterCfopDCondor();
 
     // Limpa o conteúdo da tabela antes de adicionar os novos dados
-    const cfopTable = document.getElementById("cfop-table");
-    cfopTable.innerHTML = `
-      <thead>
-        <tr>
-          <th scope="col">CFOP</th>
-          <th scope="col">Referência</th>
-          <th scope="col">Ações</th>
-        </tr>
-      </thead>
-      <tbody id="cfopTableBody"></tbody>
-    `;
+    const cfopTableBody = document.getElementById("cfopTableBody");
+    cfopTableBody.innerHTML = ""; // Limpa o conteúdo
 
     // Preenche a tabela com os dados recebidos
-    const cfopTableBody = document.getElementById("cfopTableBody");
-    console.log(cfops);
     cfops.forEach((cfop) => {
       const newRow = document.createElement("tr");
 
@@ -121,10 +113,22 @@ jsonBtn.addEventListener("click", async () => {
       newDesc.innerText = cfop.descricao;
 
       const newActions = document.createElement("td");
+
+      // Criação dos botões de editar e deletar
       const editBtn = document.createElement("button");
+      const deleteBtn = document.createElement("button");
+
+      // Adicionando as classes de estilo para os botões
       editBtn.classList.add("edit-btn");
-      editBtn.innerText = "Editar";
+      deleteBtn.classList.add("delete-btn");
+
+      // Usando innerHTML para adicionar o ícone de editar e deletar
+      editBtn.innerHTML = '<i class="fas fa-edit"></i>'; // Adiciona o ícone de editar
+      deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'; // Adiciona o ícone de deletar
+
+      // Adicionando os botões à célula (td)
       newActions.appendChild(editBtn);
+      newActions.appendChild(deleteBtn);
 
       newRow.appendChild(newCFOP);
       newRow.appendChild(newDesc);
@@ -132,8 +136,20 @@ jsonBtn.addEventListener("click", async () => {
 
       cfopTableBody.appendChild(newRow);
     });
+
+    // Esconde o gif de carregamento e mostra a tabela
+    document.getElementById("loadingGif").style.display = "none";
+    addBtn.style.display = "flex";
+
+    cfopTable.style.display = "table"; // Mostra a tabela novamente
   } catch (error) {
-    alert("Erro ao carregar CFOPs: " + error);
+    createNotification(
+      "Erro ao carregar CFOPS.",
+      "#1d1830",
+      "darkred",
+      errorGifUrl
+    );
+    document.getElementById("loadingGif").style.display = "none"; // Esconde o gif mesmo em caso de erro
   }
 });
 
@@ -143,40 +159,81 @@ addBtn.addEventListener("click", () => {
 });
 
 // Ação para salvar as novas informações
-saveBtn.addEventListener("click", () => {
+saveBtn.addEventListener("click", async () => {
+  const cfopInput = document.getElementById("cfopInput");
+  const descInput = document.getElementById("descInput");
   const cfop = cfopInput.value;
   const referencia = descInput.value;
 
+  // Verifica se os campos estão preenchidos
   if (cfop && referencia) {
-    const cfopTableBody = document.getElementById("cfopTableBody");
-    const newRow = document.createElement("tr");
+    try {
+      // Chama a função para adicionar o CFOP no backend
+      const addCFOP = await window.electronAPI.adicionarCfopDCondor(
+        cfop,
+        referencia
+      );
 
-    const newCFOP = document.createElement("td");
-    newCFOP.contentEditable = true;
-    newCFOP.innerText = cfop;
+      // Verifica se o CFOP foi adicionado com sucesso
+      if (addCFOP.success) {
+        // Se foi bem-sucedido, adiciona o CFOP na tabela
+        const cfopTableBody = document.getElementById("cfopTableBody");
+        const newRow = document.createElement("tr");
 
-    const newDesc = document.createElement("td");
-    newDesc.contentEditable = true;
-    newDesc.innerText = referencia;
+        const newCFOP = document.createElement("td");
+        newCFOP.contentEditable = true;
+        newCFOP.innerText = cfop;
 
-    const newActions = document.createElement("td");
-    const editBtn = document.createElement("button");
-    editBtn.classList.add("edit-btn");
-    editBtn.innerText = "Editar";
-    newActions.appendChild(editBtn);
+        const newDesc = document.createElement("td");
+        newDesc.contentEditable = true;
+        newDesc.innerText = referencia;
 
-    newRow.appendChild(newCFOP);
-    newRow.appendChild(newDesc);
-    newRow.appendChild(newActions);
+        const newActions = document.createElement("td");
+        const editBtn = document.createElement("button");
+        const deleteBtn = document.createElement("button");
 
-    cfopTableBody.appendChild(newRow);
+        // Adicionando as classes de estilo para os botões
+        editBtn.classList.add("edit-btn");
+        deleteBtn.classList.add("delete-btn");
 
-    cfopInput.value = "";
-    descInput.value = "";
+        // Usando innerHTML para adicionar o ícone de editar e deletar
+        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
 
-    modal.style.display = "none";
+        // Adiciona os botões às ações
+        newActions.appendChild(editBtn);
+        newActions.appendChild(deleteBtn);
+
+        // Adiciona a nova linha à tabela
+        newRow.appendChild(newCFOP);
+        newRow.appendChild(newDesc);
+        newRow.appendChild(newActions);
+        cfopTableBody.appendChild(newRow);
+
+        // Limpa os campos do modal
+        cfopInput.value = "";
+        descInput.value = "";
+
+        // Fecha o modal
+        modal.style.display = "none";
+      } else {
+        createNotification(addCFOP.message, "#1d1830", "darkred", errorGifUrl);
+      }
+    } catch (error) {
+      createNotification(
+        "Erro ao adicionar CFOP.",
+        "#1d1830",
+        "darkred",
+        errorGifUrl
+      );
+    }
   } else {
-    alert("Por favor, preencha todos os campos.");
+    createNotification(
+      "É necessário preencher todos os campos.",
+      "#1d1830",
+      "darkred",
+      errorGifUrl
+    );
   }
 });
 

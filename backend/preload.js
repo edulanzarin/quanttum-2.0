@@ -16,4 +16,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
       caminho_contabilidade_gerencial
     ),
   obterCfopDCondor: () => ipcRenderer.invoke("obter-cfop-dcondor"),
+  adicionarCfopDCondor: (cfop, referencia) =>
+    ipcRenderer.invoke("adicionar-cfop-dcondor", cfop, referencia),
 });

@@ -191,9 +191,13 @@ async function obterCfopDCondor() {
       [path.join(__dirname, "scripts/dcondor.py"), "obter_cfop"],
       (error, stdout, stderr) => {
         if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
           reject(`Erro: ${error.message}`);
           return;
         }
+
+        console.log("Saída do Python:", stdout); // <-- Adicione este log
+        console.log("Erro do Python (stderr):", stderr); // <-- Adicione este log
 
         try {
           const result = JSON.parse(stdout.trim()); // Remove espaços extras
@@ -216,6 +220,53 @@ ipcMain.handle("obter-cfop-dcondor", async (event) => {
   try {
     const result = await obterCfopDCondor();
     return result;
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+// Função para adicionar CFOP
+async function adicionarCfop(cfop, referencia) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/dcondor.py"),
+        "adicionar_cfop",
+        cfop,
+        referencia,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        console.log("Saída do Python:", stdout); // <-- Adicione este log
+        console.log("Erro do Python (stderr):", stderr); // <-- Adicione este log
+
+        try {
+          const result = JSON.parse(stdout.trim()); // Remove espaços extras
+
+          if (!result.success) {
+            reject(result.message);
+          } else {
+            resolve(result.message);
+          }
+        } catch (e) {
+          reject(`Erro ao processar a resposta do Python: ${stdout}`);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para adicionar um CFOP no frontend via IPC
+ipcMain.handle("adicionar-cfop-dcondor", async (event, cfop, referencia) => {
+  try {
+    const result = await adicionarCfop(cfop, referencia);
+    return { success: true, message: result };
   } catch (error) {
     return { success: false, message: error };
   }

@@ -6,7 +6,7 @@ import os
 from tkinter import filedialog
 
 # Caminho fixo do arquivo JSON
-CAMINHO_JSON = "../database/dcondor.json"
+CAMINHO_JSON = "backend/database/dcondor.json"
 
 # Função para carregar o arquivo JSON
 def carregar_json():
@@ -114,6 +114,44 @@ def obter_cfop():
         print(f"Erro ao decodificar JSON: {e}", file=sys.stderr)
         return {"success": False, "message": "Erro ao decodificar o arquivo JSON."}
 
+def adicionar_cfop(cfop, referencia):
+    try:
+        # Verifica se o arquivo JSON existe
+        if not os.path.exists(CAMINHO_JSON):
+            print(f"Arquivo JSON não encontrado: {CAMINHO_JSON}", file=sys.stderr)
+            return {"success": False, "message": "Arquivo JSON não encontrado."}
+
+        # Abre o arquivo JSON e carrega os dados
+        with open(CAMINHO_JSON, "r", encoding="utf-8") as file:
+            conteudo_bruto = file.read()
+
+        # Se o arquivo estiver vazio, inicializa o dicionário vazio
+        if conteudo_bruto.strip() == "":
+            cfops = {}
+        else:
+            cfops = json.loads(conteudo_bruto)
+
+        # Adiciona a nova CFOP
+        if cfop in cfops:
+            return {"success": False, "message": "CFOP já existe no arquivo."}
+        
+        cfops[cfop] = referencia
+
+        # Salva o arquivo com o novo CFOP adicionado
+        with open(CAMINHO_JSON, "w", encoding="utf-8") as file:
+            json.dump(cfops, file, ensure_ascii=False, indent=2)
+
+        return {"success": True, "message": "CFOP adicionado com sucesso."}
+
+    except FileNotFoundError:
+        return {"success": False, "message": "Arquivo JSON não encontrado."}
+    except json.JSONDecodeError as e:
+        print(f"Erro ao decodificar JSON: {e}", file=sys.stderr)
+        return {"success": False, "message": "Erro ao decodificar o arquivo JSON."}
+    except Exception as e:
+        print(f"Erro inesperado: {e}", file=sys.stderr)
+        return {"success": False, "message": str(e)}
+
 def main():
     if sys.argv[1] == 'processar_planilhas':
         caminho_livros_fiscais = sys.argv[2]
@@ -123,7 +161,17 @@ def main():
     
     elif sys.argv[1] == 'obter_cfop':
         result = obter_cfop()
-        print(json.dumps(result))
+        print(json.dumps(result))  
+        sys.stderr.flush()
+        sys.stdout.flush()
+
+    elif sys.argv[1] == 'adicionar_cfop':
+        cfop = sys.argv[2]
+        referencia = sys.argv[3]
+        result = adicionar_cfop(cfop, referencia)
+        print(json.dumps(result)) 
+        sys.stderr.flush()
+        sys.stdout.flush()
 
 if __name__ == '__main__':
     main()
