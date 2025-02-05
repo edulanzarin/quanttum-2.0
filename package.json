@@ -1,0 +1,50 @@
+{
+  "name": "quanttum-2.0",
+  "version": "1.0.0",
+  "main": "backend/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "pack": "electron-packager . quanttum --platform=win32 --arch=x64 --out=dist/ --icon=C:/Users/edula/Documents/Quanttum 2.0/frontend/assets/images/icon.ico",
+    "forge": "electron-forge start",
+    "make": "electron-forge make"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^34.0.2",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "quanttum",
+    "productName": "Quanttum",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "electron-forge": {
+    "packagerConfig": {
+      "icon": "C:/Users/edula/Documents/Quanttum 2.0/frontend/assets/images/icon.ico"
+    },
+    "makers": [
+      {
+        "name": "@electron-forge/maker-squirrel",
+        "config": {
+          "name": "quanttum"
+        }
+      },
+      {
+        "name": "@electron-forge/maker-zip",
+        "config": {}
+      }
+    ]
+  },
+  "dependencies": {
+    "quanttum-2.0": "file:"
+  }
+}
