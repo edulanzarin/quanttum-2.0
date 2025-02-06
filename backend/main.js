@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 const { execFile } = require("child_process");
+const fs = require("fs");
 
 let mainWindow;
 
@@ -36,6 +37,10 @@ app.on("ready", async () => {
   }
 });
 
+const pythonPath =
+  "P:\\PUBLICO 2025\\CONTABIL\\EDUARDO\\Automatizações\\Python311\\python.exe"; // Caminho específico
+
+
 // Função para selecionar arquivo (abre o diálogo)
 ipcMain.handle("selecionar-arquivo", async () => {
   const result = await dialog.showOpenDialog({
@@ -51,14 +56,25 @@ ipcMain.handle("selecionar-arquivo", async () => {
   return result.filePaths[0];
 });
 
-const pythonPath =
-  "P:\\PUBLICO 2025\\CONTABIL\\EDUARDO\\Automatizações\\Python311\\python.exe"; // Caminho específico
+// Função para selecionar diretório (abre o diálogo)
+ipcMain.handle("selecionar-pasta", async () => {
+  const result = await dialog.showOpenDialog({
+    title: "Escolha uma pasta",
+    properties: ["openDirectory"], // Altera para 'openDirectory' para selecionar uma pasta
+  });
+
+  if (result.canceled) {
+    return null;
+  }
+
+  return result.filePaths[0]; // Retorna o caminho da pasta selecionada
+});
 
 // Função para chamar o script Python e processar os pagamentos
 function processarPagosChocoleite(caminho_pdf) {
   return new Promise((resolve, reject) => {
     execFile(
-      pythonPath,
+      'python',
       [
         path.join(__dirname, "scripts/empresas.py"),
         "processar_pagos_chocoleite",
@@ -88,7 +104,7 @@ function processarPagosChocoleite(caminho_pdf) {
 function processarRecebidosChocoleite(caminho_pdf) {
   return new Promise((resolve, reject) => {
     execFile(
-      pythonPath,
+      'python',
       [
         path.join(__dirname, "scripts/chocoleite.py"),
         "processar_recebidos_chocoleite",
@@ -141,7 +157,7 @@ function processarPlanilhasDCondor(
 ) {
   return new Promise((resolve, reject) => {
     execFile(
-      pythonPath,
+      'python',
       [
         path.join(__dirname, "scripts/dcondor.py"),
         "processar_planilhas", // Nome da função ou comando do script Python
@@ -187,7 +203,7 @@ ipcMain.handle(
 async function obterCfopDCondor() {
   return new Promise((resolve, reject) => {
     execFile(
-      pythonPath,
+      'python',
       [path.join(__dirname, "scripts/dcondor.py"), "obter_cfop"],
       (error, stdout, stderr) => {
         if (error) {
@@ -229,12 +245,55 @@ ipcMain.handle("obter-cfop-dcondor", async (event) => {
 async function adicionarCfop(cfop, referencia) {
   return new Promise((resolve, reject) => {
     execFile(
-      pythonPath,
+      'python',
       [
         path.join(__dirname, "scripts/dcondor.py"),
         "adicionar_cfop",
         cfop,
         referencia,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        try {
+          const result = JSON.parse(stdout.trim()); // Remove espaços extras
+
+          if (!result.success) {
+            reject(result.message);
+          } else {
+            resolve(result.message);
+          }
+        } catch (e) {
+          reject(`Erro ao processar a resposta do Python: ${stdout}`);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para adicionar um CFOP no frontend via IPC
+ipcMain.handle("adicionar-cfop-dcondor", async (event, cfop, referencia) => {
+  try {
+    const result = await adicionarCfop(cfop, referencia);
+    return { success: true, message: result };
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+// Função para adicionar CFOP
+async function apagarCfop(cfop) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      'python',
+      [
+        path.join(__dirname, "scripts/dcondor.py"),
+        "apagar_cfop",
+        cfop,
       ],
       (error, stdout, stderr) => {
         if (error) {
@@ -263,9 +322,49 @@ async function adicionarCfop(cfop, referencia) {
 }
 
 // Recebendo o pedido para adicionar um CFOP no frontend via IPC
-ipcMain.handle("adicionar-cfop-dcondor", async (event, cfop, referencia) => {
+ipcMain.handle("apagar-cfop-dcondor", async (event, cfop) => {
   try {
-    const result = await adicionarCfop(cfop, referencia);
+    const result = await apagarCfop(cfop);
+    return { success: true, message: result };
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+async function extrairArquivos(origem, destino, incluir_subpastas) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      'python',
+      [
+        path.join(__dirname, "scripts/extrair_arquivos.py"),
+        "extrair_arquivos",
+        origem,
+        destino,
+        incluir_subpastas
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim();  // Remova o JSON.parse
+
+        if (result.includes("Erro")) {
+          reject(result);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para adicionar um CFOP no frontend via IPC
+ipcMain.handle("extrair-arquivos", async (event, origem, destino, incluir_subpastas) => {
+  try {
+    const result = await extrairArquivos(origem, destino, incluir_subpastas);
     return { success: true, message: result };
   } catch (error) {
     return { success: false, message: error };

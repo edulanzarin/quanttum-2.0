@@ -59,7 +59,7 @@ processarBtn.addEventListener("click", async () => {
       );
     } else {
       createNotification(
-        `Erro: ${resultado.mensagem}`,
+        `Erro: ${resultado.mensagem} Está caindo aq`,
         "#1d1830",
         "darkred",
         errorGifUrl
@@ -115,19 +115,52 @@ jsonBtn.addEventListener("click", async () => {
       const newActions = document.createElement("td");
 
       // Criação dos botões de editar e deletar
-      const editBtn = document.createElement("button");
       const deleteBtn = document.createElement("button");
 
       // Adicionando as classes de estilo para os botões
-      editBtn.classList.add("edit-btn");
       deleteBtn.classList.add("delete-btn");
 
       // Usando innerHTML para adicionar o ícone de editar e deletar
-      editBtn.innerHTML = '<i class="fas fa-edit"></i>'; // Adiciona o ícone de editar
       deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'; // Adiciona o ícone de deletar
 
+      // Adiciona evento de clique para deletar CFOP
+      deleteBtn.addEventListener("click", async () => {
+        const confirmDelete = confirm(
+          `Tem certeza que deseja excluir a CFOP ${cfop.cfop}?`
+        );
+        if (confirmDelete) {
+          try {
+            const response = await window.electronAPI.apagarCfopDCondor(
+              cfop.cfop
+            );
+            if (response.success) {
+              newRow.remove(); // Remove a linha da tabela se for bem-sucedido
+              createNotification(
+                "CFOP removida com sucesso!",
+                "#1d1830",
+                "green",
+                successGifUrl
+              );
+            } else {
+              createNotification(
+                response.message,
+                "#1d1830",
+                "darkred",
+                errorGifUrl
+              );
+            }
+          } catch (error) {
+            createNotification(
+              "Erro ao apagar CFOP.",
+              "#1d1830",
+              "darkred",
+              errorGifUrl
+            );
+          }
+        }
+      });
+
       // Adicionando os botões à célula (td)
-      newActions.appendChild(editBtn);
       newActions.appendChild(deleteBtn);
 
       newRow.appendChild(newCFOP);

@@ -92,7 +92,6 @@ def processar_planilhas(caminho_livros_fiscais, caminho_contabilidade_gerencial)
 def obter_cfop():
     try:
         if not os.path.exists(CAMINHO_JSON):
-            print(f"Arquivo JSON não encontrado: {CAMINHO_JSON}", file=sys.stderr)
             return {"success": False, "message": "Arquivo JSON não encontrado."}
 
         with open(CAMINHO_JSON, "r", encoding="utf-8") as file:
@@ -101,7 +100,6 @@ def obter_cfop():
         cfops = json.loads(conteudo_bruto)
 
         if not cfops:
-            print("Arquivo JSON está vazio!", file=sys.stderr)
             return {"success": False, "message": "Arquivo JSON está vazio!"}
 
         cfop_lista = [{"cfop": k, "descricao": v} for k, v in cfops.items()]
@@ -111,7 +109,6 @@ def obter_cfop():
     except FileNotFoundError:
         return {"success": False, "message": "Arquivo JSON não encontrado."}
     except json.JSONDecodeError as e:
-        print(f"Erro ao decodificar JSON: {e}", file=sys.stderr)
         return {"success": False, "message": "Erro ao decodificar o arquivo JSON."}
 
 def adicionar_cfop(cfop, referencia):
@@ -151,6 +148,43 @@ def adicionar_cfop(cfop, referencia):
     except Exception as e:
         print(f"Erro inesperado: {e}", file=sys.stderr)
         return {"success": False, "message": str(e)}
+    
+def apagar_cfop(cfop):
+    try:
+        # Verifica se o arquivo JSON existe
+        if not os.path.exists(CAMINHO_JSON):
+            print(f"Arquivo JSON não encontrado: {CAMINHO_JSON}", file=sys.stderr)
+            return {"success": False, "message": "Arquivo JSON não encontrado."}
+
+        # Abre o arquivo JSON e carrega os dados
+        with open(CAMINHO_JSON, "r", encoding="utf-8") as file:
+            conteudo_bruto = file.read()
+
+        # Se o arquivo estiver vazio, inicializa o dicionário vazio
+        if conteudo_bruto.strip() == "":
+            return {"success": False, "message": "Arquivo JSON está vazio."}
+
+        cfops = json.loads(conteudo_bruto)
+
+        # Verifica se a CFOP existe para remover
+        if cfop not in cfops:
+            return {"success": False, "message": "CFOP não encontrada."}
+
+        # Remove a CFOP
+        del cfops[cfop]
+
+        # Salva o arquivo com a CFOP removida
+        with open(CAMINHO_JSON, "w", encoding="utf-8") as file:
+            json.dump(cfops, file, ensure_ascii=False, indent=2)
+
+        return {"success": True, "message": "CFOP removida com sucesso."}
+
+    except FileNotFoundError:
+        return {"success": False, "message": "Arquivo JSON não encontrado."}
+    except json.JSONDecodeError as e:
+        return {"success": False, "message": "Erro ao decodificar o arquivo JSON."}
+    except Exception as e:
+        return {"success": False, "message": str(e)}
 
 def main():
     if sys.argv[1] == 'processar_planilhas':
@@ -162,16 +196,17 @@ def main():
     elif sys.argv[1] == 'obter_cfop':
         result = obter_cfop()
         print(json.dumps(result))  
-        sys.stderr.flush()
-        sys.stdout.flush()
 
     elif sys.argv[1] == 'adicionar_cfop':
         cfop = sys.argv[2]
         referencia = sys.argv[3]
         result = adicionar_cfop(cfop, referencia)
         print(json.dumps(result)) 
-        sys.stderr.flush()
-        sys.stdout.flush()
+        
+    elif sys.argv[1] == 'apagar_cfop':
+        cfop = sys.argv[2]
+        result = apagar_cfop(cfop)
+        print(json.dumps(result))
 
 if __name__ == '__main__':
     main()

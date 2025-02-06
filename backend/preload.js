@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   selecionarArquivo: () => ipcRenderer.invoke("selecionar-arquivo"),
+  selecionarPasta: () => ipcRenderer.invoke("selecionar-pasta"),
   processarPagosChocoleite: (caminho_pdf) =>
     ipcRenderer.invoke("processar-pagos-chocoleite", caminho_pdf),
   processarRecebidosChocoleite: (caminho_pdf) =>
@@ -18,4 +19,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   obterCfopDCondor: () => ipcRenderer.invoke("obter-cfop-dcondor"),
   adicionarCfopDCondor: (cfop, referencia) =>
     ipcRenderer.invoke("adicionar-cfop-dcondor", cfop, referencia),
+  apagarCfopDCondor: (cfop) =>
+    ipcRenderer.invoke("apagar-cfop-dcondor", cfop),
+  extrairArquivos: (origem, destino, incluir_subpastas) =>
+    ipcRenderer.invoke("extrair-arquivos", origem, destino, incluir_subpastas),
 });
