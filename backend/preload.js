@@ -19,8 +19,14 @@ contextBridge.exposeInMainWorld("electronAPI", {
   obterCfopDCondor: () => ipcRenderer.invoke("obter-cfop-dcondor"),
   adicionarCfopDCondor: (cfop, referencia) =>
     ipcRenderer.invoke("adicionar-cfop-dcondor", cfop, referencia),
-  apagarCfopDCondor: (cfop) =>
-    ipcRenderer.invoke("apagar-cfop-dcondor", cfop),
+  apagarCfopDCondor: (cfop) => ipcRenderer.invoke("apagar-cfop-dcondor", cfop),
   extrairArquivos: (origem, destino, incluir_subpastas) =>
     ipcRenderer.invoke("extrair-arquivos", origem, destino, incluir_subpastas),
+  enviarEmails: (email_autorizado, caminho_planilha, caminho_arquivo_email) =>
+    ipcRenderer.invoke(
+      "enviar-emails",
+      email_autorizado,
+      caminho_planilha,
+      caminho_arquivo_email
+    ),
 });

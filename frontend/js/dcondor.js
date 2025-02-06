@@ -125,38 +125,33 @@ jsonBtn.addEventListener("click", async () => {
 
       // Adiciona evento de clique para deletar CFOP
       deleteBtn.addEventListener("click", async () => {
-        const confirmDelete = confirm(
-          `Tem certeza que deseja excluir a CFOP ${cfop.cfop}?`
-        );
-        if (confirmDelete) {
-          try {
-            const response = await window.electronAPI.apagarCfopDCondor(
-              cfop.cfop
-            );
-            if (response.success) {
-              newRow.remove(); // Remove a linha da tabela se for bem-sucedido
-              createNotification(
-                "CFOP removida com sucesso!",
-                "#1d1830",
-                "green",
-                successGifUrl
-              );
-            } else {
-              createNotification(
-                response.message,
-                "#1d1830",
-                "darkred",
-                errorGifUrl
-              );
-            }
-          } catch (error) {
+        try {
+          const response = await window.electronAPI.apagarCfopDCondor(
+            cfop.cfop
+          );
+          if (response.success) {
+            newRow.remove(); // Remove a linha da tabela se for bem-sucedido
             createNotification(
-              "Erro ao apagar CFOP.",
+              "CFOP removida com sucesso!",
+              "#1d1830",
+              "green",
+              successGifUrl
+            );
+          } else {
+            createNotification(
+              response.message,
               "#1d1830",
               "darkred",
               errorGifUrl
             );
           }
+        } catch (error) {
+          createNotification(
+            "Erro ao apagar CFOP.",
+            "#1d1830",
+            "darkred",
+            errorGifUrl
+          );
         }
       });
 
@@ -222,19 +217,15 @@ saveBtn.addEventListener("click", async () => {
         newDesc.innerText = referencia;
 
         const newActions = document.createElement("td");
-        const editBtn = document.createElement("button");
         const deleteBtn = document.createElement("button");
 
         // Adicionando as classes de estilo para os botões
-        editBtn.classList.add("edit-btn");
         deleteBtn.classList.add("delete-btn");
 
         // Usando innerHTML para adicionar o ícone de editar e deletar
-        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
         deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
 
         // Adiciona os botões às ações
-        newActions.appendChild(editBtn);
         newActions.appendChild(deleteBtn);
 
         // Adiciona a nova linha à tabela
@@ -312,7 +303,12 @@ saveEditBtn.addEventListener("click", () => {
 
     editModal.style.display = "none"; // Fecha o modal
   } else {
-    alert("Por favor, preencha todos os campos.");
+    createNotification(
+      "É necessário preencher todos os campos.",
+      "#1d1830",
+      "darkred",
+      errorGifUrl
+    );
   }
 });
 

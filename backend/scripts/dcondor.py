@@ -115,7 +115,6 @@ def adicionar_cfop(cfop, referencia):
     try:
         # Verifica se o arquivo JSON existe
         if not os.path.exists(CAMINHO_JSON):
-            print(f"Arquivo JSON não encontrado: {CAMINHO_JSON}", file=sys.stderr)
             return {"success": False, "message": "Arquivo JSON não encontrado."}
 
         # Abre o arquivo JSON e carrega os dados
@@ -143,17 +142,14 @@ def adicionar_cfop(cfop, referencia):
     except FileNotFoundError:
         return {"success": False, "message": "Arquivo JSON não encontrado."}
     except json.JSONDecodeError as e:
-        print(f"Erro ao decodificar JSON: {e}", file=sys.stderr)
         return {"success": False, "message": "Erro ao decodificar o arquivo JSON."}
     except Exception as e:
-        print(f"Erro inesperado: {e}", file=sys.stderr)
         return {"success": False, "message": str(e)}
     
 def apagar_cfop(cfop):
     try:
         # Verifica se o arquivo JSON existe
         if not os.path.exists(CAMINHO_JSON):
-            print(f"Arquivo JSON não encontrado: {CAMINHO_JSON}", file=sys.stderr)
             return {"success": False, "message": "Arquivo JSON não encontrado."}
 
         # Abre o arquivo JSON e carrega os dados

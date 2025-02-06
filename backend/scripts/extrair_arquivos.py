@@ -6,6 +6,19 @@ import rarfile
 import json
 import os
 
+def verificar_renomeacao(caminho):
+    """Garante que o arquivo não sobrescreva outro, adicionando um sufixo se necessário."""
+    if not os.path.exists(caminho):
+        return caminho
+
+    base, ext = os.path.splitext(caminho)
+    contador = 1
+
+    while os.path.exists(f"{base} ({contador}){ext}"):
+        contador += 1
+
+    return f"{base} ({contador}){ext}"
+
 # Função para normalizar o caminho
 def normalizar_caminho(caminho):
     return os.path.normpath(caminho)
@@ -65,7 +78,6 @@ def extrair_arquivos(origem, destino, incluir_subpastas):
                         shutil.move(caminho_origem, caminho_destino)
                         arquivos_processados.append(caminho_origem)
 
-                os.remove(item)  # Remove o arquivo original após extrair
             except Exception as e:
                 return json.dumps({"status": "fail", "message": f"Erro ao extrair {item}: {e}"})
 
@@ -86,6 +98,7 @@ def extrair_arquivos(origem, destino, incluir_subpastas):
 
     except Exception as e:
         return json.dumps({"status": "fail", "message": f"Erro ao processar os arquivos: {e}"})
+    
 def main():
     if sys.argv[1] == 'extrair_arquivos':
         origem = sys.argv[2]

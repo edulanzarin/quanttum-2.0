@@ -1,31 +1,31 @@
 // Função para abrir o seletor de pasta usando o Electron (para origem)
 document.getElementById("fileOrigem").addEventListener("click", () => {
-    // Abre o seletor de pasta via Electron API
-    window.electronAPI
-      .selecionarPasta()
-      .then((caminho) => {
-        if (caminho) {
-          document.getElementById("caminhoOrigem").value = caminho; // Atualiza o campo de origem com o caminho da pasta
-        }
-      })
-      .catch((err) => {
-        console.error("Erro ao selecionar a pasta de origem:", err);
-      });
+  // Abre o seletor de pasta via Electron API
+  window.electronAPI
+    .selecionarPasta()
+    .then((caminho) => {
+      if (caminho) {
+        document.getElementById("caminhoOrigem").value = caminho; // Atualiza o campo de origem com o caminho da pasta
+      }
+    })
+    .catch((err) => {
+      console.error("Erro ao selecionar a pasta de origem:", err);
+    });
 });
 
 // Função para abrir o seletor de pasta usando o Electron (para destino)
 document.getElementById("fileDestino").addEventListener("click", () => {
-    // Abre o seletor de pasta via Electron API
-    window.electronAPI
-      .selecionarPasta()
-      .then((caminho) => {
-        if (caminho) {
-          document.getElementById("caminhoDestino").value = caminho; 
-        }
-      })
-      .catch((err) => {
-        console.error("Erro ao selecionar a pasta de destino:", err);
-      });
+  // Abre o seletor de pasta via Electron API
+  window.electronAPI
+    .selecionarPasta()
+    .then((caminho) => {
+      if (caminho) {
+        document.getElementById("caminhoDestino").value = caminho;
+      }
+    })
+    .catch((err) => {
+      console.error("Erro ao selecionar a pasta de destino:", err);
+    });
 });
 
 // Função para mover os arquivos
@@ -34,9 +34,9 @@ async function moverArquivos() {
   const caminhoDestino = document.getElementById("caminhoDestino").value;
   const incluirSubpastas = document.getElementById("subpastas").checked;
 
-  console.log('Caminho origem:', caminhoOrigem);
-  console.log('Caminho destino:', caminhoDestino);
-  console.log('Incluir subpastas:', incluirSubpastas);
+  console.log("Caminho origem:", caminhoOrigem);
+  console.log("Caminho destino:", caminhoDestino);
+  console.log("Incluir subpastas:", incluirSubpastas);
 
   // Verifica se ambos os caminhos foram selecionados
   if (!caminhoOrigem || !caminhoDestino) {
@@ -58,7 +58,7 @@ async function moverArquivos() {
       incluirSubpastas
     );
 
-    console.log('Resultado do backend:', resultado); // Exibe o que está sendo retornado
+    console.log("Resultado do backend:", resultado); // Exibe o que está sendo retornado
 
     hideLoadingModal();
 
