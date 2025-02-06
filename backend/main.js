@@ -159,7 +159,7 @@ function processarPlanilhasDCondor(
       pythonPath,
       [
         path.join(__dirname, "scripts/dcondor.py"),
-        "processar_planilhas", // Nome da função ou comando do script Python
+        "processar_planilhas",
         caminho_livros_fiscais,
         caminho_contabilidade_gerencial,
       ],
@@ -172,6 +172,9 @@ function processarPlanilhasDCondor(
           reject(`Erro: ${stderr}`);
           return;
         }
+
+        console.log("stdout:", stdout); // Log do stdout para verificar o conteúdo
+
         try {
           const result = JSON.parse(stdout); // Certifique-se que o Python está retornando JSON
           resolve(result);

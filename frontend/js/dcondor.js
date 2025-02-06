@@ -24,7 +24,6 @@ document.querySelectorAll(".file-label").forEach((label, index) => {
   });
 });
 
-// Função para processar os arquivos
 processarBtn.addEventListener("click", async () => {
   const caminhoLivrosFiscais = filePathLivrosFiscais.value;
   const caminhoContabilidade = filePathContabilidade.value;
@@ -49,8 +48,10 @@ processarBtn.addEventListener("click", async () => {
     );
     hideLoadingModal();
 
+    console.log(resultado); // Adicione um log aqui para verificar o que é retornado
+
     // Exibe o retorno
-    if (resultado.status === "sucesso") {
+    if (resultado.status === "success") {
       createNotification(
         "Planilhas processadas com sucesso!",
         "#1d1830",
@@ -59,7 +60,7 @@ processarBtn.addEventListener("click", async () => {
       );
     } else {
       createNotification(
-        `Erro: ${resultado.mensagem} Está caindo aq`,
+        `Erro: ${resultado.message}. Não gerou os arquivos.`,
         "#1d1830",
         "darkred",
         errorGifUrl

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "pack": "electron-packager . quanttum --platform=win32 --arch=x64 --out=dist/ --icon=C:/Users/edula/Documents/Quanttum 2.0/frontend/assets/images/icon.ico",
+    "pack": "electron-packager . quanttum --platform=win32 --arch=x64 --out=dist/ --icon=frontend/assets/images/icon.ico",
     "forge": "electron-forge start",
     "make": "electron-forge make"
   },
@@ -27,9 +27,7 @@
     }
   },
   "electron-forge": {
-    "packagerConfig": {
-      "icon": "C:/Users/edula/Documents/Quanttum 2.0/frontend/assets/images/icon.ico"
-    },
+    "packagerConfig": {},
     "makers": [
       {
         "name": "@electron-forge/maker-squirrel",

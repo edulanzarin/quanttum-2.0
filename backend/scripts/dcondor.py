@@ -6,7 +6,7 @@ import os
 from tkinter import filedialog
 
 # Caminho fixo do arquivo JSON
-CAMINHO_JSON = "backend/database/dcondor.json"
+CAMINHO_JSON = os.path.join(os.path.dirname(__file__), '..', 'database', 'dcondor.json')
 
 # Função para carregar o arquivo JSON
 def carregar_json():
@@ -15,11 +15,23 @@ def carregar_json():
 
 # Função para verificar se o número da nota e o valor são encontrados na Contabilidade Gerencial
 def verificar_contabilidade(nota, descricao, valor, contabilidade_df):
-    nota_formatada = str(nota).zfill(9)  # Formatar o número da nota para 9 dígitos
-    for idx, row in contabilidade_df.iterrows():
-        # Verificar se o CFOP (descrição), número da nota e o valor são correspondentes
-        if descricao in str(row.iloc[6]) and nota_formatada in str(row.iloc[6]) and float(valor) == float(row.iloc[5]):  # Acessa a coluna 6 (índice 5) para o valor
-            return idx  # Retorna o índice da linha correspondente
+    # Converte a nota para string
+    nota_str = str(nota)
+
+    # Tenta encontrar a correspondência da nota fiscal com o padrão da contabilidade
+    # Formatar a nota com zeros à esquerda para todos os comprimentos possíveis até 9 dígitos
+    for i in range(6, 10):  # Tentando de 6 a 9 dígitos
+        nota_formatada = nota_str.zfill(i)
+        
+        # Filtrando contabilidade_df de forma vetorizada para verificar se essa nota existe na contabilidade
+        mask = contabilidade_df.iloc[:, 6].str.contains(descricao) & contabilidade_df.iloc[:, 6].str.contains(nota_formatada) & (contabilidade_df.iloc[:, 5] == float(valor))
+        
+        matching_rows = contabilidade_df[mask]
+        
+        if not matching_rows.empty:
+            return matching_rows.index[0]  # Retorna o índice da primeira linha correspondente
+    
+    # Se não encontrar correspondência
     return None
 
 # Função para abrir a janela de diálogo e escolher onde salvar o arquivo CSV
@@ -34,7 +46,6 @@ def selecionar_caminho_salvamento():
     return caminho
 
 def processar_planilhas(caminho_livros_fiscais, caminho_contabilidade_gerencial):
-    # Carregar o arquivo JSON
     cfops = carregar_json()
     
     # Carregar as planilhas
@@ -45,49 +56,45 @@ def processar_planilhas(caminho_livros_fiscais, caminho_contabilidade_gerencial)
     indices_remover_fiscais = []
     indices_remover_contabilidade = []
 
-    # Processar cada CFOP no JSON
     for cfop, descricao in cfops.items():
-        # Buscar o CFOP na coluna 7 (índice 6) de Livros Fiscais
+        # Buscar as linhas correspondentes diretamente
         linhas_livros_fiscais = livros_fiscais_df[livros_fiscais_df.iloc[:, 6] == int(cfop)]
-        
-        for idx, linha in linhas_livros_fiscais.iterrows():
-            numero_nota = linha.iloc[2]  # Número da nota fiscal na coluna 3 (índice 2)
-            valor_nota = linha.iloc[12]  # Valor da nota fiscal na coluna M (índice 12)
 
-            # Buscar a linha correspondente na Contabilidade Gerencial, com verificação de valor
-            linha_contabilidade_idx = verificar_contabilidade(numero_nota, descricao, valor_nota, contabilidade_df)
+        # Agrupar os lançamentos pelo número da nota e CFOP e somar os valores
+        grupos = linhas_livros_fiscais.groupby([linhas_livros_fiscais.columns[2], linhas_livros_fiscais.columns[5]])[linhas_livros_fiscais.columns[12]].sum().reset_index()
+
+        # Para acessar os valores da nota e CFOP, utilize iloc
+        for idx, linha in grupos.iterrows():
+            numero_nota = linha[linhas_livros_fiscais.columns[2]]  # Terceira coluna (número da nota)
+            cfop = linha[linhas_livros_fiscais.columns[5]]  # Quinta coluna (CFOP)
+            valor_total = linha[linhas_livros_fiscais.columns[12]]  # Décima terceira coluna (valor)
+
+            linha_contabilidade_idx = verificar_contabilidade(numero_nota, descricao, valor_total, contabilidade_df)
 
             if linha_contabilidade_idx is not None:
-                # Adicionar a linha de Contabilidade Gerencial ao resultado
                 linhas_encontradas.append(contabilidade_df.iloc[linha_contabilidade_idx])
-
-                # Adicionar os índices das linhas a serem removidas
-                indices_remover_fiscais.append(idx)
+                indices_remover_fiscais.append(linhas_livros_fiscais[linhas_livros_fiscais.iloc[:, 2] == numero_nota].index[0])
                 indices_remover_contabilidade.append(linha_contabilidade_idx)
+    
+    livros_fiscais_df.drop(indices_remover_fiscais, inplace=True)
+    contabilidade_df.drop(indices_remover_contabilidade, inplace=True)
 
-    # Remover as linhas encontradas
-    livros_fiscais_df = livros_fiscais_df.drop(indices_remover_fiscais)
-    contabilidade_df = contabilidade_df.drop(indices_remover_contabilidade)
-
-    # Salvar o CSV com as linhas encontradas
     if linhas_encontradas:
-        caminho_csv = selecionar_caminho_salvamento()  # Solicita ao usuário onde salvar o arquivo CSV
+        caminho_csv = selecionar_caminho_salvamento()
         if caminho_csv:
             resultado_df = pd.DataFrame(linhas_encontradas)
-            resultado_df.to_csv(caminho_csv, index=False, sep=";")  # Definir o delimitador como ponto e vírgula
+            resultado_df.to_csv(caminho_csv, index=False, sep=";")
 
-            # Salvar as planilhas "Livros Fiscais" e "Contabilidade Gerencial" sem as linhas encontradas
-            caminho_livros_fiscais_novo = caminho_csv.replace(".csv", "_livros_fiscais.xlsx")
-            caminho_contabilidade_novo = caminho_csv.replace(".csv", "_contabilidade.xlsx")
+            livros_fiscais_df.to_excel(caminho_csv.replace(".csv", "_livros_fiscais.xlsx"), index=False)
+            contabilidade_df.to_excel(caminho_csv.replace(".csv", "_contabilidade.xlsx"), index=False)
 
-            livros_fiscais_df.to_excel(caminho_livros_fiscais_novo, index=False)
-            contabilidade_df.to_excel(caminho_contabilidade_novo, index=False)
-
-            return {"status": "sucesso", "caminho_csv": caminho_csv, "livros_fiscais_novo": caminho_livros_fiscais_novo, "contabilidade_novo": caminho_contabilidade_novo}
+            return {"status": "success", "caminho_csv": caminho_csv}
         else:
             return {"status": "erro", "mensagem": "Nenhum arquivo foi selecionado para salvar."}
     else:
         return {"status": "erro", "mensagem": "Nenhuma linha correspondente encontrada."}
+
+
     
 def obter_cfop():
     try:
