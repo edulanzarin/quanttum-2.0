@@ -8,12 +8,10 @@ from tkinter import filedialog
 # Caminho fixo do arquivo JSON
 CAMINHO_JSON = os.path.join(os.path.dirname(__file__), '..', 'database', 'dcondor.json')
 
-# Função para carregar o arquivo JSON
 def carregar_json():
     with open(CAMINHO_JSON, "r", encoding="utf-8") as file:
         return json.load(file)
 
-# Função para verificar se o número da nota e o valor são encontrados na Contabilidade Gerencial
 def verificar_contabilidade(nota, descricao, valor, contabilidade_df):
     # Converte a nota para string
     nota_str = str(nota)
@@ -24,12 +22,13 @@ def verificar_contabilidade(nota, descricao, valor, contabilidade_df):
         nota_formatada = nota_str.zfill(i)
         
         # Filtrando contabilidade_df de forma vetorizada para verificar se essa nota existe na contabilidade
-        mask = contabilidade_df.iloc[:, 6].str.contains(descricao) & contabilidade_df.iloc[:, 6].str.contains(nota_formatada) & (contabilidade_df.iloc[:, 5] == float(valor))
+        mask = contabilidade_df.iloc[:, 6].str.contains(descricao) & contabilidade_df.iloc[:, 6].str.contains(nota_formatada)
         
         matching_rows = contabilidade_df[mask]
         
         if not matching_rows.empty:
-            return matching_rows.index[0]  # Retorna o índice da primeira linha correspondente
+            # Retorna o índice da linha correspondente, não o valor total
+            return matching_rows.index[0]
     
     # Se não encontrar correspondência
     return None
@@ -59,21 +58,18 @@ def processar_planilhas(caminho_livros_fiscais, caminho_contabilidade_gerencial)
     for cfop, descricao in cfops.items():
         # Buscar as linhas correspondentes diretamente
         linhas_livros_fiscais = livros_fiscais_df[livros_fiscais_df.iloc[:, 6] == int(cfop)]
-
-        # Agrupar os lançamentos pelo número da nota e CFOP e somar os valores
-        grupos = linhas_livros_fiscais.groupby([linhas_livros_fiscais.columns[2], linhas_livros_fiscais.columns[5]])[linhas_livros_fiscais.columns[12]].sum().reset_index()
-
-        # Para acessar os valores da nota e CFOP, utilize iloc
-        for idx, linha in grupos.iterrows():
-            numero_nota = linha[linhas_livros_fiscais.columns[2]]  # Terceira coluna (número da nota)
-            cfop = linha[linhas_livros_fiscais.columns[5]]  # Quinta coluna (CFOP)
-            valor_total = linha[linhas_livros_fiscais.columns[12]]  # Décima terceira coluna (valor)
-
-            linha_contabilidade_idx = verificar_contabilidade(numero_nota, descricao, valor_total, contabilidade_df)
+        
+        # Agrupar por número de nota para somar os valores
+        grupo_notas = linhas_livros_fiscais.groupby(linhas_livros_fiscais.iloc[:, 2])  # Agrupa pelo número da nota fiscal
+        
+        for numero_nota, grupo in grupo_notas:
+            valor_total_nota = grupo.iloc[:, 12].sum()  # Somando os valores das notas fiscais agrupadas
+            linha_contabilidade_idx = verificar_contabilidade(numero_nota, descricao, valor_total_nota, contabilidade_df)
 
             if linha_contabilidade_idx is not None:
+                # Acessar a linha com o índice retornado
                 linhas_encontradas.append(contabilidade_df.iloc[linha_contabilidade_idx])
-                indices_remover_fiscais.append(linhas_livros_fiscais[linhas_livros_fiscais.iloc[:, 2] == numero_nota].index[0])
+                indices_remover_fiscais.extend(grupo.index)  # Marca todas as linhas do grupo para remover
                 indices_remover_contabilidade.append(linha_contabilidade_idx)
     
     livros_fiscais_df.drop(indices_remover_fiscais, inplace=True)
@@ -93,7 +89,6 @@ def processar_planilhas(caminho_livros_fiscais, caminho_contabilidade_gerencial)
             return {"status": "erro", "mensagem": "Nenhum arquivo foi selecionado para salvar."}
     else:
         return {"status": "erro", "mensagem": "Nenhuma linha correspondente encontrada."}
-
 
     
 def obter_cfop():
