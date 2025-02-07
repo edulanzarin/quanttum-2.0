@@ -428,3 +428,91 @@ ipcMain.handle(
     }
   }
 );
+
+async function processarDebito2r(caminho_debito) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/2r.py"),
+        "processar_debito_2r",
+        caminho_debito,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        // Aqui estamos tentando tratar o stdout como JSON
+        try {
+          const result = JSON.parse(stdout.trim());
+
+          if (result.status === "success") {
+            resolve(result);
+          } else {
+            reject(result.message);
+          }
+        } catch (e) {
+          console.error("Erro ao tentar interpretar a resposta do Python:", e);
+          reject("Erro ao processar a resposta do Python");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para adicionar um CFOP no frontend via IPC
+ipcMain.handle("processar-debito-2r", async (event, caminho_debito) => {
+  try {
+    const result = await processarDebito2r(caminho_debito);
+    return { success: true, message: result.message };
+  } catch (error) {
+    return { success: false, message: error }; // Retorna como objeto
+  }
+});
+
+async function processarCredito2r(caminho_credito) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/2r.py"),
+        "processar_credito_2r",
+        caminho_credito,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        // Aqui estamos tentando tratar o stdout como JSON
+        try {
+          const result = JSON.parse(stdout.trim());
+
+          if (result.status === "success") {
+            resolve(result);
+          } else {
+            reject(result.message);
+          }
+        } catch (e) {
+          console.error("Erro ao tentar interpretar a resposta do Python:", e);
+          reject("Erro ao processar a resposta do Python");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para adicionar um CFOP no frontend via IPC
+ipcMain.handle("processar-credito-2r", async (event, caminho_credito) => {
+  try {
+    const result = await processarCredito2r(caminho_credito);
+    return { success: true, message: result.message };
+  } catch (error) {
+    return { success: false, message: error }; // Retorna como objeto
+  }
+});

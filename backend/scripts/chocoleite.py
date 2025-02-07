@@ -19,13 +19,16 @@ def normalizar_texto(texto):
 def salvar_dados(nome_sugerido):
     try:
         root = tk.Tk()
-        root.withdraw()
-        root.attributes("-topmost", True)  # Mantém a janela no topo
+        root.withdraw()  # Não exibe a janela principal do Tkinter
+        root.attributes("-topmost", 1)  # Mantém a janela de diálogo no topo
+        root.after(100, lambda: root.attributes("-topmost", 0))  # Remove o topo após 100ms para normalizar
+
         caminho_arquivo = filedialog.asksaveasfilename(
             initialfile=nome_sugerido,
             defaultextension=".csv",
             filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
         )
+
         root.destroy()  # Fecha a janela do Tkinter corretamente
         return caminho_arquivo if caminho_arquivo else None
     except Exception:

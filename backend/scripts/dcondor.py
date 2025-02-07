@@ -37,12 +37,17 @@ def verificar_contabilidade(nota, descricao, valor, contabilidade_df):
 def selecionar_caminho_salvamento():
     root = tk.Tk()
     root.withdraw()  # Oculta a janela principal do tkinter
+    root.attributes("-topmost", 1)  # Mantém a janela de diálogo no topo
+    root.after(100, lambda: root.attributes("-topmost", 0))  # Remove o topo após 100ms para normalizar
+
     caminho = filedialog.asksaveasfilename(
         defaultextension=".csv",
         filetypes=[("CSV files", "*.csv")],
         title="Escolher onde salvar o arquivo"
     )
+
     return caminho
+
 
 def processar_planilhas(caminho_livros_fiscais, caminho_contabilidade_gerencial):
     cfops = carregar_json()

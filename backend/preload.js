@@ -29,4 +29,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
       caminho_planilha,
       caminho_arquivo_email
     ),
+  processarDebito2r: (caminho_debito) =>
+    ipcRenderer.invoke("processar-debito-2r", caminho_debito),
+  processarCredito2r: (caminho_credito) =>
+    ipcRenderer.invoke("processar-credito-2r", caminho_credito),
 });

@@ -11,6 +11,8 @@ def salvar_dados():
     try:
         root = tk.Tk()
         root.withdraw()  # Oculta a janela principal
+        root.attributes("-topmost", 1)  # Mantém a janela no topo
+        root.after(100, lambda: root.attributes("-topmost", 0))  # Remove o topo após 100ms para normalizar
 
         caminho_arquivo = filedialog.asksaveasfilename(
             defaultextension=".csv",
