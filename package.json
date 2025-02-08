@@ -4,25 +4,11 @@
   "main": "backend/main.js",
   "scripts": {
     "start": "electron .",
-<<<<<<< HEAD
     "pack": "electron-packager . quanttum --platform=win32 --arch=x64 --out=dist/ --icon=frontend/assets/images/icon.ico"
   },
   "devDependencies": {
     "electron": "^34.0.2",
     "electron-packager": "^15.5.2"
-=======
-    "build": "electron-builder",
-    "pack": "electron-packager . quanttum --platform=win32 --arch=x64 --out=dist/ --icon=frontend/assets/images/icon.ico",
-    "forge": "electron-forge start",
-    "make": "electron-forge make"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "electron": "^34.0.2",
-    "electron-builder": "^25.1.8"
->>>>>>> 5cd6e32f3c8c74fb422be36406e39a32ca802a4d
   },
   "build": {
     "appId": "quanttum",
@@ -32,41 +18,9 @@
     ],
     "directories": {
       "output": "dist"
-<<<<<<< HEAD
     },
     "win": {
       "icon": "frontend/assets/images/icon.ico"
     }
   }
-=======
-    }
-  },
-  "electron-forge": {
-    "packagerConfig": {},
-    "makers": [
-      {
-        "name": "@electron-forge/maker-squirrel",
-        "config": {
-          "name": "quanttum"
-        }
-      },
-      {
-        "name": "@electron-forge/maker-zip",
-        "config": {}
-      }
-    ]
-  },
-  "dependencies": {
-    "quanttum-2.0": "file:"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/edulanzarin/quanttum-2.0.git"
-  },
-  "bugs": {
-    "url": "https://github.com/edulanzarin/quanttum-2.0/issues"
-  },
-  "homepage": "https://github.com/edulanzarin/quanttum-2.0#readme",
-  "description": ""
->>>>>>> 5cd6e32f3c8c74fb422be36406e39a32ca802a4d
 }
