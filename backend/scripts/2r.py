@@ -42,7 +42,6 @@ def processar_caixa_debito(df_debito):
     df_filtrado = df_debito[df_debito.iloc[:, 5] == 5]
     if df_filtrado.empty:
         return None
-
     return pd.DataFrame({
         "DATA": formatar_data(df_filtrado.iloc[:, 2]),
         "DEBITO": 1496,
@@ -243,7 +242,6 @@ def main():
         caminho_debito = sys.argv[2]
         result = processar_debito_2r(caminho_debito)
         print(json.dumps(result))
-
     elif sys.argv[1] == 'processar_credito_2r':
         caminho_credito = sys.argv[2]
         result = processar_credito_2r(caminho_credito)

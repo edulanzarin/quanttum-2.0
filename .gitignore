@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 node_modules/
 dist/
 dist
 dist/Quanttum v2.0/quanttum.exe
+=======
+node_modules
+>>>>>>> 5cd6e32f3c8c74fb422be36406e39a32ca802a4d
