@@ -1,0 +1,29 @@
+{
+  "name": "quanttum-2.0",
+  "version": "1.0.0",
+  "main": "backend/main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-packager . quanttum --platform=win32 --arch=x64 --out=dist/ --icon=frontend/assets/images/icon.ico"
+  },
+  "devDependencies": {
+    "electron": "^34.0.2",
+    "electron-packager": "^15.5.2"
+  },
+  "build": {
+    "appId": "quanttum",
+    "productName": "Quanttum",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "frontend/assets/images/icon.ico"
+    }
+  },
+  "dependencies": {
+    "quanttum-2.0": "file:"
+  }
+}
