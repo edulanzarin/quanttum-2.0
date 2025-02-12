@@ -325,18 +325,18 @@ canvas {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #0c0a21;
   background-size: 300% 300%;
   animation: gradientAnimation 15s ease infinite;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1051;
+  background-color: #2c2442; /* Fundo roxo escuro */
 }
 
 .loading-modal img {
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
 }
 
 .loading-content {

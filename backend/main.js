@@ -372,6 +372,49 @@ ipcMain.handle(
   }
 );
 
+async function moverArquivos(origem, destino, incluir_subpastas) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/mover_arquivos.py"), // Atualize para o novo script
+        "mover_arquivos", // Comando atualizado
+        origem,
+        destino,
+        incluir_subpastas,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim(); // Remova o JSON.parse
+
+        if (result.includes("Erro")) {
+          reject(result);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para mover arquivos no frontend via IPC
+ipcMain.handle(
+  "mover-arquivos",
+  async (event, origem, destino, incluir_subpastas) => {
+    try {
+      const result = await moverArquivos(origem, destino, incluir_subpastas);
+      return { success: true, message: result };
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);
+
 async function enviarEmails(
   email_autorizado,
   caminho_planilha,
@@ -553,6 +596,45 @@ ipcMain.handle("processar-dirf", async (event, caminho_pdf, modelo) => {
   try {
     const result = await processarDirf(caminho_pdf, modelo);
     return result;
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+async function alterarNomeFolha(caminho, incluirNumeros) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/alterar_nome_folha.py"), // Caminho para o script Python
+        "alterar_nome_folha", // Comando para o script Python
+        caminho,
+        incluirNumeros,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim();
+
+        if (result.includes("Erro")) {
+          reject(result);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para alterar o nome dos arquivos PDF no frontend via IPC
+ipcMain.handle("alterar-nome-folha", async (event, caminho, incluirNumeros) => {
+  try {
+    const result = await alterarNomeFolha(caminho, incluirNumeros);
+    return { success: true, message: result };
   } catch (error) {
     return { success: false, message: error };
   }
