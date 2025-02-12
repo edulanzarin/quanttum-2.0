@@ -1,116 +1,164 @@
 main {
-  height: 100%;
-  width: 100%;
+  margin-top: 80px;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #2c2442; /* Fundo roxo escuro */
 }
+
 .container {
-  background-color: #1d1830;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+  background-color: #2a2440; /* Tom de roxo mais suave e moderno */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave para profundidade */
   text-align: center;
-  max-width: 400px;
-  height: auto;
+  max-width: 500px; /* Largura otimizada */
   width: 100%;
-  margin: 10px;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
+  justify-content: center;
+  gap: 20px;
 }
+
 h1 {
-  margin: 0 0 15px;
+  margin: 0;
+  font-size: 1.8rem;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 1px; /* Aumenta a legibilidade */
 }
+
 .subtitle {
   font-size: 14px;
-  color: #bbb;
-  margin-bottom: 20px;
+  color: #c6b9d3; /* Cor mais suave para o subtítulo */
 }
-/* Estilo do contêiner de entrada de arquivo */
+
 .file-input-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Diminuiu o gap */
-  margin-bottom: 12px; /* Diminuiu a margem inferior */
-  width: 90%;
+  gap: 10px;
 }
 
-/* Estilo do campo de texto */
 .file-path {
-  background-color: #2c2442;
-  border: none;
-  padding: 6px; /* Diminuiu o padding */
-  border-radius: 5px;
+  background-color: #3d325c; /* Tom de roxo mais claro */
+  border: 1px solid #4a3d6a; /* Borda sutil */
+  padding: 10px;
+  border-radius: 6px;
   color: white;
+  font-size: 14px;
   width: 100%;
+  text-align: center;
 }
 
-/* Estilo do rótulo do arquivo */
 .file-label {
-  background-color: #4a3d7a;
-  padding: 6px 12px; /* Diminuiu o padding */
+  background-color: #3d325c; /* Tom de roxo mais claro */
+  border: 1px solid #4a3d6a; /* Borda sutil */
+  padding: 10px 15px; /* Diminuiu o padding */
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
   color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
 }
+
+.file-label:hover {
+  background-color: #4a3d6a; /* Tom de roxo mais escuro para hover */
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra no hover */
+}
+
 .checkbox-group {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  max-height: 150px; /* Define um limite de altura */
-  overflow-y: auto; /* Adiciona rolagem quando necessário */
-  padding: 5px;
-  border-radius: 5px;
-  width: 90%;
-}
-
-/* Personalização da barra de rolagem */
-.checkbox-group::-webkit-scrollbar {
-  width: 6px; /* Barra de rolagem mais fina */
-}
-
-.checkbox-group::-webkit-scrollbar-track {
-  background-color: #2c2442;
-  border-radius: 10px;
-}
-
-.checkbox-group::-webkit-scrollbar-thumb {
-  background-color: #4a3d7a;
-  border-radius: 10px;
-  border: 2px solid #2c2442;
+  flex-wrap: wrap; /* Permite a quebra de linha */
+  gap: 12px;
+  justify-content: center; /* Centraliza os checkboxes */
+  color: #c6b9d3;
 }
 
 .checkbox-group label {
   display: flex;
   align-items: center;
-  gap: 5px;
-  white-space: nowrap;
+  gap: 8px;
   font-size: 14px;
+  cursor: pointer;
 }
 
-.checkbox-group input {
-  accent-color: #4a3d7a; /* Cor da checkbox */
+.checkbox-group input[type="checkbox"] {
+  appearance: none; /* Remove o estilo padrão */
+  width: 16px;
+  height: 16px;
+  border: 2px solid #4a3d6a; /* Borda roxa */
+  border-radius: 4px;
+  background-color: transparent;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.container {
-  max-width: 450px; /* Aumentei um pouco a largura */
+.checkbox-group input[type="checkbox"]:checked {
+  background-color: #6f4b99; /* Fundo roxo quando marcado */
+  border-color: #6f4b99;
+}
+
+.checkbox-group input[type="checkbox"]:checked::after {
+  content: "✔"; /* Símbolo de check */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+}
+
+.checkbox-group input[type="checkbox"]:hover {
+  border-color: #8b66dc; /* Borda roxa mais clara no hover */
 }
 
 .process-btn {
-  margin-top: 10px;
-}
-
-/* Estilo do botão de processamento */
-.process-btn {
-  background-color: #4a3d7a;
-  padding: 6px 12px; /* Diminuiu o padding */
+  background-color: #6f4b99; /* Tom de roxo para o botão */
+  padding: 12px 25px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   color: white;
-  width: 50%;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.process-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+  border-radius: 50%;
+}
+
+.process-btn:hover {
+  background-color: #8b66dc; /* Tom de roxo mais claro para hover */
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra no hover */
+}
+
+.process-btn:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.process-btn:active {
+  transform: scale(0.98);
 }
