@@ -639,3 +639,44 @@ ipcMain.handle("alterar-nome-folha", async (event, caminho, incluirNumeros) => {
     return { success: false, message: error };
   }
 });
+
+async function gerenciarConciliacao(operacao, dados) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/conciliacao.py"),
+        "gerenciar_conciliacao",
+        operacao,
+        JSON.stringify(dados),
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim();
+
+        try {
+          // Tenta parsear o resultado como JSON
+          const parsedResult = JSON.parse(result);
+          resolve(parsedResult);
+        } catch (e) {
+          console.error(`Erro ao parsear resultado: ${e.message}`);
+          reject(`Erro ao parsear resultado: ${result}`);
+        }
+      }
+    );
+  });
+}
+
+ipcMain.handle("gerenciar-conciliacao", async (event, operacao, dados) => {
+  try {
+    const result = await gerenciarConciliacao(operacao, dados);
+    return { success: true, data: result }; // Resultado encapsulado em "data"
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});

@@ -33,7 +33,7 @@ function createNotification(message, backgroundColor, borderColor, gifUrl) {
   setTimeout(() => {
     notification.remove();
     updateNotificationPositions();
-  }, 5000);
+  }, 7000);
 }
 
 // Função para calcular a posição 'top' da nova notificação

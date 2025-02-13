@@ -312,7 +312,8 @@ canvas {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 4000;
   width: 300px;
-  height: auto;
+  max-height: 500px; /* Define a altura máxima */
+  overflow-y: auto; /* Adiciona rolagem vertical quando necessário */
   display: flex;
   align-items: center;
   gap: 10px;

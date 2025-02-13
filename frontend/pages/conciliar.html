@@ -135,102 +135,69 @@
     </header>
 
     <main>
-      <!-- Menu de alternância -->
-      <div class="menu-container">
-        <div class="menu-alternar" onclick="showView('add')">
-          <span>Adicionar Conciliações</span>
-        </div>
-        <div class="menu-alternar" onclick="showView('get')">
-          <span>Verificar Conciliações</span>
-        </div>
-      </div>
-
-      <!-- Container principal -->
       <section class="container">
-        <!-- View de Adicionar Conciliação -->
-        <div id="addView" class="view">
-          <h1>Cadastrar Conciliação</h1>
-          <h2 class="subtitle">Preencha os dados abaixo</h2>
+        <h1>Cadastrar Conciliação</h1>
+        <h2 class="subtitle">Preencha os dados abaixo</h2>
 
-          <div class="file-input-container">
-            <input
-              type="text"
-              id="nmrEmpresa"
-              class="file-path"
-              placeholder="Empresa"
-              style="width: 50%"
-            />
-            <input
-              type="text"
-              id="nmrBanco"
-              class="file-path"
-              placeholder="Banco"
-              style="width: 50%"
-            />
-          </div>
-          <div class="file-input-container">
-            <input
-              type="text"
-              id="descricao"
-              class="file-path"
-              placeholder="Descrição"
-              style="width: 100%"
-            />
-          </div>
-          <div class="file-input-container">
-            <input
-              type="text"
-              id="contaDebito"
-              class="file-path"
-              placeholder="Conta Débito"
-              style="width: 50%"
-            />
-            <input
-              type="text"
-              id="contaCredito"
-              class="file-path"
-              placeholder="Conta Crédito"
-              style="width: 50%"
-            />
-          </div>
-          <button class="process-btn">Adicionar</button>
+        <!-- Linha 1: Nmr Empresa e Razão Social -->
+        <div class="file-input-container">
+          <input
+            type="text"
+            id="nmrEmpresa"
+            class="file-path"
+            placeholder="Empresa"
+            style="width: 20%"
+            oninput="updateRazaoSocial()"
+          />
+          <select
+            id="razaoSocial"
+            class="file-path"
+            style="width: 80%"
+            onchange="syncRazaoSocial()"
+          >
+            <option value="" disabled selected>Selecione a Razão Social</option>
+          </select>
         </div>
 
-        <!-- View de Obter Conciliação -->
-        <div id="getView" class="view" style="display: none">
-          <h1>Obter Conciliação</h1>
-          <h2 class="subtitle">Informe o número da empresa</h2>
-
-          <div class="file-input-container">
-            <input
-              type="text"
-              id="filterEmpresa"
-              class="file-path"
-              placeholder="Número da Empresa"
-              style="width: 100%"
-            />
-            <button class="file-label" onclick="filterTable()">Filtrar</button>
-          </div>
-
-          <!-- Tabela estilo Excel -->
-          <div class="table-container">
-            <table id="conciliationTable">
-              <thead>
-                <tr>
-                  <th>Empresa</th>
-                  <th>Banco</th>
-                  <th>Descrição</th>
-                  <th>Conta Débito</th>
-                  <th>Conta Crédito</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dados serão preenchidos dinamicamente -->
-              </tbody>
-            </table>
-          </div>
+        <!-- Linha 2: Nmr Banco e Nome Banco -->
+        <div class="file-input-container">
+          <input
+            type="text"
+            id="nmrBanco"
+            class="file-path"
+            placeholder="Banco"
+            style="width: 20%"
+            oninput="updateNomeBanco()"
+          />
+          <select
+            id="nomeBanco"
+            class="file-path"
+            style="width: 80%"
+            onchange="syncNomeBanco()"
+          >
+            <option value="" disabled selected>Selecione o Nome Banco</option>
+          </select>
         </div>
+
+        <!-- Linha 3: Conta Débito e Conta Crédito -->
+        <div class="file-input-container">
+          <input
+            type="text"
+            id="contaDebito"
+            class="file-path"
+            placeholder="Conta Débito"
+            style="width: 50%"
+          />
+          <input
+            type="text"
+            id="contaCredito"
+            class="file-path"
+            placeholder="Conta Crédito"
+            style="width: 50%"
+          />
+        </div>
+
+        <button class="process-btn">Adicionar</button>
       </section>
     </main>
 

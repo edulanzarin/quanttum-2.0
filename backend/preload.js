@@ -39,4 +39,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke("processar-dirf", caminho_pdf, modelo),
   alterarNomeFolha: (caminho, incluirNumeros) =>
     ipcRenderer.invoke("alterar-nome-folha", caminho, incluirNumeros),
+  gerenciarConciliacao: (operacao, dados) =>
+    ipcRenderer.invoke("gerenciar-conciliacao", operacao, dados),
 });

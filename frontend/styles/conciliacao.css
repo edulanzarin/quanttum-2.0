@@ -4,6 +4,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   background-color: #2c2442; /* Fundo roxo escuro */
 }
 
@@ -13,12 +14,13 @@ main {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave para profundidade */
   text-align: center;
-  max-width: 500px; /* Largura otimizada */
+  max-width: 650px; /* Largura otimizada */
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 20px;
+  max-height: 500px;
 }
 
 h1 {
@@ -161,4 +163,162 @@ h1 {
 
 .process-btn:active {
   transform: scale(0.98);
+}
+
+.file-label {
+  background-color: #3d325c; /* Tom de roxo mais claro */
+  border: 1px solid #4a3d6a; /* Borda sutil */
+  padding: 10px 15px; /* Diminuiu o padding */
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+}
+
+.file-label:hover {
+  background-color: #4a3d6a; /* Tom de roxo mais escuro para hover */
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra no hover */
+}
+
+/* Estilo do menu de alternância */
+.menu-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Aumentei o espaçamento entre os botões */
+  margin-bottom: 30px;
+}
+
+.menu-alternar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px; /* Aumentei o padding para um visual mais robusto */
+  color: white;
+  background-color: #3d325c; /* Tom de roxo mais claro */
+  border: 1px solid #4a3d6a; /* Borda sutil */
+  border-radius: 8px; /* Bordas mais arredondadas */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+  font-size: 16px; /* Tamanho da fonte aumentado */
+  font-weight: 500; /* Fonte um pouco mais grossa */
+}
+
+.menu-alternar:hover {
+  background-color: #4a3d6a; /* Tom de roxo mais escuro ao passar o mouse */
+  transform: translateY(-3px); /* Efeito de levantar o botão */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave */
+}
+
+.menu-alternar:active {
+  transform: translateY(0); /* Efeito de pressionar o botão */
+}
+
+.view {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Estilo da tabela no modo noturno */
+.table-container {
+  width: 100%;
+  max-height: 300px; /* Defina um limite de altura para ativar a rolagem */
+  overflow-x: auto;
+  overflow-y: auto; /* Adiciona rolagem vertical se necessário */
+  margin-top: 20px;
+  border-radius: 8px;
+  background-color: #2c2442; /* Fundo roxo escuro */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Tabela */
+#conciliationTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #2c2442; /* Fundo roxo escuro */
+  color: #f4f4f4; /* Texto mais suave */
+}
+
+#conciliationTable th,
+#conciliationTable td {
+  text-align: center;
+  padding: 8px 10px; /* Aumenta o padding para uma aparência mais clean */
+  border: 1px solid #4a3d7a; /* Borda sutil */
+}
+
+#conciliationTable th {
+  background-color: #4a3d7a; /* Tom de roxo suave para o cabeçalho */
+  color: white;
+  font-weight: 600;
+}
+
+#conciliationTable tr:hover {
+  background-color: #4a3d7a; /* Destaque suave ao passar o mouse */
+}
+
+/* Botão de ação na tabela */
+.action-btn {
+  background-color: #4a3d7a;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-btn:hover {
+  background-color: #6c5b7b; /* Tom de roxo mais claro ao passar o mouse */
+  transform: translateY(-2px); /* Efeito de levantar o botão */
+}
+
+.action-btn:active {
+  transform: translateY(0); /* Efeito de pressionar o botão */
+}
+
+/* Estilo dos botões de editar e excluir */
+.edit-btn,
+.delete-btn {
+  background-color: #4a3d7a;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+}
+
+.delete-btn {
+  margin-left: 6px;
+  background-color: #f44336; /* Cor de erro (vermelho) para o excluir */
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f; /* Hover mais forte */
+}
+
+/* Personalização da barra de rolagem */
+.table-container::-webkit-scrollbar {
+  width: 6px; /* Barra de rolagem mais fina */
+}
+
+/* Cor de fundo da trilha da barra de rolagem */
+.table-container::-webkit-scrollbar-track {
+  background-color: #2c2442; /* Fundo roxo escuro */
+  border-radius: 10px;
+}
+
+/* Cor da parte móvel da barra de rolagem */
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #4a3d7a; /* Tom de roxo mais claro */
+  border-radius: 10px;
+  border: 2px solid #2c2442; /* Borda sutil para contraste */
 }
