@@ -41,4 +41,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke("alterar-nome-folha", caminho, incluirNumeros),
   gerenciarConciliacao: (operacao, dados) =>
     ipcRenderer.invoke("gerenciar-conciliacao", operacao, dados),
+  conciliarPagosBanco: (caminhoBanco, caminhoPagos) =>
+    ipcRenderer.invoke("conciliar-pagos-banco", caminhoBanco, caminhoPagos),
 });

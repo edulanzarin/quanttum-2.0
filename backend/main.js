@@ -680,3 +680,45 @@ ipcMain.handle("gerenciar-conciliacao", async (event, operacao, dados) => {
     return { success: false, message: error };
   }
 });
+
+function conciliarPagosBanco(caminhoBanco, caminhoPagos) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath, // Caminho para o Python
+      [
+        path.join(__dirname, "scripts/conciliar.py"),
+        caminhoBanco,
+        caminhoPagos,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de conciliação do frontend
+ipcMain.handle(
+  "conciliar-pagos-banco",
+  async (event, caminhoBanco, caminhoPagos) => {
+    try {
+      const result = await conciliarPagosBanco(caminhoBanco, caminhoPagos);
+      return result;
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);
