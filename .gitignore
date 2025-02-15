@@ -1,12 +1,7 @@
-<<<<<<< HEAD
 node_modules
-=======
-<<<<<<< HEAD
 node_modules/
 dist/
 dist
 dist/Quanttum v2.0/quanttum.exe
-=======
 node_modules
->>>>>>> 5cd6e32f3c8c74fb422be36406e39a32ca802a4d
->>>>>>> ef96a4bb489e7d061a703a6e80ba2d13a4083d65
+backend/database/serviceAccountKey.json

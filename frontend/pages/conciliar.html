@@ -283,8 +283,7 @@
         <main>
           <section class="container">
             <h1>Conciliar</h1>
-            <h2 class="subtitle">Conciliar Banco com Pagos</h2>
-
+            <h2 class="subtitle">Conciliar Pagamentos</h2>
             <div class="file-input-container">
               <input
                 type="text"
@@ -305,6 +304,27 @@
                 readonly
               />
               <label for="planilhaPagos" class="file-label">...</label>
+            </div>
+
+            <div class="file-input-container">
+              <input
+                type="text"
+                id="nmrEmpresa"
+                class="file-path"
+                placeholder="Empresa"
+                style="width: 50%"
+              />
+              <input
+                type="text"
+                id="nmrBanco"
+                class="file-path"
+                placeholder="Banco"
+                style="width: 50%"
+              />
+            </div>
+
+            <div class="checkbox-group">
+              <label><input type="checkbox" id="conciliarContas" /> Conciliar Contas</label>
             </div>
 
             <button class="process-btn">Processar</button>

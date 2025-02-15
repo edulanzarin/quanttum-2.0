@@ -1,6 +1,9 @@
 const processarBtn = document.querySelector(".process-btn");
 const planilhaBancoInput = document.getElementById("planilhaBanco");
 const planilhaPagosInput = document.getElementById("planilhaPagos");
+const nmrEmpresaInput = document.getElementById("nmrEmpresa");
+const nmrBancoInput = document.getElementById("nmrBanco");
+const conciliarContasCheckbox = document.getElementById("conciliarContas");
 
 // Função para abrir o seletor de arquivos usando o Electron
 document.querySelectorAll(".file-label").forEach((label, index) => {
@@ -27,6 +30,9 @@ document.querySelectorAll(".file-label").forEach((label, index) => {
 processarBtn.addEventListener("click", async () => {
   const caminhoBanco = planilhaBancoInput.value;
   const caminhoPagos = planilhaPagosInput.value;
+  const numeroEmpresa = nmrEmpresaInput.value;
+  const numeroBanco = nmrBancoInput.value;
+  const conciliarContas = conciliarContasCheckbox.checked;
 
   // Verifica se os arquivos foram selecionados
   if (!caminhoBanco || !caminhoPagos) {
@@ -39,16 +45,38 @@ processarBtn.addEventListener("click", async () => {
     return;
   }
 
-  try {
-    showLoadingModal(); // Exibe o modal de carregamento
-
-    // Chama a função do Electron para conciliar as planilhas
-    const resultado = await window.electronAPI.conciliarPagosBanco(
-      caminhoBanco,
-      caminhoPagos
+  // Verifica se os campos de empresa e banco estão preenchidos quando o checkbox está marcado
+  if (conciliarContas && (!numeroEmpresa || !numeroBanco)) {
+    createNotification(
+      "É necessário preencher o número da empresa e do banco.",
+      "#1d1830",
+      "darkred",
+      errorGifUrl
     );
+    return;
+  }
 
-    hideLoadingModal(); // Oculta o modal de carregamento
+  try {
+    showLoadingModal(); 
+
+    let resultado;
+
+    // Decide qual função chamar com base no checkbox
+    if (conciliarContas) {
+      resultado = await window.electronAPI.conciliarPagosBancoConta(
+        caminhoBanco,
+        caminhoPagos,
+        numeroEmpresa,
+        numeroBanco
+      );
+    } else {
+      resultado = await window.electronAPI.conciliarPagosBanco(
+        caminhoBanco,
+        caminhoPagos
+      );
+    }
+
+    hideLoadingModal(); 
 
     // Exibe o retorno
     if (resultado.status === "success") {
