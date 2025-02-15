@@ -22,6 +22,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   apagarCfopDCondor: (cfop) => ipcRenderer.invoke("apagar-cfop-dcondor", cfop),
   extrairArquivos: (origem, destino, incluir_subpastas) =>
     ipcRenderer.invoke("extrair-arquivos", origem, destino, incluir_subpastas),
+  moverArquivos: (origem, destino, incluir_subpastas) =>
+    ipcRenderer.invoke("mover-arquivos", origem, destino, incluir_subpastas),
   enviarEmails: (email_autorizado, caminho_planilha, caminho_arquivo_email) =>
     ipcRenderer.invoke(
       "enviar-emails",
@@ -33,6 +35,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke("processar-debito-2r", caminho_debito),
   processarCredito2r: (caminho_credito) =>
     ipcRenderer.invoke("processar-credito-2r", caminho_credito),
-  renomearDas: (caminho_pasta, adicionar_data, incluir_subpastas) =>
-    ipcRenderer.invoke("renomear-das", caminho_pasta, adicionar_data, incluir_subpastas),
+  processarDirf: (caminho_pdf, modelo) =>
+    ipcRenderer.invoke("processar-dirf", caminho_pdf, modelo),
+  alterarNomeFolha: (caminho, incluirNumeros) =>
+    ipcRenderer.invoke("alterar-nome-folha", caminho, incluirNumeros),
+  gerenciarConciliacao: (operacao, dados) =>
+    ipcRenderer.invoke("gerenciar-conciliacao", operacao, dados),
+  conciliarPagosBanco: (caminhoBanco, caminhoPagos) =>
+    ipcRenderer.invoke("conciliar-pagos-banco", caminhoBanco, caminhoPagos),
 });

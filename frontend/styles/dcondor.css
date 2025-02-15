@@ -1,4 +1,5 @@
 main {
+  margin-top: 80px;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -8,12 +9,13 @@ main {
 }
 
 .container {
-  background-color: #3e2c57; /* Tom de roxo mais suave e moderno */
-  padding: 25px;
-  border-radius: 10px;
+  background-color: #2a2440; /* Tom de roxo mais suave e moderno */
+  padding: 30px;
+  border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave para profundidade */
   text-align: center;
-  width: 500px; /* Largura otimizada */
+  max-width: 500px; /* Largura otimizada */
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -26,7 +28,7 @@ main {
 
 h1 {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   color: #fff;
   font-weight: 600;
   letter-spacing: 1px; /* Aumenta a legibilidade */
@@ -45,8 +47,8 @@ h1 {
 }
 
 .file-path {
-  background-color: #4a3d7a; /* Tom de roxo mais claro */
-  border: 1px solid #6f4b99; /* Borda sutil */
+  background-color: #3d325c; /* Tom de roxo mais claro */
+  border: 1px solid #4a3d6a; /* Borda sutil */
   padding: 10px;
   border-radius: 6px;
   color: white;
@@ -56,13 +58,21 @@ h1 {
 }
 
 .file-label {
-  background-color: #4a3d7a; /* Tom de roxo mais claro */
-  border: 1px solid #6f4b99; /* Borda sutil */
+  background-color: #3d325c; /* Tom de roxo mais claro */
+  border: 1px solid #4a3d6a; /* Borda sutil */
   padding: 10px 15px; /* Diminuiu o padding */
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
   color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+}
+
+.file-label:hover {
+  background-color: #4a3d6a; /* Tom de roxo mais escuro para hover */
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra no hover */
 }
 
 .checkbox-group {
@@ -78,6 +88,38 @@ h1 {
   align-items: center;
   gap: 8px;
   font-size: 14px;
+  cursor: pointer;
+}
+
+heckbox-group input[type="checkbox"] {
+  appearance: none; /* Remove o estilo padrão */
+  width: 16px;
+  height: 16px;
+  border: 2px solid #4a3d6a; /* Borda roxa */
+  border-radius: 4px;
+  background-color: transparent;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+  background-color: #6f4b99; /* Fundo roxo quando marcado */
+  border-color: #6f4b99;
+}
+
+.checkbox-group input[type="checkbox"]:checked::after {
+  content: "✔"; /* Símbolo de check */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+}
+
+.checkbox-group input[type="checkbox"]:hover {
+  border-color: #8b66dc; /* Borda roxa mais clara no hover */
 }
 
 .json-btns {
@@ -87,23 +129,50 @@ h1 {
   align-items: center;
 }
 
-.process-btn, .json-btn, .add-btn {
-  background-color: #8b66dc; /* Tom suave de roxo para o botão */
+.process-btn,
+.json-btn,
+.add-btn {
+  background-color: #6f4b99; /* Tom de roxo para o botão */
   padding: 12px 25px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   color: white;
   font-size: 16px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
   letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.process-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+  border-radius: 50%;
 }
 
 .process-btn:hover,
 .json-btn:hover,
 .add-btn:hover {
-  background-color: #4a3d7a; /* Tom de roxo mais escuro para hover */
+  background-color: #8b66dc; /* Tom de roxo mais claro para hover */
   transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra no hover */
+}
+
+.process-btn:hover::before {
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .process-btn:active,
@@ -124,38 +193,38 @@ h1 {
   align-items: center;
 }
 
-/* Estilo do contêiner de tabela */
 #jsonContainer {
   display: none;
+  background-color: #2a2440; /* Mesmo tom do .container */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 500px; /* Mantendo a largura similar */
+  width: 100%;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 400px;
-  height: auto;
-  max-height: 500px;
-  flex-direction: column;
-  background-color: #3e2c57;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
-  text-align: center;
-  gap: 20px;
+  gap: 10px;
+  max-height: 600px;
 }
+
 /* Personalização da barra de rolagem */
 .table-container::-webkit-scrollbar {
-  width: 6px; /* Barra de rolagem mais fina */
+  width: 6px;
 }
 
 /* Cor de fundo da trilha da barra de rolagem */
 .table-container::-webkit-scrollbar-track {
-  background-color: #2c2442; /* Fundo roxo escuro */
+  background-color: #2a2440; /* Mantendo o tom roxo escuro do fundo */
   border-radius: 10px;
 }
 
 /* Cor da parte móvel da barra de rolagem */
 .table-container::-webkit-scrollbar-thumb {
-  background-color: #4a3d7a; /* Tom de roxo mais claro */
+  background-color: #3d325c; /* Roxo que combina com os outros elementos */
   border-radius: 10px;
-  border: 2px solid #2c2442; /* Borda sutil para contraste */
+  border: 2px solid #2a2440;
 }
 
 /* Estilo da tabela */
@@ -170,42 +239,53 @@ table {
   width: 100%;
   border-collapse: collapse;
   border-radius: 8px;
-  overflow: hidden; /* Remove bordas extras */
+  overflow: hidden;
+  background-color: #302750; /* Fundo da tabela alinhado ao tema */
 }
 
 table th,
 table td {
   text-align: center;
-  padding: 8px 10px; /* Aumenta o padding para uma aparência mais clean */
-  border: 1px solid #ddd; /* Borda sutil */
-  color: #f4f4f4; /* Cor mais suave para as células */
+  padding: 8px 10px;
+  border: 1px solid #4a3d6a; /* Bordas suaves para um visual mais limpo */
+  color: #c6b9d3; /* Texto na cor suave como os outros elementos */
 }
 
 table th {
-  background-color: #4a3d7a; /* Tom de roxo suave para o cabeçalho */
+  background-color: #3d325c; /* Mantendo o tom roxo escuro do cabeçalho */
   color: white;
   font-weight: 600;
+}
+
+/* Efeito hover */
+table tr:hover {
+  background-color: #4a3d6a; /* Suave para manter a harmonia do tema */
 }
 
 /* Estilo dos botões de editar e excluir */
 .edit-btn,
 .delete-btn {
-  background-color: #4a3d7a;
+  background-color: #6c5b7b; /* Mesmo tom dos botões do resto do site */
   padding: 4px 8px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   color: white;
   font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+  background-color: #8a6fa6; /* Suave no hover */
 }
 
 .delete-btn {
   margin-left: 6px;
-  background-color: #f44336; /* Cor de erro (vermelho) para o excluir */
+  background-color: #f44336;
 }
 
 .delete-btn:hover {
-  background-color: #d32f2f; /* Hover mais forte */
+  background-color: #d32f2f;
 }
 
 /* Estilo do Modal */

@@ -73,7 +73,7 @@ ipcMain.handle("selecionar-pasta", async () => {
 function processarPagosChocoleite(caminho_pdf) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/empresas.py"),
         "processar_pagos_chocoleite",
@@ -99,11 +99,21 @@ function processarPagosChocoleite(caminho_pdf) {
   });
 }
 
+// Recebendo o pedido de processar o pagamento do frontend
+ipcMain.handle("processar-pagos-chocoleite", async (event, caminho_pdf) => {
+  try {
+    const result = await processarPagosChocoleite(caminho_pdf);
+    return result;
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
 // Função para chamar o script Python e processar os recebidos
 function processarRecebidosChocoleite(caminho_pdf) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/chocoleite.py"),
         "processar_recebidos_chocoleite",
@@ -129,16 +139,6 @@ function processarRecebidosChocoleite(caminho_pdf) {
   });
 }
 
-// Recebendo o pedido de processar o pagamento do frontend
-ipcMain.handle("processar-pagos-chocoleite", async (event, caminho_pdf) => {
-  try {
-    const result = await processarPagosChocoleite(caminho_pdf);
-    return result;
-  } catch (error) {
-    return { success: false, message: error };
-  }
-});
-
 // Recebendo o pedido de processar os recebidos do frontend
 ipcMain.handle("processar-recebidos-chocoleite", async (event, caminho_pdf) => {
   try {
@@ -156,7 +156,7 @@ function processarPlanilhasDCondor(
 ) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/dcondor.py"),
         "processar_planilhas",
@@ -203,7 +203,7 @@ ipcMain.handle(
 async function obterCfopDCondor() {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [path.join(__dirname, "scripts/dcondor.py"), "obter_cfop"],
       (error, stdout, stderr) => {
         if (error) {
@@ -242,7 +242,7 @@ ipcMain.handle("obter-cfop-dcondor", async (event) => {
 async function adicionarCfop(cfop, referencia) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/dcondor.py"),
         "adicionar_cfop",
@@ -286,7 +286,7 @@ ipcMain.handle("adicionar-cfop-dcondor", async (event, cfop, referencia) => {
 async function apagarCfop(cfop) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [path.join(__dirname, "scripts/dcondor.py"), "apagar_cfop", cfop],
       (error, stdout, stderr) => {
         if (error) {
@@ -324,7 +324,7 @@ ipcMain.handle("apagar-cfop-dcondor", async (event, cfop) => {
 async function extrairArquivos(origem, destino, incluir_subpastas) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/extrair_arquivos.py"),
         "extrair_arquivos",
@@ -364,6 +364,49 @@ ipcMain.handle(
   }
 );
 
+async function moverArquivos(origem, destino, incluir_subpastas) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/mover_arquivos.py"), // Atualize para o novo script
+        "mover_arquivos", // Comando atualizado
+        origem,
+        destino,
+        incluir_subpastas,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim(); // Remova o JSON.parse
+
+        if (result.includes("Erro")) {
+          reject(result);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para mover arquivos no frontend via IPC
+ipcMain.handle(
+  "mover-arquivos",
+  async (event, origem, destino, incluir_subpastas) => {
+    try {
+      const result = await moverArquivos(origem, destino, incluir_subpastas);
+      return { success: true, message: result };
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);
+
 async function enviarEmails(
   email_autorizado,
   caminho_planilha,
@@ -371,7 +414,7 @@ async function enviarEmails(
 ) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/enviar_emails.py"),
         "enviar_emails",
@@ -424,7 +467,7 @@ ipcMain.handle(
 async function processarDebito2r(caminho_debito) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/2r.py"),
         "processar_debito_2r",
@@ -468,7 +511,7 @@ ipcMain.handle("processar-debito-2r", async (event, caminho_debito) => {
 async function processarCredito2r(caminho_credito) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/2r.py"),
         "processar_credito_2r",
@@ -505,18 +548,20 @@ ipcMain.handle("processar-credito-2r", async (event, caminho_credito) => {
     const result = await processarCredito2r(caminho_credito);
     return { success: true, message: result.message };
   } catch (error) {
-    return { success: false, message: error }; 
+    return { success: false, message: error }; // Retorna como objeto
   }
 });
 
-function renomearDas(caminho_pasta, adicionar_data, incluir_subpastas) {
+// Função para chamar o script Python e processar os pagamentos
+function processarDirf(caminho_pdf, modelo) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
-        path.join(__dirname, "scripts/renomear_das.py"),
-        "renomear_das",
-        caminho_pasta, adicionar_data, incluir_subpastas
+        path.join(__dirname, "scripts/dirf.py"),
+        "processar_dirf",
+        caminho_pdf,
+        modelo,
       ],
       (error, stdout, stderr) => {
         if (error) {
@@ -538,11 +583,134 @@ function renomearDas(caminho_pasta, adicionar_data, incluir_subpastas) {
   });
 }
 
-ipcMain.handle("renomear-das", async (event, caminho_pasta, adicionar_data, incluir_subpastas) => {
+// Recebendo o pedido de processar o pagamento do frontend
+ipcMain.handle("processar-dirf", async (event, caminho_pdf, modelo) => {
   try {
-    const result = await renomearDas(caminho_pasta, adicionar_data, incluir_subpastas);
+    const result = await processarDirf(caminho_pdf, modelo);
     return result;
   } catch (error) {
     return { success: false, message: error };
   }
 });
+
+async function alterarNomeFolha(caminho, incluirNumeros) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/alterar_nome_folha.py"), // Caminho para o script Python
+        "alterar_nome_folha", // Comando para o script Python
+        caminho,
+        incluirNumeros,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim();
+
+        if (result.includes("Erro")) {
+          reject(result);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para alterar o nome dos arquivos PDF no frontend via IPC
+ipcMain.handle("alterar-nome-folha", async (event, caminho, incluirNumeros) => {
+  try {
+    const result = await alterarNomeFolha(caminho, incluirNumeros);
+    return { success: true, message: result };
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+async function gerenciarConciliacao(operacao, dados) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/conciliacao.py"),
+        "gerenciar_conciliacao",
+        operacao,
+        JSON.stringify(dados),
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim();
+
+        try {
+          // Tenta parsear o resultado como JSON
+          const parsedResult = JSON.parse(result);
+          resolve(parsedResult);
+        } catch (e) {
+          console.error(`Erro ao parsear resultado: ${e.message}`);
+          reject(`Erro ao parsear resultado: ${result}`);
+        }
+      }
+    );
+  });
+}
+
+ipcMain.handle("gerenciar-conciliacao", async (event, operacao, dados) => {
+  try {
+    const result = await gerenciarConciliacao(operacao, dados);
+    return { success: true, data: result }; // Resultado encapsulado em "data"
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+function conciliarPagosBanco(caminhoBanco, caminhoPagos) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath, // Caminho para o Python
+      [
+        path.join(__dirname, "scripts/conciliar.py"),
+        caminhoBanco,
+        caminhoPagos,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de conciliação do frontend
+ipcMain.handle(
+  "conciliar-pagos-banco",
+  async (event, caminhoBanco, caminhoPagos) => {
+    try {
+      const result = await conciliarPagosBanco(caminhoBanco, caminhoPagos);
+      return result;
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);

@@ -22,5 +22,8 @@
     "win": {
       "icon": "frontend/assets/images/icon.ico"
     }
+  },
+  "dependencies": {
+    "quanttum-2.0": "file:"
   }
 }

@@ -5,7 +5,6 @@ import tkinter as tk
 from tkinter import filedialog
 import os
 
-
 def selecionar_pasta_salvamento():
     """Abre o seletor de pastas para definir onde salvar os arquivos TXT."""
     root = tk.Tk()
@@ -23,11 +22,9 @@ def selecionar_pasta_salvamento():
 
     return pasta
 
-
 def formatar_data(data):
     """Converte datas para o formato DDMMAAAA sem barras."""
     return pd.to_datetime(data, dayfirst=True, errors='coerce').dt.strftime('%d%m%Y')
-
 
 def salvar_txt(df, pasta, nome_arquivo):
     if df is not None and pasta:
@@ -36,7 +33,6 @@ def salvar_txt(df, pasta, nome_arquivo):
         df.to_csv(caminho_txt, index=False, sep=';', encoding='utf-8')
         return True
     return False
-
 
 def processar_caixa_debito(df_debito):
     df_filtrado = df_debito[df_debito.iloc[:, 5] == 5]
@@ -49,7 +45,6 @@ def processar_caixa_debito(df_debito):
         "VALOR": pd.to_numeric(df_filtrado.iloc[:, 6], errors='coerce'),
         "DESCRICAO": df_filtrado.iloc[:, 8]
     })
-
 
 def processar_descontos_obtidos(df_debito):
     df_filtrado = df_debito[df_debito.iloc[:, 5] == 2858]
@@ -152,7 +147,6 @@ def processar_caixa_credito(df_credito):
         "DESCRICAO": df_filtrado.iloc[:, 8]
     })
 
-
 def processar_descontos_concedidos(df_credito):
     df_filtrado = df_credito[df_credito.iloc[:, 4] == 4697]
     if df_filtrado.empty:
@@ -182,7 +176,6 @@ def processar_descontos_concedidos(df_credito):
         }))
 
     return pd.concat(dfs) if dfs else None
-
 
 def processar_juros_recebidos(df_credito):
     df_filtrado = df_credito[df_credito.iloc[:, 5] == 2860]
@@ -236,7 +229,6 @@ def processar_credito_2r(caminho_credito):
     except Exception as e:
         return {"status": "erro", "message": str(e)}
 
-
 def main():
     if sys.argv[1] == 'processar_debito_2r':
         caminho_debito = sys.argv[2]
@@ -246,7 +238,6 @@ def main():
         caminho_credito = sys.argv[2]
         result = processar_credito_2r(caminho_credito)
         print(json.dumps(result))
-
 
 if __name__ == '__main__':
     main()
