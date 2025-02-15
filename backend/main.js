@@ -173,8 +173,6 @@ function processarPlanilhasDCondor(
           return;
         }
 
-        console.log("stdout:", stdout); // Log do stdout para verificar o conteúdo
-
         try {
           const result = JSON.parse(stdout); // Certifique-se que o Python está retornando JSON
           resolve(result);
@@ -213,9 +211,6 @@ async function obterCfopDCondor() {
           reject(`Erro: ${error.message}`);
           return;
         }
-
-        console.log("Saída do Python:", stdout); // <-- Adicione este log
-        console.log("Erro do Python (stderr):", stderr); // <-- Adicione este log
 
         try {
           const result = JSON.parse(stdout.trim()); // Remove espaços extras
@@ -299,9 +294,6 @@ async function apagarCfop(cfop) {
           reject(`Erro: ${error.message}`);
           return;
         }
-
-        console.log("Saída do Python:", stdout); // <-- Adicione este log
-        console.log("Erro do Python (stderr):", stderr); // <-- Adicione este log
 
         try {
           const result = JSON.parse(stdout.trim()); // Remove espaços extras
