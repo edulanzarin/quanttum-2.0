@@ -5,11 +5,11 @@ main {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: #2c2442; /* Fundo roxo escuro */
+  background-color: #f5f5f5; /* Fundo roxo escuro */
 }
 
 .container {
-  background-color: #2a2440; /* Tom de roxo mais suave e moderno */
+  background-color: #fafafa; /* Tom de roxo mais suave e moderno */
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave para profundidade */
@@ -26,14 +26,14 @@ main {
 h1 {
   margin: 0;
   font-size: 1.8rem;
-  color: #fff;
+  color: #333333;
   font-weight: 600;
   letter-spacing: 1px; /* Aumenta a legibilidade */
 }
 
 .subtitle {
   font-size: 14px;
-  color: #c6b9d3; /* Cor mais suave para o subtítulo */
+  color: #666666; /* Cor mais suave para o subtítulo */
 }
 
 .file-input-container {
@@ -44,8 +44,8 @@ h1 {
 }
 
 .file-path {
-  background-color: #3d325c; /* Tom de roxo mais claro */
-  border: 1px solid #4a3d6a; /* Borda sutil */
+  background-color: #f0f0f0; /* Tom de roxo mais claro */
+  border: 1px solid #cccccc; /* Borda sutil */
   padding: 10px;
   border-radius: 6px;
   color: white;
@@ -55,8 +55,8 @@ h1 {
 }
 
 .file-label {
-  background-color: #3d325c; /* Tom de roxo mais claro */
-  border: 1px solid #4a3d6a; /* Borda sutil */
+  background-color: #f0f0f0; /* Tom de roxo mais claro */
+  border: 1px solid #cccccc; /* Borda sutil */
   padding: 10px 15px; /* Diminuiu o padding */
   border-radius: 5px;
   cursor: pointer;
@@ -67,7 +67,7 @@ h1 {
 }
 
 .file-label:hover {
-  background-color: #4a3d6a; /* Tom de roxo mais escuro para hover */
+  background-color: #d0d0d0; /* Tom de roxo mais escuro para hover */
   transform: scale(1.05);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra no hover */
 }
@@ -77,7 +77,7 @@ h1 {
   flex-wrap: wrap; /* Permite a quebra de linha */
   gap: 12px;
   justify-content: center; /* Centraliza os checkboxes */
-  color: #c6b9d3;
+  color: #666666;
 }
 
 .checkbox-group label {
@@ -92,17 +92,17 @@ h1 {
   appearance: none; /* Remove o estilo padrão */
   width: 16px;
   height: 16px;
-  border: 2px solid #4a3d6a; /* Borda roxa */
+  border: 2px solid #cccccc; /* Borda roxa */
   border-radius: 4px;
-  background-color: transparent;
+  background-color: #f0f0f0;
   position: relative;
   cursor: pointer;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .checkbox-group input[type="checkbox"]:checked {
-  background-color: #6f4b99; /* Fundo roxo quando marcado */
-  border-color: #6f4b99;
+  background-color: #8b66dc; /* Fundo roxo quando marcado */
+  border-color: #8b66dc;
 }
 
 .checkbox-group input[type="checkbox"]:checked::after {
@@ -120,13 +120,13 @@ h1 {
 }
 
 .process-btn {
-  background-color: #6f4b99; /* Tom de roxo para o botão */
-  padding: 12px 25px;
+  background-color: #8b66dc; /* Tom de roxo para o botão */
+  padding: 8px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   color: white;
-  font-size: 16px;
+  font-size: 14px;
   transition: background-color 0.3s ease, transform 0.2s ease,
     box-shadow 0.3s ease;
   letter-spacing: 1px;
@@ -152,7 +152,7 @@ h1 {
 }
 
 .process-btn:hover {
-  background-color: #8b66dc; /* Tom de roxo mais claro para hover */
+  background-color: #a88ee0; /* Tom de roxo mais claro para hover */
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra no hover */
 }
@@ -166,8 +166,8 @@ h1 {
 }
 
 .file-label {
-  background-color: #3d325c; /* Tom de roxo mais claro */
-  border: 1px solid #4a3d6a; /* Borda sutil */
+  background-color: #f0f0f0; /* Tom de roxo mais claro */
+  border: 1px solid #cccccc; /* Borda sutil */
   padding: 10px 15px; /* Diminuiu o padding */
   border-radius: 5px;
   cursor: pointer;
@@ -178,7 +178,7 @@ h1 {
 }
 
 .file-label:hover {
-  background-color: #4a3d6a; /* Tom de roxo mais escuro para hover */
+  background-color: #cccccc; /* Tom de roxo mais escuro para hover */
   transform: scale(1.05);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra no hover */
 }
@@ -199,8 +199,8 @@ h1 {
   gap: 10px;
   padding: 12px 20px; /* Aumentei o padding para um visual mais robusto */
   color: white;
-  background-color: #3d325c; /* Tom de roxo mais claro */
-  border: 1px solid #4a3d6a; /* Borda sutil */
+  background-color: #f0f0f0; /* Tom de roxo mais claro */
+  border: 1px solid #cccccc; /* Borda sutil */
   border-radius: 8px; /* Bordas mais arredondadas */
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease,
@@ -209,8 +209,13 @@ h1 {
   font-weight: 500; /* Fonte um pouco mais grossa */
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
 .menu-alternar:hover {
-  background-color: #4a3d6a; /* Tom de roxo mais escuro ao passar o mouse */
+  background-color: #cccccc; /* Tom de roxo mais escuro ao passar o mouse */
   transform: translateY(-3px); /* Efeito de levantar o botão */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave */
 }
@@ -234,7 +239,7 @@ h1 {
   overflow-y: auto; /* Adiciona rolagem vertical se necessário */
   margin-top: 20px;
   border-radius: 8px;
-  background-color: #2c2442; /* Fundo roxo escuro */
+  background-color: #f5f5f5; /* Fundo roxo escuro */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -242,7 +247,7 @@ h1 {
 #conciliationTable {
   width: 100%;
   border-collapse: collapse;
-  background-color: #2c2442; /* Fundo roxo escuro */
+  background-color: #f5f5f5; /* Fundo roxo escuro */
   color: #f4f4f4; /* Texto mais suave */
 }
 
@@ -312,7 +317,7 @@ h1 {
 
 /* Cor de fundo da trilha da barra de rolagem */
 .table-container::-webkit-scrollbar-track {
-  background-color: #2c2442; /* Fundo roxo escuro */
+  background-color: #f5f5f5; /* Fundo roxo escuro */
   border-radius: 10px;
 }
 
@@ -320,5 +325,5 @@ h1 {
 .table-container::-webkit-scrollbar-thumb {
   background-color: #4a3d7a; /* Tom de roxo mais claro */
   border-radius: 10px;
-  border: 2px solid #2c2442; /* Borda sutil para contraste */
+  border: 2px solid #f5f5f5; /* Borda sutil para contraste */
 }

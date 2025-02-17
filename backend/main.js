@@ -73,7 +73,7 @@ ipcMain.handle("selecionar-pasta", async () => {
 function processarPagosChocoleite(caminho_pdf) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/empresas.py"),
         "processar_pagos_chocoleite",
@@ -113,7 +113,7 @@ ipcMain.handle("processar-pagos-chocoleite", async (event, caminho_pdf) => {
 function processarRecebidosChocoleite(caminho_pdf) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/chocoleite.py"),
         "processar_recebidos_chocoleite",
@@ -156,7 +156,7 @@ function processarPlanilhasDCondor(
 ) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/dcondor.py"),
         "processar_planilhas",
@@ -203,7 +203,7 @@ ipcMain.handle(
 async function obterCfopDCondor() {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [path.join(__dirname, "scripts/dcondor.py"), "obter_cfop"],
       (error, stdout, stderr) => {
         if (error) {
@@ -242,7 +242,7 @@ ipcMain.handle("obter-cfop-dcondor", async (event) => {
 async function adicionarCfop(cfop, referencia) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/dcondor.py"),
         "adicionar_cfop",
@@ -286,7 +286,7 @@ ipcMain.handle("adicionar-cfop-dcondor", async (event, cfop, referencia) => {
 async function apagarCfop(cfop) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [path.join(__dirname, "scripts/dcondor.py"), "apagar_cfop", cfop],
       (error, stdout, stderr) => {
         if (error) {
@@ -324,7 +324,7 @@ ipcMain.handle("apagar-cfop-dcondor", async (event, cfop) => {
 async function extrairArquivos(origem, destino, incluir_subpastas) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/extrair_arquivos.py"),
         "extrair_arquivos",
@@ -367,7 +367,7 @@ ipcMain.handle(
 async function moverArquivos(origem, destino, incluir_subpastas) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/mover_arquivos.py"), // Atualize para o novo script
         "mover_arquivos", // Comando atualizado
@@ -414,7 +414,7 @@ async function enviarEmails(
 ) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/enviar_emails.py"),
         "enviar_emails",
@@ -467,7 +467,7 @@ ipcMain.handle(
 async function processarDebito2r(caminho_debito) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/2r.py"),
         "processar_debito_2r",
@@ -511,7 +511,7 @@ ipcMain.handle("processar-debito-2r", async (event, caminho_debito) => {
 async function processarCredito2r(caminho_credito) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/2r.py"),
         "processar_credito_2r",
@@ -556,7 +556,7 @@ ipcMain.handle("processar-credito-2r", async (event, caminho_credito) => {
 function processarDirf(caminho_pdf, modelo) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/dirf.py"),
         "processar_dirf",
@@ -596,7 +596,7 @@ ipcMain.handle("processar-dirf", async (event, caminho_pdf, modelo) => {
 async function alterarNomeFolha(caminho, incluirNumeros) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/alterar_nome_folha.py"), // Caminho para o script Python
         "alterar_nome_folha", // Comando para o script Python
@@ -635,7 +635,7 @@ ipcMain.handle("alterar-nome-folha", async (event, caminho, incluirNumeros) => {
 async function gerenciarConciliacao(operacao, dados) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python',
+      pythonPath,
       [
         path.join(__dirname, "scripts/conciliacao.py"),
         "gerenciar_conciliacao",
@@ -676,7 +676,7 @@ ipcMain.handle("gerenciar-conciliacao", async (event, operacao, dados) => {
 function conciliarPagosBanco(caminhoBanco, caminhoPagos) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python', // Caminho para o Python
+      pythonPath, // Caminho para o Python
       [
         path.join(__dirname, "scripts/conciliar.py"),
         caminhoBanco,
@@ -716,13 +716,20 @@ ipcMain.handle(
 );
 
 // Função para conciliar pagos e banco com filtros adicionais
-function conciliarPagosBancoConta(caminhoBanco, caminhoPagos, contaPadrao, padraoQuestor, numeroEmpresa, numeroBanco) {
+function conciliarPagosBancoConta(
+  caminhoBanco,
+  caminhoPagos,
+  contaPadrao,
+  padraoQuestor,
+  numeroEmpresa,
+  numeroBanco
+) {
   return new Promise((resolve, reject) => {
     execFile(
-      'python', // Caminho para o Python
+      pythonPath, // Caminho para o Python
       [
-        path.join(__dirname, 'scripts/conciliar.py'),
-        'conciliar_pagos_banco_conta',
+        path.join(__dirname, "scripts/conciliar.py"),
+        "conciliar_pagos_banco_conta",
         caminhoBanco,
         caminhoPagos,
         contaPadrao,
@@ -752,8 +759,16 @@ function conciliarPagosBancoConta(caminhoBanco, caminhoPagos, contaPadrao, padra
 
 // Recebendo o pedido de conciliação do frontend
 ipcMain.handle(
-  'conciliar-pagos-banco-conta',
-  async (event, caminhoBanco, caminhoPagos, contaPadrao, padraoQuestor, numeroEmpresa, numeroBanco) => {
+  "conciliar-pagos-banco-conta",
+  async (
+    event,
+    caminhoBanco,
+    caminhoPagos,
+    contaPadrao,
+    padraoQuestor,
+    numeroEmpresa,
+    numeroBanco
+  ) => {
     try {
       const result = await conciliarPagosBancoConta(
         caminhoBanco,

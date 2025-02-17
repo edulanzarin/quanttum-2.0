@@ -152,7 +152,7 @@ def obter_conciliacao(empresa):
         return {"success": False, "message": f"Erro ao obter conciliações: {e}"}
 
 
-def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, numeroBanco, administradora):
+def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, numeroBanco):
     """Concilia as planilhas de banco e pagos, gerando uma nova planilha com filtros adicionais."""
     try:
         # Carrega as planilhas

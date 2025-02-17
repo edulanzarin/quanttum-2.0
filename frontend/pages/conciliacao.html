@@ -193,7 +193,24 @@
               style="width: 50%"
             />
           </div>
-          <button class="process-btn">Adicionar</button>
+          <!-- Novo input para selecionar a planilha -->
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="planilhaInput"
+              class="file-path"
+              placeholder="Selecione o relatório"
+              readonly
+            />
+            <label for="planilhaInput" class="file-label">...</label>
+          </div>
+          <!-- Botões lado a lado -->
+          <div class="button-container">
+            <button class="process-btn" style="width: 48%">Adicionar</button>
+            <button class="process-btn" style="width: 48%">
+              Adicionar em Massa
+            </button>
+          </div>
         </div>
 
         <!-- View de Obter Conciliação -->

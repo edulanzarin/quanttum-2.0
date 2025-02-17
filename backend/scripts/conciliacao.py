@@ -1,48 +1,24 @@
 import sys
 import json
 import os
+import pandas as pd
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+# Caminho para o arquivo de credenciais
 CAMINHO_JSON = os.path.join(os.path.dirname(__file__), '..', 'database', 'serviceAccountKey.json')
 
+# Verifica se o arquivo de credenciais existe
+if not os.path.exists(CAMINHO_JSON):
+    sys.exit(1)
+
 # Configuração do Firebase
-cred = credentials.Certificate(CAMINHO_JSON)
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-
-def adicionar_conciliacao(empresa, banco, descricao, debito=None, credito=None):
-    try:
-        # Verifica se o documento da empresa existe
-        empresa_ref = db.collection('empresas').document(str(empresa))
-        empresa_doc = empresa_ref.get()
-
-        if not empresa_doc.exists:
-            # Cria o documento da empresa e a coleção "conciliacoes"
-            empresa_ref.set({})  # Cria o documento vazio
-            conciliacoes_ref = empresa_ref.collection('conciliacoes')
-        else:
-            # Acessa a coleção "conciliacoes" existente
-            conciliacoes_ref = empresa_ref.collection('conciliacoes')
-
-        # Adiciona os dados da conciliação
-        nova_conciliacao = {
-            'banco': banco,
-            'descricao': descricao,
-            'debito': debito,
-            'credito': credito
-        }
-
-        # Remove campos None (opcionais)
-        nova_conciliacao = {k: v for k, v in nova_conciliacao.items() if v is not None}
-
-        # Adiciona o documento com ID automático
-        conciliacoes_ref.add(nova_conciliacao)
-
-        return {"status": "success", "message": "Conciliação adicionada com sucesso!"}
-
-    except Exception as e:
-        return {"status": "fail", "message": f"Erro ao adicionar conciliação: {e}"}
+try:
+    cred = credentials.Certificate(CAMINHO_JSON)
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+except Exception as e:
+    sys.exit(1)
 
 def obter_conciliacao(empresa):
     try:
@@ -97,6 +73,70 @@ def excluir_conciliacao(empresa, documento_id):
 
     except Exception as e:
         return {"success": False, "message": f"Erro ao excluir conciliação: {e}"}
+    
+def adicionar_conciliacao(empresa, banco, descricao, debito=None, credito=None):
+    try:
+        empresa_ref = db.collection('empresas').document(str(empresa))
+        empresa_doc = empresa_ref.get()
+
+        if not empresa_doc.exists:
+            empresa_ref.set({})
+            conciliacoes_ref = empresa_ref.collection('conciliacoes')
+        else:
+            conciliacoes_ref = empresa_ref.collection('conciliacoes')
+
+        nova_conciliacao = {
+            'banco': banco,
+            'descricao': descricao,
+            'debito': debito,
+            'credito': credito
+        }
+
+        nova_conciliacao = {k: v for k, v in nova_conciliacao.items() if v is not None}
+        conciliacoes_ref.add(nova_conciliacao)
+
+        return {"status": "success", "message": "Conciliação adicionada com sucesso!"}
+    except Exception as e:
+        return {"status": "fail", "message": f"Erro ao adicionar conciliação: {e}"}
+
+def cadastrar_conciliacao_em_massa(empresa, banco, caminho_planilha):
+    try:
+        if not os.path.exists(caminho_planilha):
+            return {"status": "fail", "message": "Arquivo da planilha não encontrado."}
+
+        planilha = pd.read_excel(caminho_planilha)
+
+        for index, row in planilha.iterrows():
+            try:
+                descricao = str(row[0])  # Coluna 1: Descrição (sempre string)
+                debito = row[1] if pd.notna(row[1]) else None  # Coluna 2: Débito (mantém o valor original)
+                credito = row[2] if pd.notna(row[2]) else None  # Coluna 3: Crédito (mantém o valor original)
+
+                # Remove vírgulas e converte para inteiro se possível
+                if debito is not None and isinstance(debito, str):
+                    debito = debito.replace(",", "")
+                    try:
+                        debito = int(float(debito))  # Converte para inteiro
+                    except ValueError:
+                        pass  # Mantém como string se não for possível converter
+
+                if credito is not None and isinstance(credito, str):
+                    credito = credito.replace(",", "")
+                    try:
+                        credito = int(float(credito))  # Converte para inteiro
+                    except ValueError:
+                        pass  # Mantém como string se não for possível converter
+
+
+                resultado = adicionar_conciliacao(empresa, banco, descricao, debito, credito)
+                print(json.dumps(resultado))
+
+            except Exception as e:
+               return {"status": "fail", "message": f"Erro ao processar a linha: {e}"}
+           
+        return {"status": "success", "message": "Conciliações em massa adicionadas com sucesso!"}
+    except Exception as e:
+        return {"status": "fail", "message": f"Erro ao processar a planilha: {e}"}
 
 def gerenciar_conciliacao(operacao, dados):
     try:
@@ -135,14 +175,26 @@ def gerenciar_conciliacao(operacao, dados):
             # Chama a função excluir_conciliacao
             return excluir_conciliacao(empresa, documento_id)
 
+        elif operacao == "cadastrar_em_massa":
+            # Verifica se os campos obrigatórios estão presentes
+            if "empresa" not in dados or "banco" not in dados or "caminho_planilha" not in dados:
+                return {"success": False, "message": "Campos obrigatórios faltando para a operação 'cadastrar_em_massa'."}
+
+            empresa = dados["empresa"]
+            banco = dados["banco"]
+            caminho_planilha = dados["caminho_planilha"]
+
+            # Chama a função cadastrar_conciliacao_em_massa
+            return cadastrar_conciliacao_em_massa(empresa, banco, caminho_planilha)
+
         else:
-            return {"success": False, "message": "Operação inválida. Use 'adicionar', 'obter' ou 'excluir'."}
+            return {"success": False, "message": "Operação inválida. Use 'adicionar', 'obter', 'excluir' ou 'cadastrar_em_massa'."}
 
     except Exception as e:
         return {"success": False, "message": f"Erro ao executar a operação: {e}"}
 
 def main():
-    if len(sys.argv) > 3 and sys.argv[1] == 'gerenciar_conciliacao':
+    if len(sys.argv) > 1 and sys.argv[1] == 'gerenciar_conciliacao':
         operacao = sys.argv[2]
         try:
             dados = json.loads(sys.argv[3])  # Converte a string JSON para um dicionário
