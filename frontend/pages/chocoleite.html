@@ -136,26 +136,46 @@
 
     <main>
       <section class="container">
-        <h1>Chocoleite</h1>
+        <!-- Cabeçalho -->
+        <div class="header">
+          <h1>Chocoleite</h1>
+        </div>
+
+        <!-- Subtítulo -->
         <h2 class="subtitle">Processar relatórios da Chocoleite</h2>
 
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="filePath"
-            class="file-path"
-            placeholder="Selecione o relatório"
-            readonly
-          />
-          <label for="fileInput" class="file-label">...</label>
+        <!-- Seção de upload de arquivo -->
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="filePath"
+              class="file-path"
+              placeholder="Selecione o relatório"
+              readonly
+            />
+            <label for="fileInput" class="file-label">...</label>
+          </div>
+          <p class="file-hint">Arquivos suportados: .pdf</p>
         </div>
 
-        <div class="checkbox-group">
-          <label><input type="checkbox" id="pagos" /> Pagos</label>
-          <label><input type="checkbox" id="recebidos" /> Recebidos</label>
+        <!-- Seção de opções -->
+        <div class="options-section">
+          <div class="checkbox-group">
+            <label><input type="checkbox" id="pagos" /> Pagos</label>
+            <label><input type="checkbox" id="recebidos" /> Recebidos</label>
+          </div>
         </div>
 
+        <!-- Botão de processar -->
         <button class="process-btn">Processar</button>
+
+        <!-- Rodapé -->
+        <div class="footer">
+          <p class="footer-text">
+            © 2023 Chocoleite. Todos os direitos reservados.
+          </p>
+        </div>
       </section>
     </main>
 
