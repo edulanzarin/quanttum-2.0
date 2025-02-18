@@ -87,6 +87,85 @@ adicionarBtn.addEventListener("click", async () => {
   }
 });
 
+const adicionarEmMassaBtn = document.querySelector(
+  "#addView .button-container .process-btn:nth-child(2)"
+);
+
+const planilhaInput = document.getElementById("planilhaInput");
+
+// Função para abrir o seletor de arquivos usando o Electron
+document.querySelector(".file-label").addEventListener("click", () => {
+  window.electronAPI
+    .selecionarArquivo()
+    .then((caminho) => {
+      if (caminho) {
+        planilhaInput.value = caminho;
+      }
+    })
+    .catch((err) => {
+      console.error("Erro ao selecionar o arquivo:", err);
+    });
+});
+
+adicionarEmMassaBtn.addEventListener("click", async () => {
+  const empresa = document.getElementById("nmrEmpresa").value;
+  const banco = document.getElementById("nmrBanco").value;
+
+  if (!empresa || !banco || !planilhaInput.value) {
+    createNotification(
+      "Preencha os campos obrigatórios e selecione uma planilha.",
+      "#1d1830",
+      "darkred",
+      errorGifUrl
+    );
+    return;
+  }
+
+  const dados = {
+    empresa: parseInt(empresa, 10),
+    banco: parseInt(banco, 10),
+    caminho_planilha: planilhaInput.value,
+  };
+
+  try {
+    console.log("Dados enviados:", dados); // Log para depuração
+    showLoadingModal();
+
+    const resultado = await window.electronAPI.gerenciarConciliacao(
+      "cadastrar_em_massa",
+      dados
+    );
+
+    hideLoadingModal();
+
+    if (resultado.success) {
+      createNotification(
+        "Conciliações em massa adicionadas com sucesso!",
+        "#1d1830",
+        "darkgreen",
+        successGifUrl
+      );
+      document.getElementById("nmrEmpresa").value = "";
+      document.getElementById("nmrBanco").value = "";
+      planilhaInput.value = "";
+    } else {
+      createNotification(
+        `Erro: ${resultado.message}`,
+        "#1d1830",
+        "darkred",
+        errorGifUrl
+      );
+    }
+  } catch (erro) {
+    createNotification(
+      "Ocorreu um erro ao processar a planilha.",
+      "#1d1830",
+      "darkred",
+      errorGifUrl
+    );
+  }
+});
+
 async function filterTable() {
   // Coleta o valor do campo de filtro
   const empresa = document.getElementById("filterEmpresa").value;
@@ -174,12 +253,45 @@ function preencherTabela(conciliacoes) {
   });
 }
 
-// Função para editar uma conciliação (exemplo)
-function editarConciliacao(id) {
-  // Implemente a lógica para editar a conciliação
-}
+// Função para excluir uma conciliação
+async function excluirConciliacao(id) {
+  try {
+    // Mostra o modal de carregamento
+    showLoadingModal();
 
-// Função para excluir uma conciliação (exemplo)
-function excluirConciliacao(id) {
-  // Implemente a lógica para excluir a conciliação
+    // Chama a função gerenciarConciliacao via IPC
+    const resultado = await window.electronAPI.gerenciarConciliacao("excluir", {
+      empresa: parseInt(document.getElementById("filterEmpresa").value, 10),
+      documento_id: id,
+    });
+
+    // Esconde o modal de carregamento
+    hideLoadingModal();
+
+    // Verifica o resultado
+    if (resultado.success) {
+      createNotification(
+        "Conciliação excluída com sucesso!",
+        "#1d1830",
+        "darkgreen",
+        successGifUrl
+      );
+      // Atualiza a tabela após a exclusão
+      filterTable();
+    } else {
+      createNotification(
+        `Erro: ${resultado.message}`,
+        "#1d1830",
+        "darkred",
+        errorGifUrl
+      );
+    }
+  } catch (erro) {
+    createNotification(
+      "Ocorreu um erro ao excluir a conciliação.",
+      "#1d1830",
+      "darkred",
+      errorGifUrl
+    );
+  }
 }
