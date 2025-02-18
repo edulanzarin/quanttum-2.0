@@ -7,7 +7,7 @@
     "pack": "electron-packager . quanttum --platform=win32 --arch=x64 --out=dist/ --icon=frontend/assets/images/icon.ico"
   },
   "devDependencies": {
-    "electron": "^34.0.2",
+    "electron": "^34.2.0",
     "electron-packager": "^15.5.2"
   },
   "build": {

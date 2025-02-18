@@ -1,14 +1,16 @@
-import pandas as pd
-import tkinter as tk
 import json
 import os
 import sys
+import tkinter as tk
 from tkinter import filedialog
+
 import firebase_admin
+import pandas as pd
 from firebase_admin import credentials, firestore
 
-CAMINHO_JSON = os.path.join(os.path.dirname(
-    __file__), '..', 'database', 'serviceAccountKey.json')
+CAMINHO_JSON = os.path.join(
+    os.path.dirname(__file__), "..", "database", "serviceAccountKey.json"
+)
 
 # Configuração do Firebase
 cred = credentials.Certificate(CAMINHO_JSON)
@@ -27,7 +29,7 @@ def salvar_dados(nome_sugerido):
         caminho_arquivo = filedialog.asksaveasfilename(
             initialfile=nome_sugerido,
             defaultextension=".csv",
-            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
+            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
         )
 
         root.destroy()  # Fecha a janela do Tkinter corretamente
@@ -42,13 +44,12 @@ def carregar_planilha(caminho_arquivo):
         if caminho_arquivo is None:
             raise ValueError("O caminho do arquivo não pode ser None.")
 
-        if caminho_arquivo.endswith('.csv'):
-            return pd.read_csv(caminho_arquivo, delimiter=';', encoding='utf-8-sig')
-        elif caminho_arquivo.endswith('.xlsx'):
+        if caminho_arquivo.endswith(".csv"):
+            return pd.read_csv(caminho_arquivo, delimiter=";", encoding="utf-8-sig")
+        elif caminho_arquivo.endswith(".xlsx"):
             return pd.read_excel(caminho_arquivo)
         else:
-            raise ValueError(
-                "Formato de arquivo não suportado. Use CSV ou XLSX.")
+            raise ValueError("Formato de arquivo não suportado. Use CSV ou XLSX.")
     except Exception as e:
         raise Exception(f"Erro ao carregar a planilha: {e}")
 
@@ -62,7 +63,10 @@ def conciliar_pagos_banco(planilha_banco, planilha_pagos):
 
         # Verifica se as planilhas têm as colunas necessárias
         if banco_df.shape[1] < 3 or pagos_df.shape[1] < 3:
-            return {"status": "erro", "message": "As planilhas devem ter pelo menos 3 colunas (DATA, DESCRICAO, VALOR)."}
+            return {
+                "status": "erro",
+                "message": "As planilhas devem ter pelo menos 3 colunas (DATA, DESCRICAO, VALOR).",
+            }
 
         # Renomeia colunas para facilitar o acesso
         banco_df.columns = ["DATA", "DESCRICAO_BANCO", "VALOR"]
@@ -78,13 +82,14 @@ def conciliar_pagos_banco(planilha_banco, planilha_pagos):
 
             # Procura correspondência na planilha de pagos
             correspondencia = pagos_df[
-                (pagos_df["DATA"] == data_banco) & (
-                    pagos_df["VALOR"] == valor_banco)
+                (pagos_df["DATA"] == data_banco) & (pagos_df["VALOR"] == valor_banco)
             ]
 
             if not correspondencia.empty:
                 # Substitui a descrição do banco pela descrição de pagos
-                linha_banco["DESCRICAO_BANCO"] = correspondencia.iloc[0]["DESCRICAO_PAGOS"]
+                linha_banco["DESCRICAO_BANCO"] = correspondencia.iloc[0][
+                    "DESCRICAO_PAGOS"
+                ]
                 # Remove a linha de pagos para evitar duplicações
                 pagos_df.drop(correspondencia.index, inplace=True)
 
@@ -105,32 +110,43 @@ def conciliar_pagos_banco(planilha_banco, planilha_pagos):
         for i, linha in banco_df.iterrows():
             if i in linhas_nao_conciliadas.index:
                 resultado_df = pd.concat(
-                    [resultado_df, linha.to_frame().T], ignore_index=True)
+                    [resultado_df, linha.to_frame().T], ignore_index=True
+                )
 
         # Salva o resultado em um arquivo CSV
         caminho_arquivo = salvar_dados("banco_conciliado.csv")
         if caminho_arquivo:
-            resultado_df.to_csv(caminho_arquivo, index=False,
-                                sep=';', encoding='utf-8-sig')
-            return {"status": "success", "message": "Planilha conciliada salva com sucesso!"}
+            resultado_df.to_csv(
+                caminho_arquivo, index=False, sep=";", encoding="utf-8-sig"
+            )
+            return {
+                "status": "success",
+                "message": "Planilha conciliada salva com sucesso!",
+            }
         else:
-            return {"status": "erro", "message": "Nenhum arquivo foi selecionado para salvar."}
+            return {
+                "status": "erro",
+                "message": "Nenhum arquivo foi selecionado para salvar.",
+            }
 
     except Exception as e:
-        return {"status": "erro", "message": f"Erro ao processar as planilhas: {str(e)}"}
+        return {
+            "status": "erro",
+            "message": f"Erro ao processar as planilhas: {str(e)}",
+        }
 
 
 def obter_conciliacao(empresa):
     try:
         # Referência ao documento da empresa
-        empresa_ref = db.collection('empresas').document(str(empresa))
+        empresa_ref = db.collection("empresas").document(str(empresa))
         empresa_doc = empresa_ref.get()
 
         if not empresa_doc.exists:
             return {"success": False, "message": "Empresa não encontrada."}
 
         # Referência à coleção "conciliacoes" da empresa
-        conciliacoes_ref = empresa_ref.collection('conciliacoes')
+        conciliacoes_ref = empresa_ref.collection("conciliacoes")
         conciliacoes = conciliacoes_ref.stream()
 
         # Lista para armazenar as conciliações
@@ -140,11 +156,15 @@ def obter_conciliacao(empresa):
         for conciliacao in conciliacoes:
             conciliacao_data = conciliacao.to_dict()
             # Adiciona o ID do documento
-            conciliacao_data['id'] = conciliacao.id
+            conciliacao_data["id"] = conciliacao.id
             conciliacoes_lista.append(conciliacao_data)
 
         if not conciliacoes_lista:
-            return {"success": True, "message": "Nenhuma conciliação encontrada.", "conciliacoes": []}
+            return {
+                "success": True,
+                "message": "Nenhuma conciliação encontrada.",
+                "conciliacoes": [],
+            }
 
         return {"success": True, "conciliacoes": conciliacoes_lista}
 
@@ -152,7 +172,9 @@ def obter_conciliacao(empresa):
         return {"success": False, "message": f"Erro ao obter conciliações: {e}"}
 
 
-def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, numeroBanco, administradora):
+def conciliar_pagos_banco_conta(
+    planilha_banco, planilha_pagos, numeroEmpresa, numeroBanco
+):
     """Concilia as planilhas de banco e pagos, gerando uma nova planilha com filtros adicionais."""
     try:
         # Carrega as planilhas
@@ -161,7 +183,10 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
 
         # Verifica se as planilhas têm as colunas necessárias
         if banco_df.shape[1] < 3 or pagos_df.shape[1] < 3:
-            return {"status": "erro", "message": "As planilhas devem ter pelo menos 3 colunas (DATA, DESCRICAO, VALOR)."}
+            return {
+                "status": "erro",
+                "message": "As planilhas devem ter pelo menos 3 colunas (DATA, DESCRICAO, VALOR).",
+            }
 
         # Renomeia colunas para facilitar o acesso
         banco_df.columns = ["DATA", "DESCRICAO_BANCO", "VALOR"]
@@ -174,7 +199,9 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
 
         # Filtra as conciliações pelo número do banco
         conciliacoes_filtradas = [
-            conc for conc in conciliacoes["conciliacoes"] if conc.get("banco") == numeroBanco
+            conc
+            for conc in conciliacoes["conciliacoes"]
+            if conc.get("banco") == numeroBanco
         ]
 
         # Lista para armazenar os resultados
@@ -187,13 +214,14 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
 
             # Procura correspondência na planilha de pagos
             correspondencia = pagos_df[
-                (pagos_df["DATA"] == data_banco) & (
-                    pagos_df["VALOR"] == valor_banco)
+                (pagos_df["DATA"] == data_banco) & (pagos_df["VALOR"] == valor_banco)
             ]
 
             if not correspondencia.empty:
                 # Substitui a descrição do banco pela descrição de pagos
-                linha_banco["DESCRICAO_BANCO"] = correspondencia.iloc[0]["DESCRICAO_PAGOS"]
+                linha_banco["DESCRICAO_BANCO"] = correspondencia.iloc[0][
+                    "DESCRICAO_PAGOS"
+                ]
                 # Remove a linha de pagos para evitar duplicações
                 pagos_df.drop(correspondencia.index, inplace=True)
 
@@ -214,7 +242,8 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
         for i, linha in banco_df.iterrows():
             if i in linhas_nao_conciliadas.index:
                 resultado_df = pd.concat(
-                    [resultado_df, linha.to_frame().T], ignore_index=True)
+                    [resultado_df, linha.to_frame().T], ignore_index=True
+                )
 
         # Atualiza a planilha do banco com as informações das conciliações
         for conc in conciliacoes_filtradas:
@@ -224,8 +253,9 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
             # Verifica se a descrição do Firebase está contida na descrição do banco
             resultado_df.loc[
                 resultado_df["DESCRICAO_BANCO"].str.contains(
-                    descricao_firebase, case=False, na=False),
-                "DEBITO"
+                    descricao_firebase, case=False, na=False
+                ),
+                "DEBITO",
                 # Converte para inteiro e remove o .0
             ] = int(float(debito_firebase))
 
@@ -233,38 +263,50 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
         resultado_df["DEBITO"] = resultado_df["DEBITO"].fillna("")
 
         # Garante que a coluna DEBITO seja tratada como string (formato geral)
-        resultado_df["DEBITO"] = resultado_df["DEBITO"].astype(
-            str).replace(r'\.0', '', regex=True)
+        resultado_df["DEBITO"] = (
+            resultado_df["DEBITO"].astype(str).replace(r"\.0", "", regex=True)
+        )
 
         # Salva o resultado em um arquivo CSV
         caminho_arquivo = salvar_dados("banco_conciliado.csv")
         if caminho_arquivo:
-            resultado_df.to_csv(caminho_arquivo, index=False,
-                                sep=';', encoding='utf-8-sig')
-            return {"status": "success", "message": "Planilha conciliada salva com sucesso!"}
+            resultado_df.to_csv(
+                caminho_arquivo, index=False, sep=";", encoding="utf-8-sig"
+            )
+            return {
+                "status": "success",
+                "message": "Planilha conciliada salva com sucesso!",
+            }
         else:
-            return {"status": "erro", "message": "Nenhum arquivo foi selecionado para salvar."}
+            return {
+                "status": "erro",
+                "message": "Nenhum arquivo foi selecionado para salvar.",
+            }
 
     except Exception as e:
-        return {"status": "erro", "message": f"Erro ao processar as planilhas: {str(e)}"}
+        return {
+            "status": "erro",
+            "message": f"Erro ao processar as planilhas: {str(e)}",
+        }
 
 
 def main():
-    if sys.argv[1] == 'conciliar_pagos_banco':
+    if sys.argv[1] == "conciliar_pagos_banco":
         caminho_banco = sys.argv[1]
         caminho_pagos = sys.argv[2]
         result = conciliar_pagos_banco(caminho_banco, caminho_pagos)
         print(json.dumps(result))
 
-    elif sys.argv[1] == 'conciliar_pagos_banco_conta':
+    elif sys.argv[1] == "conciliar_pagos_banco_conta":
         caminho_banco = sys.argv[2]
         caminho_pagos = sys.argv[3]
         numeroEmpresa = int(sys.argv[4])
         numeroBanco = int(sys.argv[5])
         result = conciliar_pagos_banco_conta(
-            caminho_banco, caminho_pagos, numeroEmpresa, numeroBanco)
+            caminho_banco, caminho_pagos, numeroEmpresa, numeroBanco
+        )
         print(json.dumps(result))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
