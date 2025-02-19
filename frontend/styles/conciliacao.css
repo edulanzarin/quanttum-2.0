@@ -250,19 +250,25 @@ h1 {
   border-collapse: collapse;
   background-color: #333333; /* Fundo cinza escuro */
   color: #f4f4f4; /* Texto mais suave */
+  font-size: 12px; /* Reduzir o tamanho da fonte */
 }
 
 #conciliationTable th,
 #conciliationTable td {
   text-align: center;
-  padding: 8px 10px; /* Aumenta o padding para uma aparência mais clean */
+  padding: 4px 6px; /* Reduzir o padding para uma aparência mais compacta */
   border: 1px solid #666666; /* Borda sutil */
+  height: 24px; /* Definir uma altura fixa para as células */
 }
 
 #conciliationTable th {
   background-color: #444444; /* Tom de cinza mais escuro para o cabeçalho */
   color: white;
   font-weight: 600;
+}
+
+#conciliationTable tr {
+  height: 24px; /* Definir uma altura fixa para as linhas */
 }
 
 #conciliationTable tr:hover {
@@ -272,12 +278,12 @@ h1 {
 /* Botão de ação na tabela */
 .action-btn {
   background-color: #8b66dc;
-  padding: 4px 8px;
+  padding: 2px 6px; /* Reduzir o padding dos botões */
   border: none;
   border-radius: 6px;
   cursor: pointer;
   color: white;
-  font-size: 14px;
+  font-size: 12px; /* Reduzir o tamanho da fonte dos botões */
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -294,16 +300,16 @@ h1 {
 .edit-btn,
 .delete-btn {
   background-color: #8b66dc;
-  padding: 4px 8px;
+  padding: 2px 6px; /* Reduzir o padding dos botões */
   border: none;
   border-radius: 6px;
   cursor: pointer;
   color: white;
-  font-size: 14px;
+  font-size: 12px; /* Reduzir o tamanho da fonte dos botões */
 }
 
 .delete-btn {
-  margin-left: 6px;
+  margin-left: 4px; /* Reduzir a margem entre os botões */
   background-color: #f44336; /* Cor de erro (vermelho) para o excluir */
 }
 
