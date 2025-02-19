@@ -136,25 +136,31 @@
 
     <main>
       <section class="container" id="relatorioJurosDesc">
-        <h1>Renomear DAS</h1>
+        <div class="header">
+          <h1>Renomear DAS</h1>
+        </div>
         <h2 class="subtitle">Renomear guias de Simples Nacional</h2>
 
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="filePasta"
-            class="file-path"
-            placeholder="Selecione o local das guias"
-            readonly
-          />
-          <label for="filePasta" class="file-label">...</label>
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="filePasta"
+              class="file-path"
+              placeholder="Selecione o local das guias"
+              readonly
+            />
+            <label for="filePasta" class="file-label">...</label>
+          </div>
         </div>
 
-        <div class="checkbox-group">
-          <label><input type="checkbox" id="data" /> Adicionar Data</label>
-          <label
-            ><input type="checkbox" id="subpastas" /> Incluir Subpastas</label
-          >
+        <div class="options-section">
+          <div class="checkbox-group">
+            <label><input type="checkbox" id="data" /> Adicionar Data</label>
+            <label
+              ><input type="checkbox" id="subpastas" /> Incluir Subpastas</label
+            >
+          </div>
         </div>
 
         <button class="process-btn">Processar</button>

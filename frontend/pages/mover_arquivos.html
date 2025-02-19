@@ -136,36 +136,44 @@
 
     <main>
       <section class="container">
-        <h1>Mover Arquivos</h1>
-        <h2 class="subtitle">Selecione o local com os arquivos</h2>
+        <div class="header">
+          <h1>Mover Arquivos</h1>
+        </div>
+        <h2 class="subtitle">Mover arquivos em massa</h2>
 
         <!-- Input de Caminho Origem -->
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="caminhoOrigem"
-            class="file-path"
-            placeholder="Escolher Local de Origem"
-          />
-          <label id="fileOrigem" class="file-label">...</label>
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="caminhoOrigem"
+              class="file-path"
+              placeholder="Escolher Local de Origem"
+            />
+            <label id="fileOrigem" class="file-label">...</label>
+          </div>
         </div>
 
         <!-- Input de Caminho Destino -->
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="caminhoDestino"
-            class="file-path"
-            placeholder="Escolher Local de Destino"
-          />
-          <label id="fileDestino" class="file-label">...</label>
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="caminhoDestino"
+              class="file-path"
+              placeholder="Escolher Local de Destino"
+            />
+            <label id="fileDestino" class="file-label">...</label>
+          </div>
         </div>
 
         <!-- Checkbox "Subpastas" -->
-        <div class="checkbox-group">
-          <label>
-            <input type="checkbox" id="subpastas" /> Incluir Subpastas
-          </label>
+        <div class="options-section">
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="subpastas" /> Incluir Subpastas
+            </label>
+          </div>
         </div>
 
         <button class="process-btn" onclick="moverArquivos()">Extrair</button>

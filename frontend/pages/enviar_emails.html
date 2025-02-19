@@ -136,38 +136,46 @@
 
     <main>
       <section class="container">
-        <h1>Enviar E-mails</h1>
+        <div class="header">
+          <h1>Enviar E-mails</h1>
+        </div>
         <h2 class="subtitle">Envio de e-mails em massa</h2>
 
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="emailAutorizado"
-            class="file-path"
-            placeholder="Seu E-mail"
-          />
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="emailAutorizado"
+              class="file-path"
+              placeholder="Seu E-mail"
+            />
+          </div>
         </div>
 
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="planilhaReferencia"
-            class="file-path"
-            placeholder="Planilha de Referência"
-            readonly
-          />
-          <label for="planilhaReferencia" class="file-label">...</label>
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="planilhaReferencia"
+              class="file-path"
+              placeholder="Planilha de Referência"
+              readonly
+            />
+            <label for="planilhaReferencia" class="file-label">...</label>
+          </div>
         </div>
 
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="conteudoEmail"
-            class="file-path"
-            placeholder="Conteúdo do E-mail"
-            readonly
-          />
-          <label for="conteudoEmail" class="file-label">...</label>
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="conteudoEmail"
+              class="file-path"
+              placeholder="Conteúdo do E-mail"
+              readonly
+            />
+            <label for="conteudoEmail" class="file-label">...</label>
+          </div>
         </div>
 
         <button class="process-btn">Enviar E-mails</button>

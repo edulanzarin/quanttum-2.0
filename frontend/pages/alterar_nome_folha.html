@@ -136,25 +136,32 @@
 
     <main>
       <section class="container">
-        <h1>Alterar Nome das Folhas</h1>
-        <h2 class="subtitle">Selecione o local com os arquivos</h2>
+        <div class="header">
+          <h1>Alterar Nome Folhas</h1>
+        </div>
+        <h2 class="subtitle">Alterar nome dos arquivos em massa</h2>
 
         <!-- Input de Caminho Origem -->
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="caminho"
-            class="file-path"
-            placeholder="Escolher Local dos Arquivos"
-          />
-          <label id="fileOrigem" class="file-label">...</label>
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="caminho"
+              class="file-path"
+              placeholder="Escolher Local dos Arquivos"
+            />
+            <label id="fileOrigem" class="file-label">...</label>
+          </div>
         </div>
 
         <!-- Checkbox "Número" -->
-        <div class="checkbox-group">
-          <label>
-            <input type="checkbox" id="nmrEmpresa" /> Incluir Número da Empresa
-          </label>
+        <div class="options-section">
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="nmrEmpresa" /> Incluir Número da
+              Empresa
+            </label>
+          </div>
         </div>
 
         <button class="process-btn">Alterar</button>
