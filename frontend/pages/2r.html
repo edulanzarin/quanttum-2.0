@@ -135,19 +135,28 @@
     </header>
 
     <main>
-      <section class="container" id="relatorioJurosDesc">
-        <h1>2R Distribuidora</h1>
-        <h2 class="subtitle">Processar planilhas de Juros e Descontos</h2>
+      <section class="container" id="relatorioDebitosCreditos">
+        <!-- Cabeçalho -->
+        <div class="header">
+          <h1>Distribuidora 2R</h1>
+        </div>
 
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="filePlanilha"
-            class="file-path"
-            placeholder="Selecione a planilha de débitos"
-            readonly
-          />
-          <label for="filePlanilhaDebito" class="file-label">...</label>
+        <!-- Subtítulo -->
+        <h2 class="subtitle">Processar planilhas de Débitos e Créditos</h2>
+
+        <!-- Seção de upload de arquivo -->
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="filePlanilha"
+              class="file-path"
+              placeholder="Selecione a planilha de débitos"
+              readonly
+            />
+            <label for="filePlanilhaDebito" class="file-label">...</label>
+          </div>
+          <p class="file-hint">Arquivos suportados: .pdf</p>
         </div>
 
         <div class="checkbox-group">
@@ -155,7 +164,17 @@
           <label><input type="checkbox" id="credito" /> Créditos</label>
         </div>
 
+        <!-- Botão de processar -->
         <button class="process-btn">Processar</button>
+
+        <!-- Rodapé -->
+        <div class="footer">
+          <p class="footer-text">
+            <a href="manual.html" class="footer-link"
+              >Dúvidas sobre o funcionamento?</a
+            >
+          </p>
+        </div>
       </section>
 
       <section class="container" id="relatorioPagos" style="display: none">
@@ -185,6 +204,14 @@
         </div>
 
         <button class="process-btn">Processar</button>
+
+        <div class="footer">
+          <p class="footer-text">
+            <a href="manual.html" class="footer-link"
+              >Dúvidas sobre o funcionamento?</a
+            >
+          </p>
+        </div>
       </section>
     </main>
 

@@ -8,7 +8,7 @@ function createNotification(message, backgroundColor, borderColor, gifUrl) {
   const notification = document.createElement("div");
   notification.classList.add("notification");
   notification.textContent = message;
-  notification.style.backgroundColor = backgroundColor;
+  notification.style.backgroundColor = " #333333;";
   notification.style.border = `2px solid ${borderColor}`;
   notification.style.position = "fixed";
   notification.style.right = "10px";

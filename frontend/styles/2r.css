@@ -1,165 +1,178 @@
+/* Estilos gerais */
 main {
-    margin-top: 80px;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: #f5f5f5;
+  margin-top: 80px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #1a1a1a; /* Fundo escuro */
+  overflow: hidden;
+  position: relative;
 }
 
+/* Container principal */
 .container {
-    background-color: #fafafa; /* Tom de roxo mais suave e moderno */
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave para profundidade */
-    text-align: center;
-    max-width: 650px; /* Largura otimizada */
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
+  background-color: #333333; /* Tom de cinza escuro */
+  padding: 20px; /* Padding menor */
+  border-radius: 8px; /* Bordas mais suaves */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+  text-align: center;
+  max-width: 650px; /* Container mais compacto */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px; /* Espaçamento menor */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cabeçalho */
+.header {
+  margin-bottom: 10px; /* Espaçamento menor */
 }
 
 h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: #333333;
-    font-weight: 600;
-    letter-spacing: 1px; /* Aumenta a legibilidade */
+  margin: 0;
+  font-size: 1.5rem; /* Título menor */
+  color: #ffffff; /* Texto branco */
+  font-weight: 600;
+  letter-spacing: 1px; /* Aumenta a legibilidade */
 }
 
+/* Subtítulo */
 .subtitle {
-    font-size: 14px;
-    color: #666666; /* Cor mais suave para o subtítulo */
+  font-size: 12px; /* Texto menor */
+  color: #cccccc; /* Cor mais suave para o subtítulo */
+}
+
+/* Seção de upload de arquivo */
+.file-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espaçamento menor */
+  width: 90%;
 }
 
 .file-input-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espaçamento menor */
 }
 
 .file-path {
-    background-color: #f0f0f0; /* Tom de roxo mais claro */
-    border: 1px solid #cccccc; /* Borda sutil */
-    padding: 10px;
-    border-radius: 6px;
-    color: white;
-    font-size: 14px;
-    width: 100%;
-    text-align: center;
+  background-color: #444444; /* Tom de cinza mais escuro */
+  border: 1px solid #666666; /* Borda sutil */
+  padding: 6px; /* Padding menor */
+  border-radius: 4px; /* Bordas mais suaves */
+  color: #ffffff; /* Texto branco */
+  font-size: 12px; /* Texto menor */
+  width: 100%;
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+.file-path:focus {
+  border-color: #8b66dc; /* Borda roxa ao focar */
 }
 
 .file-label {
-    background-color: #f0f0f0; /* Tom de roxo mais claro */
-    border: 1px solid #cccccc; /* Borda sutil */
-    padding: 10px 15px; /* Diminuiu o padding */
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    color: white;
-    transition: background-color 0.3s ease, transform 0.2s ease,
-    box-shadow 0.3s ease;
+  background-color: #444444; /* Tom de cinza mais escuro */
+  border: 1px solid #666666; /* Borda sutil */
+  padding: 6px 10px; /* Padding menor */
+  border-radius: 4px; /* Bordas mais suaves */
+  cursor: pointer;
+  font-size: 12px; /* Texto menor */
+  color: #ffffff; /* Texto branco */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .file-label:hover {
-    background-color: #d0d0d0; /* Tom de roxo mais escuro para hover */
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra no hover */
+  background-color: #555555; /* Tom de cinza mais claro para hover */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Sombra no hover */
+}
+
+.file-hint {
+  font-size: 10px; /* Texto menor */
+  color: #999999; /* Texto cinza claro */
 }
 
 .checkbox-group {
-    display: flex;
-    flex-wrap: wrap; /* Permite a quebra de linha */
-    gap: 12px;
-    justify-content: center; /* Centraliza os checkboxes */
-    color: #666666;
+  display: flex;
+  flex-wrap: wrap; /* Permite a quebra de linha */
+  gap: 8px; /* Espaçamento menor */
+  justify-content: center; /* Centraliza os checkboxes */
+  color: #cccccc; /* Texto cinza claro */
 }
 
 .checkbox-group label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Espaçamento menor */
+  font-size: 12px; /* Texto menor */
+  cursor: pointer;
 }
 
 .checkbox-group input[type="checkbox"] {
-    appearance: none; /* Remove o estilo padrão */
-    width: 16px;
-    height: 16px;
-    border: 2px solid #cccccc; /* Borda roxa */
-    border-radius: 4px;
-    background-color: #f0f0f0;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+  appearance: none; /* Remove o estilo padrão */
+  width: 14px; /* Checkbox menor */
+  height: 14px; /* Checkbox menor */
+  border: 2px solid #666666; /* Borda cinza */
+  border-radius: 3px; /* Bordas mais suaves */
+  background-color: #444444; /* Fundo cinza escuro */
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .checkbox-group input[type="checkbox"]:checked {
-    background-color: #8b66dc; /* Fundo roxo quando marcado */
-    border-color: #8b66dc;
+  background-color: #8b66dc; /* Fundo roxo quando marcado */
+  border-color: #8b66dc;
 }
 
 .checkbox-group input[type="checkbox"]:checked::after {
-    content: "✔"; /* Símbolo de check */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 12px;
+  content: "✔"; /* Símbolo de check */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 10px; /* Ícone menor */
 }
 
 .checkbox-group input[type="checkbox"]:hover {
-    border-color: #8b66dc; /* Borda roxa mais clara no hover */
+  border-color: #8b66dc; /* Borda roxa mais clara no hover */
 }
 
+/* Botão de processar */
 .process-btn {
-    background-color: #8b66dc; /* Tom de roxo para o botão */
-    padding: 8px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: white;
-    font-size: 14px;
-    transition: background-color 0.3s ease, transform 0.2s ease,
-    box-shadow 0.3s ease;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-}
-
-.process-btn::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300%;
-    height: 300%;
-    background: radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.1),
-            rgba(255, 255, 255, 0)
-    );
-    transform: translate(-50%, -50%) scale(0);
-    transition: transform 0.5s ease;
-    border-radius: 50%;
+  background-color: #8b66dc; /* Tom de roxo para o botão */
+  padding: 6px; /* Padding menor */
+  border: none;
+  border-radius: 4px; /* Bordas mais suaves */
+  cursor: pointer;
+  color: white;
+  font-size: 12px; /* Texto menor */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  letter-spacing: 1px;
+  width: 50%; /* Botão ocupa toda a largura */
 }
 
 .process-btn:hover {
-    background-color: #a88ee0; /* Tom de roxo mais claro para hover */
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra no hover */
+  background-color: #a88ee0; /* Tom de roxo mais claro para hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra no hover */
 }
 
-.process-btn:hover::before {
-    transform: translate(-50%, -50%) scale(1);
+.footer-link {
+  font-size: 10px; /* Mantém o tamanho pequeno */
+  color: #999999; /* Mantém a cor cinza claro */
+  text-decoration: none; /* Remove o sublinhado */
 }
 
-.process-btn:active {
-    transform: scale(0.98);
+.footer-link:hover {
+  color: #666666; /* Cor um pouco mais escura ao passar o mouse */
+  text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
 }

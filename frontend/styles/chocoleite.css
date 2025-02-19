@@ -18,7 +18,7 @@ main {
   border-radius: 8px; /* Bordas mais suaves */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra mais escura */
   text-align: center;
-  max-width: 500px; /* Container mais compacto */
+  max-width: 650px; /* Container mais compacto */
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -98,7 +98,6 @@ h1 {
 .file-hint {
   font-size: 10px; /* Texto menor */
   color: #999999; /* Texto cinza claro */
-  margin-top: 5px;
 }
 
 .checkbox-group {
@@ -167,12 +166,13 @@ h1 {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra no hover */
 }
 
-/* Rodapé */
-.footer {
-  margin-top: 15px; /* Espaçamento menor */
+.footer-link {
+  font-size: 10px; /* Mantém o tamanho pequeno */
+  color: #999999; /* Mantém a cor cinza claro */
+  text-decoration: none; /* Remove o sublinhado */
 }
 
-.footer-text {
-  font-size: 10px; /* Texto menor */
-  color: #999999; /* Texto cinza claro */
+.footer-link:hover {
+  color: #666666; /* Cor um pouco mais escura ao passar o mouse */
+  text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
 }
