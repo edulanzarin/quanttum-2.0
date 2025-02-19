@@ -4,7 +4,9 @@ import shutil
 import zipfile
 import rarfile
 import json
-import os
+
+# Especifica o caminho do executável UnRAR (se necessário)
+# rarfile.UNRAR_TOOL = "C:\\caminho\\para\\UnRAR.exe"
 
 def verificar_renomeacao(caminho):
     """Garante que o arquivo não sobrescreva outro, adicionando um sufixo se necessário."""
@@ -19,18 +21,49 @@ def verificar_renomeacao(caminho):
 
     return f"{base} ({contador}){ext}"
 
-# Função para normalizar o caminho
 def normalizar_caminho(caminho):
     return os.path.normpath(caminho)
 
-# Função para mover e extrair arquivos
+def extrair_arquivo(item, destino, arquivos_processados):
+    """Extrai um arquivo ZIP ou RAR e move os arquivos extraídos para o destino."""
+    try:
+        arquivos_extraidos_temp = []
+
+        # Extração de arquivos ZIP
+        if item.endswith('.zip'):
+            with zipfile.ZipFile(item, 'r') as zip_ref:
+                # Extraímos para a pasta de origem
+                zip_ref.extractall(os.path.dirname(item))
+                arquivos_extraidos_temp = zip_ref.namelist()
+
+        # Extração de arquivos RAR
+        elif item.endswith('.rar'):
+            with rarfile.RarFile(item, 'r') as rar_ref:
+                # Extraímos para a pasta de origem
+                rar_ref.extractall(os.path.dirname(item))
+                arquivos_extraidos_temp = rar_ref.namelist()
+
+        # Agora, movemos para a pasta destino, garantindo nomes únicos
+        for arquivo in arquivos_extraidos_temp:
+            caminho_origem = os.path.join(os.path.dirname(item), arquivo)
+            if os.path.isfile(caminho_origem):
+                caminho_destino = os.path.join(destino, arquivo)
+                caminho_destino = verificar_renomeacao(caminho_destino)
+                shutil.move(caminho_origem, caminho_destino)
+                arquivos_processados.append(caminho_origem)
+                # Verifica se o arquivo extraído é um RAR ou ZIP e o processa recursivamente
+                if arquivo.endswith('.zip') or arquivo.endswith('.rar'):
+                    extrair_arquivo(caminho_destino, destino, arquivos_processados)
+
+    except Exception as e:
+        return json.dumps({"status": "fail", "message": f"Erro ao extrair: {item} {e}"})
+
 def extrair_arquivos(origem, destino, incluir_subpastas):
     try:
         if not os.path.exists(destino):
             os.makedirs(destino)
 
         arquivos_processados = []
-        arquivos_extraidos = []
 
         # Filtra arquivos .zip e .rar
         arquivos_zip_rar = []
@@ -38,6 +71,9 @@ def extrair_arquivos(origem, destino, incluir_subpastas):
         if incluir_subpastas:
             # Percorre diretórios e subdiretórios
             for root, dirs, files in os.walk(origem):
+                # Ignora a pasta destino
+                if normalizar_caminho(root).startswith(normalizar_caminho(destino)):
+                    continue
                 for file in files:
                     if file.endswith('.zip') or file.endswith('.rar'):
                         arquivos_zip_rar.append(os.path.join(root, file))
@@ -50,36 +86,7 @@ def extrair_arquivos(origem, destino, incluir_subpastas):
 
         for item in arquivos_zip_rar:
             item = normalizar_caminho(item)  # Normaliza o caminho do arquivo
-            try:
-                arquivos_extraidos_temp = []
-
-                # Extração de arquivos ZIP
-                if item.endswith('.zip'):
-                    print(f"Extraindo arquivo ZIP: {item}")  # Debugging
-                    with zipfile.ZipFile(item, 'r') as zip_ref:
-                        # Extraímos para a pasta de origem
-                        zip_ref.extractall(origem)
-                        arquivos_extraidos_temp = zip_ref.namelist()
-
-                # Extração de arquivos RAR
-                elif item.endswith('.rar'):
-                    print(f"Extraindo arquivo RAR: {item}")  # Debugging
-                    with rarfile.RarFile(item, 'r') as rar_ref:
-                        # Extraímos para a pasta de origem
-                        rar_ref.extractall(origem)
-                        arquivos_extraidos_temp = rar_ref.namelist()
-
-                # Agora, movemos para a pasta destino, garantindo nomes únicos
-                for arquivo in arquivos_extraidos_temp:
-                    caminho_origem = os.path.join(origem, arquivo)
-                    if os.path.isfile(caminho_origem):
-                        caminho_destino = os.path.join(destino, arquivo)
-                        caminho_destino = verificar_renomeacao(caminho_destino)
-                        shutil.move(caminho_origem, caminho_destino)
-                        arquivos_processados.append(caminho_origem)
-
-            except Exception as e:
-                return json.dumps({"status": "fail", "message": f"Erro ao extrair {item}: {e}"})
+            extrair_arquivo(item, destino, arquivos_processados)
 
         # Processa os outros arquivos (não ZIP ou RAR) se existirem
         for item in os.listdir(origem):
