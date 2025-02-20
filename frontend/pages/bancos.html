@@ -136,25 +136,40 @@
 
     <main>
       <section class="container">
-        <h1>Extratos</h1>
+        <div class="header">
+          <h1>Extratos</h1>
+        </div>
         <h2 class="subtitle">Processar Extratos Bancários</h2>
 
-        <div class="file-input-container">
-          <select id="banco" class="file-path">
-            <option value="" disabled selected>Selecione o banco</option>
-            <option value="santander_dois">Santander 2</option>
-          </select>
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="contaDebito"
+              class="file-path"
+              placeholder="Conta Débito"
+              style="width: 30%"
+            />
+
+            <select id="banco" class="file-path" style="width: 70%">
+              <option value="" disabled selected>Selecione o banco</option>
+              <option value="viacredi">Viacredi</option>
+              <option value="santander_dois">Santander 2</option>
+            </select>
+          </div>
         </div>
 
-        <div class="file-input-container">
-          <input
-            type="text"
-            id="filePath"
-            class="file-path"
-            placeholder="Selecione o PDF"
-            readonly
-          />
-          <label for="fileInput" class="file-label">...</label>
+        <div class="file-section">
+          <div class="file-input-container">
+            <input
+              type="text"
+              id="filePath"
+              class="file-path"
+              placeholder="Selecione o PDF"
+              readonly
+            />
+            <label for="fileInput" class="file-label">...</label>
+          </div>
         </div>
 
         <button class="process-btn">Processar</button>

@@ -1,17 +1,23 @@
 // Importa as funções necessárias do Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-analytics.js";
-import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
 // 🔹 Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA9NhITakVX__c5aiiYNp0rX8z0WfXcTwY",
   authDomain: "quanttum2.firebaseapp.com",
   projectId: "quanttum2",
-  storageBucket: "quanttum2.firebasestorage.app",
+  storageBucket: "quanttum2.appspot.com",
   messagingSenderId: "642949416782",
   appId: "1:642949416782:web:a4fdfd25a6d63e2944801f",
-  measurementId: "G-1BV3HZPLX6"
+  measurementId: "G-1BV3HZPLX6",
 };
 
 // 🔹 Inicializa Firebase
@@ -21,7 +27,7 @@ const db = getFirestore(app);
 
 // Verifica se o usuário está logado e se o status está "on"
 window.onload = async () => {
-  const usuarioId = localStorage.getItem("usuarioId");  
+  const usuarioId = localStorage.getItem("usuarioId");
   const nomeUsuario = localStorage.getItem("nome");
 
   if (!usuarioId) {
@@ -30,11 +36,11 @@ window.onload = async () => {
     return;
   }
 
-   // Atualiza o nome do usuário no elemento "nome-usuario"
-   const nomeUsuarioElement = document.getElementById("nome-usuario");
-   if (nomeUsuarioElement) {
-     nomeUsuarioElement.textContent = nomeUsuario;  // Define o nome do usuário no elemento
-   }
+  // Atualiza o nome do usuário no elemento "nome-usuario"
+  const nomeUsuarioElement = document.getElementById("nome-usuario");
+  if (nomeUsuarioElement) {
+    nomeUsuarioElement.textContent = nomeUsuario; // Define o nome do usuário no elemento
+  }
 
   try {
     // 🔹 Obtém o documento do usuário com o id do localStorage
@@ -58,22 +64,6 @@ window.onload = async () => {
     }
   } catch (error) {
     console.error("Erro ao verificar usuário:", error);
-    window.location.href = "login.html";  // Em caso de erro, redireciona para o login
+    window.location.href = "login.html"; // Em caso de erro, redireciona para o login
   }
 };
-
-document.addEventListener("DOMContentLoaded", () => {
-  const menuItems = document.querySelectorAll(".menu-item");
-
-  menuItems.forEach((item) => {
-    item.addEventListener("mouseenter", () => {
-      const submenu = item.querySelector(".submenu");
-      if (submenu) submenu.style.display = "block";
-    });
-
-    item.addEventListener("mouseleave", () => {
-      const submenu = item.querySelector(".submenu");
-      if (submenu) submenu.style.display = "none";
-    });
-  });
-});

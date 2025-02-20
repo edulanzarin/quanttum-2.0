@@ -7,6 +7,7 @@ from tkinter import filedialog
 
 import pdfplumber
 import unicodedata
+from xml.etree import ElementTree as ET
 
 
 def normalizar_texto(texto):
@@ -82,6 +83,40 @@ def processar_santander_dois(caminho):
         return {"status": "fail", "message": f"Erro ao processar o PDF: {e}"}
 
 
+def processar_viacredi_ofx(caminho, numero_banco):
+    try:
+        with open(caminho, 'r', encoding='utf-8') as file:
+            ofx_content = file.read()
+
+        # Remove o cabeçalho do OFX para processar apenas o XML
+        ofx_xml_start = ofx_content.find("<OFX>")
+        if ofx_xml_start == -1:
+            return {"status": "fail", "message": "Formato OFX inválido: seção XML não encontrada."}
+
+        ofx_xml = ofx_content[ofx_xml_start:]
+
+        # Parse o XML
+        root = ET.fromstring(ofx_xml)
+
+        dados = []
+
+        for stmttrn in root.findall(".//STMTTRN"):
+            dtposted = stmttrn.find("DTPOSTED").text[:8]  # Extrai YYYYMMDD
+            data = f"{dtposted[:4]}-{dtposted[4:6]}-{dtposted[6:8]}"
+            trnamt = stmttrn.find("TRNAMT").text.replace(",", ".")
+            memo = stmttrn.find("MEMO").text if stmttrn.find("MEMO") is not None else ""
+            trntype = stmttrn.find("TRNTYPE").text
+
+            debito = numero_banco if trntype == "DEBIT" else ""
+            credito = numero_banco if trntype == "CREDIT" else ""
+
+            dados.append([data, debito, credito, trnamt, memo])
+
+        return salvar_arquivo_ofx(dados)
+
+    except Exception as e:
+        return {"status": "fail", "message": f"Erro ao processar o OFX: {e}"}
+
 def salvar_arquivo(dados):
     if dados:
         caminho_arquivo = salvar_dados("santander_dois.csv")
@@ -97,17 +132,35 @@ def salvar_arquivo(dados):
         return {"status": "fail", "message": "Nenhum dado encontrado."}
 
 
-def gerenciar_bancos(banco, caminho_pdf):
+def salvar_arquivo_ofx(dados):
+    if dados:
+        caminho_arquivo = salvar_dados("viacredi_ofx.csv")
+        if caminho_arquivo:
+            with open(
+                caminho_arquivo, mode="w", newline="", encoding="utf-8-sig"
+            ) as file:
+                writer = csv.writer(file, delimiter=";", quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(["Data", "Débito", "Crédito", "Valor", "Descrição"])
+                writer.writerows(dados)
+        return {"status": "success", "message": "Arquivo CSV gerado com sucesso!"}
+    else:
+        return {"status": "fail", "message": "Nenhum dado encontrado."}
+
+
+def gerenciar_bancos(banco, numero_banco, caminho_pdf):
     if banco == "santander_dois":
         return processar_santander_dois(caminho_pdf)
+    elif banco == "viacredi_ofx":
+        return processar_viacredi_ofx(caminho_pdf, numero_banco)
     else:
         return {"status": "fail", "message": "Banco não suportado."}
 
 
 def main():
     banco = sys.argv[1]
-    caminho_pdf = sys.argv[2]
-    result = gerenciar_bancos(banco, caminho_pdf)
+    numero_banco = sys.argv[2]
+    caminho_pdf = sys.argv[3]
+    result = gerenciar_bancos(banco, numero_banco, caminho_pdf)
     print(json.dumps(result))
 
 

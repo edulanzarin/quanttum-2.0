@@ -1,75 +1,89 @@
 /* Estilos gerais */
-main {
-  margin-top: 80px;
+body {
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a); /* Gradiente escuro */
+  color: #ffffff; /* Texto branco */
+  font-family: "Lexend Deca", sans-serif;
+  margin: 0;
+  padding: 0;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-color: #1a1a1a; /* Fundo escuro */
   overflow: hidden;
-  position: relative;
+}
+
+/* Barra superior */
+.menu-header {
+  background-color: rgba(40, 40, 40, 0.9); /* Fundo escuro com transparência */
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px); /* Efeito glass */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 14px;
+  transition: opacity 0.3s ease;
+}
+
+.back-button:hover {
+  opacity: 0.8;
 }
 
 /* Container principal */
 .container {
-  background-color: #333333; /* Tom de cinza escuro */
-  padding: 20px; /* Padding menor */
-  border-radius: 8px; /* Bordas mais suaves */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+  background-color: rgba(40, 40, 40, 0.9); /* Fundo escuro com transparência */
+  padding: 20px;
+  border-radius: 12px; /* Bordas mais arredondadas */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave */
   text-align: center;
-  max-width: 650px; /* Container mais compacto */
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 15px; /* Espaçamento menor */
-  position: relative;
-  overflow: hidden;
+  max-width: 650px;
+  width: 90%;
+  margin: 80px auto 0; /* Centralizado com margem no topo */
+  backdrop-filter: blur(10px); /* Efeito glass */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
 }
 
 /* Cabeçalho */
-.header {
-  margin-bottom: 10px; /* Espaçamento menor */
-}
-
-h1 {
-  margin: 0;
-  font-size: 1.5rem; /* Título menor */
-  color: #ffffff; /* Texto branco */
+.header h1 {
+  font-size: 1.5rem;
+  color: #ffffff;
   font-weight: 600;
-  letter-spacing: 1px; /* Aumenta a legibilidade */
+  margin-bottom: 10px;
 }
 
 /* Subtítulo */
 .subtitle {
-  font-size: 12px; /* Texto menor */
-  color: #cccccc; /* Cor mais suave para o subtítulo */
+  font-size: 12px;
+  color: #cccccc;
+  margin-bottom: 20px;
 }
 
 /* Seção de upload de arquivo */
 .file-section {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Espaçamento menor */
-  width: 90%;
+  gap: 10px;
+  width: 100%;
 }
 
 .file-input-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px; /* Espaçamento menor */
+  gap: 10px;
 }
 
 .file-path {
-  background-color: #444444; /* Tom de cinza mais escuro */
-  border: 1px solid #666666; /* Borda sutil */
-  padding: 6px; /* Padding menor */
-  border-radius: 4px; /* Bordas mais suaves */
-  color: #ffffff; /* Texto branco */
-  font-size: 12px; /* Texto menor */
+  background-color: rgba(255, 255, 255, 0.1); /* Fundo com transparência */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
+  padding: 8px;
+  border-radius: 8px; /* Bordas mais arredondadas */
+  color: #ffffff;
+  font-size: 12px;
   width: 100%;
   text-align: center;
   transition: border-color 0.3s ease;
@@ -80,49 +94,50 @@ h1 {
 }
 
 .file-label {
-  background-color: #444444; /* Tom de cinza mais escuro */
-  border: 1px solid #666666; /* Borda sutil */
-  padding: 6px 10px; /* Padding menor */
-  border-radius: 4px; /* Bordas mais suaves */
+  background-color: rgba(255, 255, 255, 0.1); /* Fundo com transparência */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
+  padding: 8px 12px;
+  border-radius: 8px; /* Bordas mais arredondadas */
   cursor: pointer;
-  font-size: 12px; /* Texto menor */
-  color: #ffffff; /* Texto branco */
+  font-size: 12px;
+  color: #ffffff;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .file-label:hover {
-  background-color: #555555; /* Tom de cinza mais claro para hover */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Sombra no hover */
+  background-color: rgba(255, 255, 255, 0.2); /* Hover com transparência */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra no hover */
 }
 
 .file-hint {
-  font-size: 10px; /* Texto menor */
-  color: #999999; /* Texto cinza claro */
+  font-size: 10px;
+  color: #999999;
 }
 
+/* Seção de opções */
 .checkbox-group {
   display: flex;
-  flex-wrap: wrap; /* Permite a quebra de linha */
-  gap: 8px; /* Espaçamento menor */
-  justify-content: center; /* Centraliza os checkboxes */
-  color: #cccccc; /* Texto cinza claro */
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  color: #cccccc;
 }
 
 .checkbox-group label {
   display: flex;
   align-items: center;
-  gap: 6px; /* Espaçamento menor */
-  font-size: 12px; /* Texto menor */
+  gap: 6px;
+  font-size: 12px;
   cursor: pointer;
 }
 
 .checkbox-group input[type="checkbox"] {
-  appearance: none; /* Remove o estilo padrão */
-  width: 14px; /* Checkbox menor */
-  height: 14px; /* Checkbox menor */
-  border: 2px solid #666666; /* Borda cinza */
-  border-radius: 3px; /* Bordas mais suaves */
-  background-color: #444444; /* Fundo cinza escuro */
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #666666;
+  border-radius: 4px; /* Bordas mais arredondadas */
+  background-color: rgba(255, 255, 255, 0.1); /* Fundo com transparência */
   position: relative;
   cursor: pointer;
   transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -134,45 +149,51 @@ h1 {
 }
 
 .checkbox-group input[type="checkbox"]:checked::after {
-  content: "✔"; /* Símbolo de check */
+  content: "✔";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 10px; /* Ícone menor */
+  font-size: 10px;
 }
 
 .checkbox-group input[type="checkbox"]:hover {
-  border-color: #8b66dc; /* Borda roxa mais clara no hover */
+  border-color: #8b66dc; /* Borda roxa no hover */
 }
 
 /* Botão de processar */
 .process-btn {
-  background-color: #8b66dc; /* Tom de roxo para o botão */
-  padding: 6px; /* Padding menor */
+  background-color: #8b66dc; /* Tom de roxo */
+  padding: 10px;
   border: none;
-  border-radius: 4px; /* Bordas mais suaves */
+  border-radius: 8px; /* Bordas mais arredondadas */
   cursor: pointer;
   color: white;
-  font-size: 12px; /* Texto menor */
+  font-size: 12px;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  letter-spacing: 1px;
-  width: 50%; /* Botão ocupa toda a largura */
+  width: 100%;
+  max-width: 200px;
+  margin: 20px auto;
 }
 
 .process-btn:hover {
-  background-color: #a88ee0; /* Tom de roxo mais claro para hover */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra no hover */
+  background-color: #a88ee0; /* Tom de roxo mais claro no hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra no hover */
+}
+
+/* Rodapé */
+.footer {
+  margin-top: 20px;
 }
 
 .footer-link {
-  font-size: 10px; /* Mantém o tamanho pequeno */
-  color: #999999; /* Mantém a cor cinza claro */
-  text-decoration: none; /* Remove o sublinhado */
+  font-size: 10px;
+  color: #999999;
+  text-decoration: none;
 }
 
 .footer-link:hover {
-  color: #666666; /* Cor um pouco mais escura ao passar o mouse */
-  text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+  color: #cccccc;
+  text-decoration: underline;
 }
