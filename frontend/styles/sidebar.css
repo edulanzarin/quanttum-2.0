@@ -34,7 +34,7 @@ body {
 .sidebar .sidebar-header {
   display: flex;
   position: relative;
-  padding: 20px 20px;
+  padding: 20px 10px;
   align-items: center;
   justify-content: space-between;
 }
@@ -50,10 +50,10 @@ body {
 .sidebar-header .sidebar-toggler,
 .sidebar-menu-button {
   position: absolute;
-  right: 20px;
+  right: 14px;
   height: 35px;
   width: 35px;
-  color: #6a5acd; /* Purple color */
+  color: #f1f4ff; /* Purple color */
   border: none;
   cursor: pointer;
   display: flex;
