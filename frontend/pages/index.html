@@ -1,188 +1,95 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Quanttum - Dashboard</title>
-    <link rel="stylesheet" href="../styles/sidebar.css" />
+    <link rel="stylesheet" href="../styles/sidebar.css"/>
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
     />
-  </head>
-  <body>
-    <!-- Mobile Sidebar Menu Button -->
-    <button class="sidebar-menu-button">
-      <span class="material-symbols-rounded">menu</span>
-    </button>
-    <aside class="sidebar">
-      <!-- Sidebar Header -->
-      <header class="sidebar-header">
+</head>
+<body>
+<!-- Mobile Sidebar Menu Button -->
+<button class="sidebar-menu-button">
+    <span class="material-symbols-rounded">menu</span>
+</button>
+<aside class="sidebar">
+    <!-- Sidebar Header -->
+    <header class="sidebar-header">
         <a href="#" class="header-logo">
-          <img src="../assets/images/icon.png" alt="Logo" />
+            <img src="../assets/images/icon.png" alt="Logo"/>
         </a>
-        <button class="sidebar-toggler">
-          <span class="material-symbols-rounded">chevron_left</span>
-        </button>
-      </header>
-      <nav class="sidebar-nav">
+    </header>
+    <nav class="sidebar-nav">
         <!-- Primary Top Nav -->
         <ul class="nav-list primary-nav">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">dashboard</span>
-              <span class="nav-label">Dashboard</span>
-            </a>
-          </li>
-          <!-- Dropdown -->
-          <li class="nav-item dropdown-container">
-            <a href="#" class="nav-link dropdown-toggle">
-              <span class="material-symbols-rounded"
-                >account_balance_wallet</span
-              >
-              <span class="nav-label">Contábil</span>
-              <span class="dropdown-icon material-symbols-rounded"
-                >keyboard_arrow_down</span
-              >
-            </a>
-            <!-- Dropdown Menu -->
-            <ul class="dropdown-menu">
-              <li class="nav-item">
-                <a class="nav-link dropdown-title">Serviços</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link"
-                  >Automação Empresas</a
-                >
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link"
-                  >Digitação & Conciliação</a
-                >
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">Outros</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item dropdown-container">
-            <a href="#" class="nav-link dropdown-toggle">
-              <span class="material-symbols-rounded">request_quote</span>
-              <span class="nav-label">Fiscal</span>
-              <span class="dropdown-icon material-symbols-rounded"
-                >keyboard_arrow_down</span
-              >
-            </a>
-            <!-- Dropdown Menu -->
-            <ul class="dropdown-menu">
-              <li class="nav-item">
-                <a class="nav-link dropdown-title">Services</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">IT Consulting</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">Cloud Solutions</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">Mobile Apps</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item dropdown-container">
-            <a href="#" class="nav-link dropdown-toggle">
-              <span class="material-symbols-rounded">payments</span>
-              <span class="nav-label">Folha</span>
-              <span class="dropdown-icon material-symbols-rounded"
-                >keyboard_arrow_down</span
-              >
-            </a>
-            <!-- Dropdown Menu -->
-            <ul class="dropdown-menu">
-              <li class="nav-item">
-                <a class="nav-link dropdown-title">Services</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">IT Consulting</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">Cloud Solutions</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">Mobile Apps</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">notifications</span>
-              <span class="nav-label">Notifications</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">local_library</span>
-              <span class="nav-label">Resources</span>
-            </a>
-          </li>
-          <!-- Dropdown -->
-          <li class="nav-item dropdown-container">
-            <a href="#" class="nav-link dropdown-toggle">
-              <span class="material-symbols-rounded">star</span>
-              <span class="nav-label">Bookmarks</span>
-              <span class="dropdown-icon material-symbols-rounded"
-                >keyboard_arrow_down</span
-              >
-            </a>
-            <!-- Dropdown Menu -->
-            <ul class="dropdown-menu">
-              <li class="nav-item">
-                <a class="nav-link dropdown-title">Bookmarks</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">Saved Tutorials</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">Favorite Blogs</a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link dropdown-link">Resource Guides</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">settings</span>
-              <span class="nav-label">Settings</span>
-            </a>
-          </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="contabil.html" class="nav-link">
+                    <span class="material-symbols-rounded">account_balance_wallet</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">request_quote</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">payments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">notifications</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">local_library</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">star</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">settings</span>
+                </a>
+            </li>
         </ul>
         <!-- Secondary Bottom Nav -->
         <ul class="nav-list secondary-nav">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">help</span>
-              <span class="nav-label">Support</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">logout</span>
-              <span class="nav-label">Sign Out</span>
-            </a>
-          </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">help</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-rounded">logout</span>
+                </a>
+            </li>
         </ul>
-      </nav>
-    </aside>
+    </nav>
+</aside>
 
-    <main>
-      <h1>Main Content</h1>
-      <p>
+<main>
+    <h1>Main Content</h1>
+    <p>
         This is the main content area. It will adjust based on the sidebar's
         width.
-      </p>
-    </main>
-    <!-- Script -->
-    <script src="../js/sidebar.js"></script>
-  </body>
+    </p>
+</main>
+<!-- Script -->
+<script src="../js/sidebar.js"></script>
+</body>
 </html>
