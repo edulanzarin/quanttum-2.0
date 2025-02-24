@@ -1,199 +1,141 @@
-/* Estilos gerais */
-body {
-  background: linear-gradient(135deg, #1a1a1a, #2a2a2a); /* Gradiente escuro */
-  color: #ffffff; /* Texto branco */
-  font-family: "Lexend Deca", sans-serif;
-  margin: 0;
-  padding: 0;
+/* Main Content */
+main {
+  margin-left: 70px;
   height: 100vh;
-  overflow: hidden;
-}
-
-/* Barra superior */
-.menu-header {
-  background-color: rgba(40, 40, 40, 0.9); /* Fundo escuro com transparência */
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  backdrop-filter: blur(10px); /* Efeito glass */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
-}
-
-.back-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: #ffffff;
-  font-size: 14px;
-  transition: opacity 0.3s ease;
-}
-
-.back-button:hover {
-  opacity: 0.8;
-}
-
-/* Container principal */
-.container {
-  background-color: rgba(40, 40, 40, 0.9); /* Fundo escuro com transparência */
+  justify-content: center;
   padding: 20px;
-  border-radius: 12px; /* Bordas mais arredondadas */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave */
+}
+
+/* Glass Container */
+.glass-container {
+  background: rgba(255, 255, 255, 0.8); /* Efeito glass */
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
-  max-width: 650px;
-  width: 90%;
-  margin: 80px auto 0; /* Centralizado com margem no topo */
-  backdrop-filter: blur(10px); /* Efeito glass */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
+  max-width: 500px;
+  width: 100%;
 }
 
-/* Cabeçalho */
-.header h1 {
-  font-size: 1.5rem;
-  color: #ffffff;
-  font-weight: 600;
+h1 {
+  font-size: 2rem;
+  color: #6f00ff; /* Roxo */
   margin-bottom: 10px;
+  font-weight: bold;
 }
 
-/* Subtítulo */
 .subtitle {
-  font-size: 12px;
-  color: #cccccc;
+  font-size: 0.9rem;
+  color: #666;
   margin-bottom: 20px;
 }
 
-/* Seção de upload de arquivo */
-.file-section {
+/* File Input */
+.file-input {
   display: flex;
-  flex-direction: column;
   gap: 10px;
-  width: 100%;
+  margin-bottom: 20px;
 }
 
-.file-input-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.file-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
 }
 
-.file-path {
-  background-color: rgba(255, 255, 255, 0.1); /* Fundo com transparência */
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
-  padding: 8px;
-  border-radius: 8px; /* Bordas mais arredondadas */
-  color: #ffffff;
-  font-size: 12px;
-  width: 100%;
-  text-align: center;
-  transition: border-color 0.3s ease;
+.file-input input:focus {
+  border-color: #6f00ff;
+  outline: none;
 }
 
-.file-path:focus {
-  border-color: #8b66dc; /* Borda roxa ao focar */
-}
-
-.file-label {
-  background-color: rgba(255, 255, 255, 0.1); /* Fundo com transparência */
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
-  padding: 8px 12px;
-  border-radius: 8px; /* Bordas mais arredondadas */
+.file-button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #6f00ff;
+  color: white;
   cursor: pointer;
-  font-size: 12px;
-  color: #ffffff;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
 }
 
-.file-label:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Hover com transparência */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra no hover */
+.file-button:hover {
+  background: #8b66dc;
 }
 
 .file-hint {
-  font-size: 10px;
-  color: #999999;
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 20px;
 }
 
-/* Seção de opções */
-.checkbox-group {
+/* Options */
+.options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 20px;
   justify-content: center;
-  color: #cccccc;
+  margin-bottom: 20px;
 }
 
-.checkbox-group label {
+.options label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #333;
   cursor: pointer;
 }
 
-.checkbox-group input[type="checkbox"] {
+.options input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #6f00ff;
+  border-radius: 4px;
   appearance: none;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #666666;
-  border-radius: 4px; /* Bordas mais arredondadas */
-  background-color: rgba(255, 255, 255, 0.1); /* Fundo com transparência */
-  position: relative;
   cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s ease;
 }
 
-.checkbox-group input[type="checkbox"]:checked {
-  background-color: #8b66dc; /* Fundo roxo quando marcado */
-  border-color: #8b66dc;
+.options input[type="checkbox"]:checked {
+  background: #6f00ff;
 }
 
-.checkbox-group input[type="checkbox"]:checked::after {
-  content: "✔";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 10px;
-}
-
-.checkbox-group input[type="checkbox"]:hover {
-  border-color: #8b66dc; /* Borda roxa no hover */
-}
-
-/* Botão de processar */
+/* Process Button */
 .process-btn {
-  background-color: #8b66dc; /* Tom de roxo */
-  padding: 10px;
-  border: none;
-  border-radius: 8px; /* Bordas mais arredondadas */
-  cursor: pointer;
-  color: white;
-  font-size: 12px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
-  max-width: 200px;
-  margin: 20px auto;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #6f00ff;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .process-btn:hover {
-  background-color: #a88ee0; /* Tom de roxo mais claro no hover */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra no hover */
+  background: #8b66dc;
 }
 
-/* Rodapé */
+/* Footer */
 .footer {
   margin-top: 20px;
+  font-size: 0.8rem;
+  color: #666;
 }
 
-.footer-link {
-  font-size: 10px;
-  color: #999999;
+.footer a {
+  color: #6f00ff;
   text-decoration: none;
 }
 
-.footer-link:hover {
-  color: #cccccc;
+.footer a:hover {
   text-decoration: underline;
 }

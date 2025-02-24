@@ -9,7 +9,6 @@ function createNotification(message, backgroundColor, borderColor, gifUrl) {
   notification.classList.add("notification");
   notification.textContent = message;
   notification.style.backgroundColor = " #333333;";
-  notification.style.border = `2px solid ${borderColor}`;
   notification.style.position = "fixed";
   notification.style.right = "10px";
   notification.style.padding = "10px";
@@ -76,7 +75,7 @@ const showLoadingModal = () => {
     loadingImage.alt = "Carregando...";
 
     const loadingText = document.createElement("p");
-    loadingText.textContent = "Tudo estará pronto em breve...";
+    loadingText.textContent = "Processando...";
 
     loadingContent.appendChild(loadingImage);
     loadingContent.appendChild(loadingText);

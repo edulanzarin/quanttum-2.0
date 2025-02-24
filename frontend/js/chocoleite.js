@@ -1,10 +1,10 @@
 const processarBtn = document.querySelector(".process-btn");
 const filePath = document.getElementById("filePath");
-const pagosCheckbox = document.getElementById("pagos"); // Checkbox 'Pagos'
+const pagosCheckbox = document.getElementById("pagos");
 const recebidosCheckbox = document.getElementById("recebidos");
 
 // Função para abrir o seletor de arquivos usando o Electron
-document.querySelector(".file-label").addEventListener("click", () => {
+document.querySelector(".file-button").addEventListener("click", () => {
   // Abre o seletor de arquivos via Electron API
   window.electronAPI
     .selecionarArquivo()

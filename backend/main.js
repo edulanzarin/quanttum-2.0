@@ -827,3 +827,41 @@ ipcMain.handle(
     }
   }
 );
+
+async function obterNoticias() {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [path.join(__dirname, "scripts/noticias.py"), "obter_noticias"],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        try {
+          const result = JSON.parse(stdout.trim()); // Remove espaços extras
+
+          if (!result.success || !Array.isArray(result.noticias)) {
+            reject("Resposta inválida do Python");
+          } else {
+            resolve(result.noticias);
+          }
+        } catch (e) {
+          reject(`Erro ao processar a resposta do Python: ${stdout}`);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para obter as notícias do frontend
+ipcMain.handle("obter-noticias", async (event) => {
+  try {
+    const result = await obterNoticias();
+    return result;
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});

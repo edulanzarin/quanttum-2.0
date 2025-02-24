@@ -62,4 +62,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ),
   gerenciarBancos: (banco, numero_banco, caminho_pdf) =>
     ipcRenderer.invoke("gerenciar-bancos", banco, numero_banco, caminho_pdf),
+  obterNoticias: () => ipcRenderer.invoke("obter-noticias"),
 });

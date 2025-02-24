@@ -122,7 +122,7 @@ jsonBtn.addEventListener("click", async () => {
       deleteBtn.classList.add("delete-btn");
 
       // Usando innerHTML para adicionar o ícone de editar e deletar
-      deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'; // Adiciona o ícone de deletar
+      deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>'; // Adiciona o ícone de deletar
 
       // Adiciona evento de clique para deletar CFOP
       deleteBtn.addEventListener("click", async () => {
@@ -224,7 +224,7 @@ saveBtn.addEventListener("click", async () => {
         deleteBtn.classList.add("delete-btn");
 
         // Usando innerHTML para adicionar o ícone de editar e deletar
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
 
         // Adiciona os botões às ações
         newActions.appendChild(deleteBtn);
