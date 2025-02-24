@@ -866,17 +866,18 @@ ipcMain.handle("obter-noticias", async (event) => {
   }
 });
 
-function gerenciarUsuario(acao, id_usuario, usuario, senha, nome) {
+function gerenciarUsuario(acao, id_usuario, usuario, senha, nome, id_funcao) {
   return new Promise((resolve, reject) => {
     execFile(
       pythonPath, // Comando para executar o Python
       [
         path.join(__dirname, "scripts/usuario.py"),
         acao,
-        id_usuario || "", // Passa o ID do usuário ou uma string vazia
-        usuario || "", // Passa o usuário ou uma string vazia
-        senha || "", // Passa a senha ou uma string vazia
-        nome || "", // Passa o nome ou uma string vazia
+        id_usuario || "",
+        usuario || "",
+        senha || "",
+        nome || "",
+        id_funcao || "",
       ],
       (error, stdout, stderr) => {
         if (error) {
@@ -901,14 +902,15 @@ function gerenciarUsuario(acao, id_usuario, usuario, senha, nome) {
 // Recebendo o pedido de gerenciar usuários do frontend
 ipcMain.handle(
   "gerenciar-usuario",
-  async (event, acao, id_usuario, usuario, senha, nome) => {
+  async (event, acao, id_usuario, usuario, senha, nome, id_funcao) => {
     try {
       const result = await gerenciarUsuario(
         acao,
         id_usuario,
         usuario,
         senha,
-        nome
+        nome,
+        id_funcao
       );
       return result;
     } catch (error) {

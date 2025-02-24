@@ -37,6 +37,21 @@ async function verificarUsuario() {
           // Atualiza a classe do elemento com a letra
           userLetterElement.className = `fa-regular fa-${primeiraLetra}`;
         }
+
+        // Obtém os favoritos do usuário e armazena no sessionStorage
+        const favoritos = await window.electronAPI.gerenciarUsuario(
+          "obter_favoritos",
+          usuarioCompleto.usuario.id
+        );
+
+        if (favoritos.success) {
+          sessionStorage.setItem(
+            "favoritos",
+            JSON.stringify(favoritos.favoritos)
+          );
+        } else {
+          console.error("Erro ao obter favoritos:", favoritos.message);
+        }
       }
     } else {
       console.error("Erro ao obter dados do usuário.");

@@ -63,14 +63,15 @@ contextBridge.exposeInMainWorld("electronAPI", {
   gerenciarBancos: (banco, numero_banco, caminho_pdf) =>
     ipcRenderer.invoke("gerenciar-bancos", banco, numero_banco, caminho_pdf),
   obterNoticias: () => ipcRenderer.invoke("obter-noticias"),
-  gerenciarUsuario: (acao, id_usuario, usuario, senha, nome) => {
+  gerenciarUsuario: (acao, id_usuario, usuario, senha, nome, id_funcao) => {
     return ipcRenderer.invoke(
       "gerenciar-usuario",
       acao,
       id_usuario,
       usuario,
       senha,
-      nome
+      nome,
+      id_funcao
     );
   },
 });

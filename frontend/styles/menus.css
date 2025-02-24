@@ -25,6 +25,7 @@ h1 {
 }
 
 .card {
+  position: relative; /* Permite posicionar a estrela dentro do card */
   background: #fff;
   border-radius: 10px;
   padding: 20px;
@@ -34,8 +35,26 @@ h1 {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  text-decoration: none; /* Remove sublinhado dos links */
-  color: inherit; /* Mantém a cor do texto original */
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-favorite {
+  position: absolute; /* Posiciona a estrela no canto superior direito */
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  color: #ccc; /* Cor padrão da estrela (não favoritada) */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.card-favorite.active {
+  color: #ffcc00; /* Cor da estrela quando favoritada */
+}
+
+.card-favorite:hover {
+  color: #ffcc00; /* Cor ao passar o mouse */
 }
 
 .card:hover {
