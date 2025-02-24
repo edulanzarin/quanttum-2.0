@@ -788,7 +788,7 @@ ipcMain.handle(
 function gerenciarBancos(banco, numero_banco, caminho_pdf) {
   return new Promise((resolve, reject) => {
     execFile(
-      "python",
+      pythonPath,
       [
         path.join(__dirname, "scripts/bancos.py"),
         banco,
@@ -865,3 +865,54 @@ ipcMain.handle("obter-noticias", async (event) => {
     return { success: false, message: error };
   }
 });
+
+function gerenciarUsuario(acao, id_usuario, usuario, senha, nome) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      "python", // Comando para executar o Python
+      [
+        path.join(__dirname, "scripts/usuario.py"),
+        acao,
+        id_usuario || "", // Passa o ID do usuário ou uma string vazia
+        usuario || "", // Passa o usuário ou uma string vazia
+        senha || "", // Passa a senha ou uma string vazia
+        nome || "", // Passa o nome ou uma string vazia
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de gerenciar usuários do frontend
+ipcMain.handle(
+  "gerenciar-usuario",
+  async (event, acao, id_usuario, usuario, senha, nome) => {
+    try {
+      const result = await gerenciarUsuario(
+        acao,
+        id_usuario,
+        usuario,
+        senha,
+        nome
+      );
+      return result;
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);

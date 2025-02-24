@@ -94,7 +94,7 @@ const adicionarEmMassaBtn = document.querySelector(
 const planilhaInput = document.getElementById("planilhaInput");
 
 // Função para abrir o seletor de arquivos usando o Electron
-document.querySelector(".file-label").addEventListener("click", () => {
+document.querySelectorAll(".file-button").forEach((label, index) => {
   window.electronAPI
     .selecionarArquivo()
     .then((caminho) => {

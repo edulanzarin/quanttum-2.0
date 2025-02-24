@@ -3,7 +3,7 @@ const filePathLivrosFiscais = document.getElementById("filePathLivrosFiscais");
 const filePathContabilidade = document.getElementById("filePathContabilidade");
 
 // Função para abrir o seletor de arquivos usando o Electron
-document.querySelectorAll(".file-label").forEach((label, index) => {
+document.querySelectorAll(".file-button").forEach((label, index) => {
   label.addEventListener("click", () => {
     // Abre o seletor de arquivos via Electron API
     window.electronAPI

@@ -4,7 +4,7 @@ const bancoSelect = document.getElementById("banco"); // Captura o select do ban
 const contaDebito = document.getElementById("contaDebito"); // Captura o campo de conta débito
 
 // Função para abrir o seletor de arquivos usando o Electron
-document.querySelector(".file-label").addEventListener("click", () => {
+document.querySelectorAll(".file-button").forEach((label, index) => {
   window.electronAPI
     .selecionarArquivo()
     .then((caminho) => {

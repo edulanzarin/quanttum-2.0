@@ -2,7 +2,7 @@ const processarBtn = document.querySelector(".process-btn");
 const filePlanilha = document.getElementById("filePlanilha");
 
 // Função para abrir o seletor de arquivos usando o Electron
-document.querySelector(".file-label").addEventListener("click", () => {
+document.querySelectorAll(".file-button").forEach((label, index) => {
   // Abre o seletor de arquivos via Electron API
   window.electronAPI
     .selecionarArquivo()

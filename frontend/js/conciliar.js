@@ -6,7 +6,7 @@ const nmrBancoInput = document.getElementById("nmrBanco");
 const conciliarContasCheckbox = document.getElementById("conciliarContas");
 
 // Função para abrir o seletor de arquivos usando o Electron
-document.querySelectorAll(".file-label").forEach((label, index) => {
+document.querySelectorAll(".file-button").forEach((label, index) => {
   label.addEventListener("click", () => {
     // Abre o seletor de arquivos via Electron API
     window.electronAPI
@@ -57,7 +57,7 @@ processarBtn.addEventListener("click", async () => {
   }
 
   try {
-    showLoadingModal(); 
+    showLoadingModal();
 
     let resultado;
 
@@ -76,7 +76,7 @@ processarBtn.addEventListener("click", async () => {
       );
     }
 
-    hideLoadingModal(); 
+    hideLoadingModal();
 
     // Exibe o retorno
     if (resultado.status === "success") {

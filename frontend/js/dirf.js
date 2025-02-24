@@ -4,7 +4,7 @@ const cieloCheckbox = document.getElementById("cielo");
 
 // Função para abrir o seletor de arquivos usando o Electron
 
-document.querySelector(".file-label").addEventListener("click", () => {
+document.querySelectorAll(".file-button").forEach((label, index) => {
   window.electronAPI
     .selecionarArquivo()
     .then((caminho) => {

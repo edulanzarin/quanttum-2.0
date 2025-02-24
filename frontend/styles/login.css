@@ -1,178 +1,112 @@
-/* Estilos gerais */
+/* Main Content */
 main {
-  margin-top: 80px;
+  margin-left: 70px;
   height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
-  background-color: #1a1a1a; /* Fundo escuro */
-  overflow: hidden;
-  position: relative;
+  justify-content: center;
+  padding: 20px;
 }
 
-/* Container principal */
-.container {
-  background-color: #333333; /* Tom de cinza escuro */
-  padding: 20px; /* Padding menor */
-  border-radius: 8px; /* Bordas mais suaves */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+/* Glass Container */
+.glass-container {
+  background: rgba(255, 255, 255, 0.8); /* Efeito glass */
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
-  max-width: 650px; /* Container mais compacto */
+  max-width: 500px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 15px; /* Espaçamento menor */
-  position: relative;
-  overflow: hidden;
-}
-
-/* Cabeçalho */
-.header {
-  margin-bottom: 10px; /* Espaçamento menor */
 }
 
 h1 {
-  margin: 0;
-  font-size: 1.5rem; /* Título menor */
-  color: #ffffff; /* Texto branco */
-  font-weight: 600;
-  letter-spacing: 1px; /* Aumenta a legibilidade */
+  font-size: 2rem;
+  color: #6f00ff; /* Roxo */
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
-/* Subtítulo */
 .subtitle {
-  font-size: 12px; /* Texto menor */
-  color: #cccccc; /* Cor mais suave para o subtítulo */
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 20px;
 }
 
-/* Seção de upload de arquivo */
-.file-section {
+/* File Input */
+.file-input {
   display: flex;
-  flex-direction: column;
-  gap: 8px; /* Espaçamento menor */
-  width: 90%;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.file-input-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px; /* Espaçamento menor */
+.file-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
 }
 
-.file-path {
-  background-color: #444444; /* Tom de cinza mais escuro */
-  border: 1px solid #666666; /* Borda sutil */
-  padding: 6px; /* Padding menor */
-  border-radius: 4px; /* Bordas mais suaves */
-  color: #ffffff; /* Texto branco */
-  font-size: 12px; /* Texto menor */
-  width: 100%;
-  text-align: center;
-  transition: border-color 0.3s ease;
+.file-input input:focus {
+  border-color: #6f00ff;
+  outline: none;
 }
 
-.file-path:focus {
-  border-color: #8b66dc; /* Borda roxa ao focar */
-}
-
-.file-label {
-  background-color: #444444; /* Tom de cinza mais escuro */
-  border: 1px solid #666666; /* Borda sutil */
-  padding: 6px 10px; /* Padding menor */
-  border-radius: 4px; /* Bordas mais suaves */
-  cursor: pointer;
-  font-size: 12px; /* Texto menor */
-  color: #ffffff; /* Texto branco */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.file-label:hover {
-  background-color: #555555; /* Tom de cinza mais claro para hover */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Sombra no hover */
-}
-
-.file-hint {
-  font-size: 10px; /* Texto menor */
-  color: #999999; /* Texto cinza claro */
-}
-
-.checkbox-group {
-  display: flex;
-  flex-wrap: wrap; /* Permite a quebra de linha */
-  gap: 8px; /* Espaçamento menor */
-  justify-content: center; /* Centraliza os checkboxes */
-  color: #cccccc; /* Texto cinza claro */
-}
-
-.checkbox-group label {
-  display: flex;
-  align-items: center;
-  gap: 6px; /* Espaçamento menor */
-  font-size: 12px; /* Texto menor */
-  cursor: pointer;
-}
-
-.checkbox-group input[type="checkbox"] {
-  appearance: none; /* Remove o estilo padrão */
-  width: 14px; /* Checkbox menor */
-  height: 14px; /* Checkbox menor */
-  border: 2px solid #666666; /* Borda cinza */
-  border-radius: 3px; /* Bordas mais suaves */
-  background-color: #444444; /* Fundo cinza escuro */
-  position: relative;
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.checkbox-group input[type="checkbox"]:checked {
-  background-color: #8b66dc; /* Fundo roxo quando marcado */
-  border-color: #8b66dc;
-}
-
-.checkbox-group input[type="checkbox"]:checked::after {
-  content: "✔"; /* Símbolo de check */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 10px; /* Ícone menor */
-}
-
-.checkbox-group input[type="checkbox"]:hover {
-  border-color: #8b66dc; /* Borda roxa mais clara no hover */
-}
-
-/* Botão de processar */
+/* Process Button */
 .process-btn {
-  background-color: #8b66dc; /* Tom de roxo para o botão */
-  padding: 6px; /* Padding menor */
+  width: 100%;
+  padding: 12px;
   border: none;
-  border-radius: 4px; /* Bordas mais suaves */
-  cursor: pointer;
+  border-radius: 8px;
+  background: #6f00ff;
   color: white;
-  font-size: 12px; /* Texto menor */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  letter-spacing: 1px;
-  width: 50%; /* Botão ocupa toda a largura */
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .process-btn:hover {
-  background-color: #a88ee0; /* Tom de roxo mais claro para hover */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra no hover */
+  background: #8b66dc;
 }
 
-.footer-link {
-  font-size: 10px; /* Mantém o tamanho pequeno */
-  color: #999999; /* Mantém a cor cinza claro */
-  text-decoration: none; /* Remove o sublinhado */
+/* Footer */
+.footer {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  color: #666;
 }
 
-.footer-link:hover {
-  color: #666666; /* Cor um pouco mais escura ao passar o mouse */
-  text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+.footer a {
+  color: #6f00ff;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Estilos para a mensagem */
+.message {
+  padding: 5px;
+  border-radius: 4px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 14px;
+  display: none; /* Inicialmente oculta */
+}
+
+.message.success {
+  background-color: #d4edda; /* Verde claro para sucesso */
+  color: #155724; /* Verde escuro para texto */
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da; /* Vermelho claro para erro */
+  color: #721c24; /* Vermelho escuro para texto */
+  border: 1px solid #f5c6cb;
 }
