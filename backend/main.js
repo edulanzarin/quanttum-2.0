@@ -923,7 +923,7 @@ ipcMain.handle(
 function adicionarLog(id_usuario, funcao) {
   return new Promise((resolve, reject) => {
     execFile(
-      "python3", // Comando para executar o Python
+      pythonPath, // Comando para executar o Python
       [
         path.join(__dirname, "scripts/logs.py"),
         "adicionar_log",
@@ -954,7 +954,7 @@ function adicionarLog(id_usuario, funcao) {
 function obterLogs(id_usuario, data_inicio, data_fim) {
   return new Promise((resolve, reject) => {
     execFile(
-      "python3", // Comando para executar o Python
+      pythonPath, // Comando para executar o Python
       [
         path.join(__dirname, "scripts/logs.py"),
         "obter_logs",

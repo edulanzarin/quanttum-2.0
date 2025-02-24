@@ -147,9 +147,3 @@ async function buscarCardNaPagina(pagina, idFuncao) {
 
   return null;
 }
-
-// Função para redirecionar para a página de login
-function redirecionarParaLogin() {
-  localStorage.removeItem("usuario");
-  window.location.href = "login.html";
-}

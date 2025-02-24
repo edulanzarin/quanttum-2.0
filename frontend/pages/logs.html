@@ -75,7 +75,6 @@
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css"
     />
     <link rel="stylesheet" href="../styles/utils.css" />
-    <link rel="stylesheet" href="../styles/chocoleite.css" />
     <link rel="stylesheet" href="../styles/logs.css" />
   </head>
   <body>
@@ -137,9 +136,36 @@
     </aside>
 
     <!-- Main Content -->
-    <main></main>
+    <main>
+      <div class="glass-container">
+        <h1>Baixar Logs</h1>
+        <p class="subtitle">Função para baixar logs de um usuário</p>
+
+        <!-- Campo para inserir o ID do usuário -->
+        <div class="file-input">
+          <input type="text" id="id_usuario" placeholder="ID do Usuário" />
+        </div>
+
+        <!-- Campos de data lado a lado -->
+        <div class="date-inputs">
+          <div class="file-input">
+            <input type="date" id="data_inicio" placeholder="Data Inicial" />
+          </div>
+          <div class="file-input">
+            <input type="date" id="data_fim" placeholder="Data Final" />
+          </div>
+        </div>
+
+        <!-- Botão para filtrar -->
+        <button id="filtrar" class="process-btn">Baixar</button>
+
+        <!-- Mensagem de status -->
+        <div id="message" class="message"></div>
+      </div>
+    </main>
 
     <!-- Scripts -->
     <script src="../js/utils.js"></script>
+    <script src="../js/logs.js"></script>
   </body>
 </html>

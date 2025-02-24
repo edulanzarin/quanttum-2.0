@@ -1,0 +1,105 @@
+/* Main Content */
+main {
+  margin-left: 70px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Glass Container */
+.glass-container {
+  background: rgba(255, 255, 255, 0.8); /* Efeito glass */
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #6f00ff; /* Roxo */
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* File Input */
+.file-input {
+  margin-bottom: 20px;
+}
+
+.file-input input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.file-input input:focus {
+  border-color: #6f00ff;
+  outline: none;
+}
+
+/* Date Inputs */
+.date-inputs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.date-inputs .file-input {
+  flex: 1; /* Cada campo ocupa 50% da largura */
+}
+
+/* Process Button */
+.process-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #6f00ff;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.process-btn:hover {
+  background: #8b66dc;
+}
+
+/* Estilos para a mensagem */
+.message {
+  padding: 5px;
+  border-radius: 4px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 14px;
+  display: none; /* Inicialmente oculta */
+}
+
+.message.success {
+  background-color: #d4edda; /* Verde claro para sucesso */
+  color: #155724; /* Verde escuro para texto */
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da; /* Vermelho claro para erro */
+  color: #721c24; /* Vermelho escuro para texto */
+  border: 1px solid #f5c6cb;
+}
