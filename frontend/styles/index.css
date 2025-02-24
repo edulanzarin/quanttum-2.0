@@ -1,0 +1,94 @@
+main {
+  padding: 40px;
+  background: linear-gradient(135deg, #6f00ff, #350086);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+
+main::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 10%,
+    transparent 10.01%
+  );
+  background-size: 20px 20px;
+  animation: animateBackground 10s linear infinite;
+  z-index: 1;
+}
+
+@keyframes animateBackground {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+h1 {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  animation: fadeIn 2s ease-in-out;
+  z-index: 2;
+}
+
+p {
+  font-size: 1.25rem;
+  max-width: 600px;
+  line-height: 1.6;
+  animation: slideIn 1.5s ease-in-out;
+  z-index: 2;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.cta-button {
+  margin-top: 30px;
+  padding: 15px 30px;
+  font-size: 1rem;
+  color: #6f00ff;
+  background: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  z-index: 2;
+}
+
+.cta-button:hover {
+  background: #f1f4ff;
+  transform: scale(1.05);
+}
