@@ -40,7 +40,7 @@ async function alterarNomeFolha() {
       incluirNmrEmpresa
     );
 
-    console.log("Resultado do backend:", resultado); // Exibe o que está sendo retornado
+    console.log("Resultado do backend:", resultado);
 
     hideLoadingModal();
 

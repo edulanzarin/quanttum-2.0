@@ -1,3 +1,59 @@
+async function verificarUsuario() {
+  const usuarioJson = localStorage.getItem("usuario");
+
+  // Verifica se o usuário está no localStorage
+  if (!usuarioJson) {
+    redirecionarParaLogin();
+    return;
+  }
+
+  const usuario = JSON.parse(usuarioJson);
+
+  try {
+    // Obtém os dados do usuário usando a função obter_usuario
+    const usuarioCompleto = await window.electronAPI.gerenciarUsuario(
+      "obter",
+      usuario.id
+    );
+
+    if (usuarioCompleto.success) {
+      // Verifica se o status do usuário está "on"
+      if (usuarioCompleto.usuario.status !== "on") {
+        redirecionarParaLogin();
+      } else {
+        // Atualiza o usuário no localStorage
+        localStorage.setItem(
+          "usuario",
+          JSON.stringify(usuarioCompleto.usuario)
+        );
+
+        // Adiciona a primeira letra do nome na classe .user-letter
+        const primeiraLetra = usuarioCompleto.usuario.nome
+          .charAt(0)
+          .toLowerCase();
+        const userLetterElement = document.querySelector(".user-letter");
+
+        if (userLetterElement) {
+          // Atualiza a classe do elemento com a letra
+          userLetterElement.className = `fa-regular fa-${primeiraLetra}`;
+        }
+      }
+    } else {
+      console.error("Erro ao obter dados do usuário.");
+      redirecionarParaLogin();
+    }
+  } catch (error) {
+    console.error("Erro ao conectar com o servidor:", error);
+    redirecionarParaLogin();
+  }
+}
+
+// Função para limpar localStorage e redirecionar para login
+function redirecionarParaLogin() {
+  localStorage.removeItem("usuario");
+  window.location.href = "login.html";
+}
+
 // Função para buscar e exibir as notícias
 async function carregarNoticias() {
   const noticesContainer = document.querySelector(".notices-container");

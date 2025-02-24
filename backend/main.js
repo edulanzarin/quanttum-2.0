@@ -869,7 +869,7 @@ ipcMain.handle("obter-noticias", async (event) => {
 function gerenciarUsuario(acao, id_usuario, usuario, senha, nome) {
   return new Promise((resolve, reject) => {
     execFile(
-      "python", // Comando para executar o Python
+      pythonPath, // Comando para executar o Python
       [
         path.join(__dirname, "scripts/usuario.py"),
         acao,

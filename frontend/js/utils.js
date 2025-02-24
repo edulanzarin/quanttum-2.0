@@ -10,48 +10,18 @@ async function verificarUsuario() {
   const usuario = JSON.parse(usuarioJson);
 
   try {
-    // Obtém os dados do usuário usando a função obter_usuario
-    const usuarioCompleto = await window.electronAPI.gerenciarUsuario(
-      "obter",
-      usuario.id
-    );
+    // Adiciona a primeira letra do nome na classe .user-letter
+    const primeiraLetra = usuario.nome.charAt(0).toLowerCase();
+    const userLetterElement = document.querySelector(".user-letter");
 
-    if (usuarioCompleto.success) {
-      // Verifica se o status do usuário está "on"
-      if (usuarioCompleto.usuario.status !== "on") {
-        redirecionarParaLogin();
-      } else {
-        // Atualiza o usuário no localStorage
-        localStorage.setItem(
-          "usuario",
-          JSON.stringify(usuarioCompleto.usuario)
-        );
-
-        // Adiciona a primeira letra do nome na classe .user-letter
-        const primeiraLetra = usuarioCompleto.usuario.nome
-          .charAt(0)
-          .toLowerCase();
-        const userLetterElement = document.querySelector(".user-letter");
-
-        if (userLetterElement) {
-          // Atualiza a classe do elemento com a letra
-          userLetterElement.className = `fa-regular fa-${primeiraLetra}`;
-        }
-      }
-    } else {
-      console.error("Erro ao obter dados do usuário.");
-      redirecionarParaLogin();
+    if (userLetterElement) {
+      // Atualiza a classe do elemento com a letra
+      userLetterElement.className = `fa-regular fa-${primeiraLetra}`;
     }
   } catch (error) {
     console.error("Erro ao conectar com o servidor:", error);
     redirecionarParaLogin();
   }
-}
-
-// Função para limpar localStorage e redirecionar para login
-function redirecionarParaLogin() {
-  localStorage.removeItem("usuario");
-  window.location.href = "login.html";
 }
 
 // Evento de logout ao clicar no botão com ID "logout"
@@ -63,6 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutButton.addEventListener("click", redirecionarParaLogin);
   }
 });
+
+// Função para limpar localStorage e redirecionar para login
+function redirecionarParaLogin() {
+  localStorage.removeItem("usuario");
+  window.location.href = "login.html";
+}
 
 // URLs dos GIFs de sucesso e erro
 const successGifUrl = "../assets/animations/success.gif";
