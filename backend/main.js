@@ -918,3 +918,88 @@ ipcMain.handle(
     }
   }
 );
+
+// Função para adicionar logs
+function adicionarLog(id_usuario, funcao) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      "python3", // Comando para executar o Python
+      [
+        path.join(__dirname, "scripts/logs.py"),
+        "adicionar_log",
+        id_usuario,
+        funcao,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Função para obter logs
+function obterLogs(id_usuario, data_inicio, data_fim) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      "python3", // Comando para executar o Python
+      [
+        path.join(__dirname, "scripts/logs.py"),
+        "obter_logs",
+        id_usuario || "",
+        data_inicio || "",
+        data_fim || "",
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Handlers para as funções de logs
+ipcMain.handle("adicionar-log", async (event, id_usuario, funcao) => {
+  try {
+    const result = await adicionarLog(id_usuario, funcao);
+    return result;
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+ipcMain.handle(
+  "obter-logs",
+  async (event, id_usuario, data_inicio, data_fim) => {
+    try {
+      const result = await obterLogs(id_usuario, data_inicio, data_fim);
+      return result;
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);

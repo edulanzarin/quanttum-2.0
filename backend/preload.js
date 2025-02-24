@@ -74,4 +74,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
       id_funcao
     );
   },
+  adicionarLog: (id_usuario, funcao) => {
+    return ipcRenderer.invoke("adicionar-log", id_usuario, funcao);
+  },
+  obterLogs: (id_usuario, data_inicio, data_fim) => {
+    return ipcRenderer.invoke("obter-logs", id_usuario, data_inicio, data_fim);
+  },
 });

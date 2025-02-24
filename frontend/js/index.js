@@ -52,6 +52,25 @@ async function verificarUsuario() {
         } else {
           console.error("Erro ao obter favoritos:", favoritos.message);
         }
+
+        // Adiciona um log de "login" após a verificação bem-sucedida
+        try {
+          const resultadoLog = await window.electronAPI.adicionarLog(
+            usuarioCompleto.usuario.id,
+            "login"
+          );
+
+          if (resultadoLog.success) {
+            console.log("Log de login adicionado com sucesso.");
+          } else {
+            console.error(
+              "Erro ao adicionar log de login:",
+              resultadoLog.message
+            );
+          }
+        } catch (error) {
+          console.error("Erro ao adicionar log de login:", error);
+        }
       }
     } else {
       console.error("Erro ao obter dados do usuário.");

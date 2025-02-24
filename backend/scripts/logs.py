@@ -1,0 +1,103 @@
+import json
+import os
+import sys
+import firebase_admin
+from firebase_admin import credentials, firestore
+from datetime import datetime
+import platform
+import uuid
+
+# Caminho para o arquivo de credenciais do Firebase
+CAMINHO_JSON = os.path.join(os.path.dirname(__file__), '..', 'database', 'serviceAccountKey.json')
+
+# Configuração do Firebase
+cred = credentials.Certificate(CAMINHO_JSON)
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+def adicionar_log(id_usuario, funcao):
+    try:
+        # Obtém o ID do computador (usando UUID)
+        id_computador = str(uuid.uuid4())
+
+        # Obtém o nome do computador
+        nome_computador = platform.node()
+
+        # Cria um novo log no Firestore com timestamp
+        log = {
+            "id_usuario": id_usuario,
+            "datahora": firestore.SERVER_TIMESTAMP,  
+            "id_computador": id_computador,         
+            "nome_computador": nome_computador,     
+            "funcao": funcao                        
+        }
+
+        # Adiciona o log à coleção "logs"
+        db.collection("logs").add(log)
+
+        return {"success": True, "message": "Log adicionado com sucesso."}
+
+    except Exception as e:
+        return {"success": False, "message": f"Erro ao adicionar log: {e}"}
+
+def obter_logs(id_usuario=None, data_inicio=None, data_fim=None):
+    try:
+        # Referência à coleção de logs
+        logs_ref = db.collection("logs")
+
+        # Aplica filtros conforme os parâmetros fornecidos
+        if id_usuario:
+            logs_ref = logs_ref.where("id_usuario", "==", id_usuario)
+
+        if data_inicio and data_fim:
+            # Converte as strings de data para objetos datetime
+            data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
+            data_fim = datetime.strptime(data_fim, "%Y-%m-%d")
+            logs_ref = logs_ref.where("datahora", ">=", data_inicio).where("datahora", "<=", data_fim)
+
+        # Obtém os logs
+        logs = logs_ref.stream()
+
+        # Converte os logs para uma lista de dicionários
+        logs_list = []
+        for log in logs:
+            log_data = log.to_dict()
+            log_data["id"] = log.id  
+            logs_list.append(log_data)
+
+        return {"success": True, "logs": logs_list}
+
+    except Exception as e:
+        return {"success": False, "message": f"Erro ao obter logs: {e}"}
+
+def main():
+    if len(sys.argv) > 1:
+        acao = sys.argv[1]
+
+        if acao == "adicionar_log":
+            if len(sys.argv) < 4:
+                print(json.dumps({"success": False, "message": "Parâmetros insuficientes para adicionar log."}))
+                return
+
+            id_usuario = sys.argv[2]
+            funcao = sys.argv[3]
+
+            result = adicionar_log(id_usuario, funcao)
+            print(json.dumps(result))
+
+        elif acao == "obter_logs":
+            id_usuario = sys.argv[2] if len(sys.argv) > 2 else None
+            data_inicio = sys.argv[3] if len(sys.argv) > 3 else None
+            data_fim = sys.argv[4] if len(sys.argv) > 4 else None
+
+            result = obter_logs(id_usuario, data_inicio, data_fim)
+            print(json.dumps(result))
+
+        else:
+            print(json.dumps({"success": False, "message": "Ação inválida. Use 'adicionar_log' ou 'obter_logs'."}))
+
+    else:
+        print(json.dumps({"success": False, "message": "Nenhum comando fornecido."}))
+
+if __name__ == '__main__':
+    main()
