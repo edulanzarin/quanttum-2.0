@@ -38,7 +38,7 @@ async function carregarCardsFavoritos(favoritos, idUsuario) {
   cardGrid.innerHTML = "";
 
   // URLs das páginas onde os cards podem estar
-  const paginas = ["contabil.html", "folha.html", "fiscal.html"];
+  const paginas = ["contabil.html", "folha.html", "fiscal.html", "geral.html"];
 
   // Para cada favorito, busca o card correspondente
   for (const idFuncao of favoritos) {

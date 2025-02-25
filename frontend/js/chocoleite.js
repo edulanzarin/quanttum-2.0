@@ -10,7 +10,7 @@ document.querySelector(".file-button").addEventListener("click", () => {
     .selecionarArquivo()
     .then((caminho) => {
       if (caminho) {
-        filePath.value = caminho; // Atualiza o campo com o caminho do arquivo selecionado
+        filePath.value = caminho;
       }
     })
     .catch((err) => {

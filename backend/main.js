@@ -1048,3 +1048,38 @@ ipcMain.handle(
     }
   }
 );
+
+async function gerarPDFsReinf(caminhoArquivo) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [path.join(__dirname, "scripts/reinf.py"), caminhoArquivo],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim();
+
+        try {
+          // Tenta parsear o resultado como JSON
+          const parsedResult = JSON.parse(result);
+          resolve(parsedResult);
+        } catch (e) {
+          reject(`Erro ao parsear resultado: ${result}`);
+        }
+      }
+    );
+  });
+}
+
+// Handler para o IPC "gerar-pdfs"
+ipcMain.handle("gerar-pdfs-reinf", async (event, caminhoArquivo) => {
+  try {
+    const result = await gerarPDFsReinf(caminhoArquivo);
+    return { success: true, data: result };
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
