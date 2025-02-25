@@ -1,336 +1,225 @@
 /* Estilos gerais */
 main {
-  margin-top: 80px;
+  margin-left: 70px; /* Espaço para a sidebar */
   height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
-  background-color: #1a1a1a; /* Fundo escuro */
-  overflow: hidden;
-  position: relative;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f0f0f0; /* Fundo claro */
 }
 
 /* Container principal */
-.container {
-  background-color: #333333; /* Tom de cinza escuro */
-  padding: 20px; /* Padding menor */
-  border-radius: 8px; /* Bordas mais suaves */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+.glass-container {
+  background: rgba(255, 255, 255, 0.8); /* Efeito glass */
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
-  max-width: 650px; /* Container mais compacto */
+  max-width: 500px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 15px; /* Espaçamento menor */
-  position: relative;
-  overflow: hidden;
-}
-
-/* Cabeçalho */
-.header {
-  margin-bottom: 10px; /* Espaçamento menor */
 }
 
 h1 {
-  margin: 0;
-  font-size: 1.5rem; /* Título menor */
-  color: #ffffff; /* Texto branco */
-  font-weight: 600;
-  letter-spacing: 1px; /* Aumenta a legibilidade */
+  font-size: 2rem;
+  color: #6f00ff; /* Roxo */
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
-/* Subtítulo */
 .subtitle {
-  font-size: 12px; /* Texto menor */
-  color: #cccccc; /* Cor mais suave para o subtítulo */
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 20px;
 }
 
 /* Seção de upload de arquivo */
-.file-section {
+.file-input {
   display: flex;
-  flex-direction: column;
-  gap: 8px; /* Espaçamento menor */
-  width: 90%;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.file-input-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px; /* Espaçamento menor */
-  width: 90%;
+.file-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
 }
 
-.file-path {
-  background-color: #444444; /* Tom de cinza mais escuro */
-  border: 1px solid #666666; /* Borda sutil */
-  padding: 6px; /* Padding menor */
-  border-radius: 4px; /* Bordas mais suaves */
-  color: #ffffff; /* Texto branco */
-  font-size: 12px; /* Texto menor */
-  width: 100%;
-  text-align: center;
-  transition: border-color 0.3s ease;
+.file-input input:focus {
+  border-color: #6f00ff;
+  outline: none;
 }
 
-.file-path:focus {
-  border-color: #8b66dc; /* Borda roxa ao focar */
-}
-
-.file-label {
-  background-color: #444444; /* Tom de cinza mais escuro */
-  border: 1px solid #666666; /* Borda sutil */
-  padding: 6px 10px; /* Padding menor */
-  border-radius: 4px; /* Bordas mais suaves */
+.file-button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #6f00ff;
+  color: white;
   cursor: pointer;
-  font-size: 12px; /* Texto menor */
-  color: #ffffff; /* Texto branco */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
 }
 
-.file-label:hover {
-  background-color: #555555; /* Tom de cinza mais claro para hover */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Sombra no hover */
+.file-button:hover {
+  background: #8b66dc;
 }
 
 .file-hint {
-  font-size: 10px; /* Texto menor */
-  color: #999999; /* Texto cinza claro */
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 20px;
 }
 
-.checkbox-group {
+/* Checkbox */
+.options {
   display: flex;
-  flex-wrap: wrap; /* Permite a quebra de linha */
-  gap: 8px; /* Espaçamento menor */
-  justify-content: center; /* Centraliza os checkboxes */
-  color: #cccccc; /* Texto cinza claro */
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.checkbox-group label {
+.options label {
   display: flex;
   align-items: center;
-  gap: 6px; /* Espaçamento menor */
-  font-size: 12px; /* Texto menor */
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #333;
   cursor: pointer;
 }
 
-.checkbox-group input[type="checkbox"] {
-  appearance: none; /* Remove o estilo padrão */
-  width: 14px; /* Checkbox menor */
-  height: 14px; /* Checkbox menor */
-  border: 2px solid #666666; /* Borda cinza */
-  border-radius: 3px; /* Bordas mais suaves */
-  background-color: #444444; /* Fundo cinza escuro */
-  position: relative;
+.options input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #6f00ff;
+  border-radius: 4px;
+  appearance: none;
   cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s ease;
 }
 
-.checkbox-group input[type="checkbox"]:checked {
-  background-color: #8b66dc; /* Fundo roxo quando marcado */
-  border-color: #8b66dc;
-}
-
-.checkbox-group input[type="checkbox"]:checked::after {
-  content: "✔"; /* Símbolo de check */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 10px; /* Ícone menor */
-}
-
-.checkbox-group input[type="checkbox"]:hover {
-  border-color: #8b66dc; /* Borda roxa mais clara no hover */
+.options input[type="checkbox"]:checked {
+  background: #6f00ff;
 }
 
 /* Botão de processar */
 .process-btn {
-  background-color: #8b66dc; /* Tom de roxo para o botão */
-  padding: 6px; /* Padding menor */
+  width: 100%;
+  padding: 12px;
   border: none;
-  border-radius: 4px; /* Bordas mais suaves */
-  cursor: pointer;
+  border-radius: 8px;
+  background: #6f00ff;
   color: white;
-  font-size: 12px; /* Texto menor */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  letter-spacing: 1px;
-  width: 50%; /* Botão ocupa toda a largura */
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .process-btn:hover {
-  background-color: #a88ee0; /* Tom de roxo mais claro para hover */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Sombra no hover */
+  background: #8b66dc;
 }
 
-.footer-link {
-  font-size: 10px; /* Mantém o tamanho pequeno */
-  color: #999999; /* Mantém a cor cinza claro */
-  text-decoration: none; /* Remove o sublinhado */
-}
-
-.footer-link:hover {
-  color: #666666; /* Cor um pouco mais escura ao passar o mouse */
-  text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
-}
-
-/* Estilo do menu de alternância */
-.menu-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px; /* Aumentei o espaçamento entre os botões */
-  margin-bottom: 30px;
-}
-
-.menu-alternar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px 20px; /* Aumentei o padding para um visual mais robusto */
-  color: white;
-  background-color: #444444; /* Tom de cinza mais escuro */
-  border: 1px solid #666666; /* Borda sutil */
-  border-radius: 8px; /* Bordas mais arredondadas */
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease,
-    box-shadow 0.3s ease;
-  font-size: 16px; /* Tamanho da fonte aumentado */
-  font-weight: 500; /* Fonte um pouco mais grossa */
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  justify-content: space-between;
-  width: 50%;
-  gap: 5px;
-}
-
-.menu-alternar:hover {
-  background-color: #555555; /* Tom de cinza mais claro ao passar o mouse */
-  transform: translateY(-3px); /* Efeito de levantar o botão */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra suave */
-}
-
-.menu-alternar:active {
-  transform: translateY(0); /* Efeito de pressionar o botão */
-}
-
-.view {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-  gap: 20px;
-}
-
-/* Estilo da tabela no modo noturno */
-.table-container {
-  width: 90%;
-  max-height: 300px; /* Defina um limite de altura para ativar a rolagem */
-  overflow-x: auto;
-  overflow-y: auto; /* Adiciona rolagem vertical se necessário */
+/* Footer */
+.footer {
   margin-top: 20px;
-  border-radius: 8px;
-  background-color: #333333; /* Fundo cinza escuro */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.footer a {
+  color: #6f00ff;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
 }
 
 /* Tabela */
+.table-container {
+  width: 100%;
+  max-height: 300px;
+  overflow-x: auto;
+  overflow-y: auto;
+  margin-top: 20px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.8); /* Efeito glass */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 #conciliationTable {
   width: 100%;
   border-collapse: collapse;
-  background-color: #333333; /* Fundo cinza escuro */
-  color: #f4f4f4; /* Texto mais suave */
-  font-size: 12px; /* Reduzir o tamanho da fonte */
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 12px;
 }
 
 #conciliationTable th,
 #conciliationTable td {
   text-align: center;
-  padding: 4px 6px; /* Reduzir o padding para uma aparência mais compacta */
-  border: 1px solid #666666; /* Borda sutil */
-  height: 24px; /* Definir uma altura fixa para as células */
+  padding: 8px;
+  border: 1px solid #ddd;
 }
 
 #conciliationTable th {
-  background-color: #444444; /* Tom de cinza mais escuro para o cabeçalho */
+  background-color: #6f00ff;
   color: white;
   font-weight: 600;
 }
 
-#conciliationTable tr {
-  height: 24px; /* Definir uma altura fixa para as linhas */
-}
-
 #conciliationTable tr:hover {
-  background-color: #555555; /* Destaque suave ao passar o mouse */
+  background-color: rgba(
+    111,
+    0,
+    255,
+    0.1
+  ); /* Destaque suave ao passar o mouse */
 }
 
-/* Botão de ação na tabela */
+/* Botões de ação na tabela */
 .action-btn {
-  background-color: #8b66dc;
-  padding: 2px 6px; /* Reduzir o padding dos botões */
+  background-color: #6f00ff;
+  padding: 6px 12px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   color: white;
-  font-size: 12px; /* Reduzir o tamanho da fonte dos botões */
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 12px;
+  transition: background 0.3s ease;
 }
 
 .action-btn:hover {
-  background-color: #a88ee0; /* Tom de roxo mais claro ao passar o mouse */
-  transform: translateY(-2px); /* Efeito de levantar o botão */
-}
-
-.action-btn:active {
-  transform: translateY(0); /* Efeito de pressionar o botão */
-}
-
-/* Estilo dos botões de editar e excluir */
-.edit-btn,
-.delete-btn {
-  background-color: #8b66dc;
-  padding: 2px 6px; /* Reduzir o padding dos botões */
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: white;
-  font-size: 12px; /* Reduzir o tamanho da fonte dos botões */
+  background: #8b66dc;
 }
 
 .delete-btn {
-  margin-left: 4px; /* Reduzir a margem entre os botões */
-  background-color: #f44336; /* Cor de erro (vermelho) para o excluir */
+  background-color: #f44336; /* Vermelho para o botão de excluir */
 }
 
 .delete-btn:hover {
-  background-color: #d32f2f; /* Hover mais forte */
+  background-color: #d32f2f;
 }
 
-/* Personalização da barra de rolagem */
+/* Barra de rolagem */
 .table-container::-webkit-scrollbar {
-  width: 6px; /* Barra de rolagem mais fina */
+  width: 6px;
 }
 
-/* Cor de fundo da trilha da barra de rolagem */
 .table-container::-webkit-scrollbar-track {
-  background-color: #333333; /* Fundo cinza escuro */
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
 }
 
-/* Cor da parte móvel da barra de rolagem */
 .table-container::-webkit-scrollbar-thumb {
-  background-color: #8b66dc; /* Tom de roxo mais claro */
+  background-color: #6f00ff;
   border-radius: 10px;
-  border: 2px solid #333333; /* Borda sutil para contraste */
+  border: 2px solid rgba(255, 255, 255, 0.8);
 }

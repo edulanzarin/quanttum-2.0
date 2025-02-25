@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function () {
   // Verifica se o usuário está logado
   const usuarioJson = localStorage.getItem("usuario");
 
@@ -11,68 +11,48 @@ document.addEventListener("DOMContentLoaded", async function () {
   const usuario = JSON.parse(usuarioJson);
   const idUsuario = usuario.id;
 
-  // Carrega os favoritos do usuário do sessionStorage
+  // Carrega os favoritos do usuário do localStorage
   carregarFavoritos();
 
   // Adiciona eventos de clique às estrelas de favorito
   const estrelasFavorito = document.querySelectorAll(".card-favorite");
   estrelasFavorito.forEach((estrela) => {
-    estrela.addEventListener("click", async function (event) {
+    estrela.addEventListener("click", function (event) {
       event.preventDefault();
 
       // Obtém o ID do card (pai da estrela)
       const card = estrela.closest(".card");
       const idFuncao = card.id;
 
-      // Chama a função para gerenciar o favorito
-      try {
-        showLoadingModal("Gerenciando favoritos...");
-        const resultado = await window.electronAPI.gerenciarUsuario(
-          "favorito",
-          idUsuario,
-          null,
-          null,
-          null,
-          idFuncao
-        );
+      // Obtém os favoritos do localStorage
+      const favoritosJson = localStorage.getItem("favoritos");
+      let favoritos = favoritosJson ? JSON.parse(favoritosJson) : [];
 
-        hideLoadingModal();
-        if (resultado.success) {
-          // Atualiza o estado visual da estrela
-          estrela.classList.toggle("active");
-          createNotification(
-            `${resultado.message}`,
-            "#1d1830",
-            "darkgreen",
-            successGifUrl
-          );
-
-          // Atualiza os favoritos no sessionStorage
-          const favoritosJson = sessionStorage.getItem("favoritos");
-          if (favoritosJson) {
-            const favoritos = JSON.parse(favoritosJson);
-            if (favoritos.includes(idFuncao)) {
-              favoritos.splice(favoritos.indexOf(idFuncao), 1);
-            } else {
-              favoritos.push(idFuncao);
-            }
-            sessionStorage.setItem("favoritos", JSON.stringify(favoritos));
-          }
-        } else {
-          createNotification(
-            `Erro: ${resultado.message}`,
-            "#1d1830",
-            "darkred",
-            errorGifUrl
-          );
-        }
-      } catch (error) {
+      // Verifica se o item já está nos favoritos
+      if (favoritos.includes(idFuncao)) {
+        // Remove o item dos favoritos
+        favoritos = favoritos.filter((item) => item !== idFuncao);
+        estrela.classList.remove("active");
         createNotification(
-          `Erro ao gerenciar favoritos. ${error}`,
-          "red",
-          "darkred"
+          "Item removido dos favoritos.",
+          "#1d1830",
+          "darkgreen",
+          successGifUrl
+        );
+      } else {
+        // Adiciona o item aos favoritos
+        favoritos.push(idFuncao);
+        estrela.classList.add("active");
+        createNotification(
+          "Item adicionado aos favoritos!",
+          "#1d1830",
+          "darkgreen",
+          successGifUrl
         );
       }
+
+      // Atualiza os favoritos no localStorage
+      localStorage.setItem("favoritos", JSON.stringify(favoritos));
     });
   });
 });
@@ -80,8 +60,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 // Função para carregar os favoritos do usuário e marcar os cards correspondentes
 function carregarFavoritos() {
   try {
-    // Obtém os favoritos do sessionStorage
-    const favoritosJson = sessionStorage.getItem("favoritos");
+    // Obtém os favoritos do localStorage
+    const favoritosJson = localStorage.getItem("favoritos");
 
     if (favoritosJson) {
       const favoritos = JSON.parse(favoritosJson);
@@ -99,7 +79,7 @@ function carregarFavoritos() {
     }
   } catch (error) {
     createNotification(
-      "Ocorreu um erro ao conectar com o servidor.",
+      "Ocorreu um erro ao carregar os favoritos.",
       "red",
       "darkred"
     );

@@ -47,6 +47,7 @@ h1 {
   color: #ccc; /* Cor padrão da estrela (não favoritada) */
   cursor: pointer;
   transition: color 0.3s ease;
+  z-index: 99;
 }
 
 .card-favorite.active {

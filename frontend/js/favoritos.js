@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const usuario = JSON.parse(usuarioJson);
   const idUsuario = usuario.id;
 
-  // Obtém os favoritos do sessionStorage
-  const favoritosJson = sessionStorage.getItem("favoritos");
+  // Obtém os favoritos do localStorage
+  const favoritosJson = localStorage.getItem("favoritos");
 
   if (!favoritosJson) {
     console.log("Nenhum favorito encontrado.");
@@ -65,54 +65,25 @@ async function carregarCardsFavoritos(favoritos, idUsuario) {
       estrela.addEventListener("click", async function (event) {
         event.preventDefault();
 
-        // Chama a função para gerenciar o favorito
-        try {
-          showLoadingModal("Removendo dos favoritos...");
-          const resultado = await window.electronAPI.gerenciarUsuario(
-            "favorito",
-            idUsuario,
-            null,
-            null,
-            null,
-            idFuncao
-          );
+        // Remove o card da tela
+        cardEncontrado.remove();
 
-          hideLoadingModal();
-          if (resultado.success) {
-            // Remove o card da tela
-            cardEncontrado.remove();
-
-            // Atualiza os favoritos no sessionStorage
-            const favoritosJson = sessionStorage.getItem("favoritos");
-            if (favoritosJson) {
-              const favoritos = JSON.parse(favoritosJson);
-              if (favoritos.includes(idFuncao)) {
-                favoritos.splice(favoritos.indexOf(idFuncao), 1); // Remove o favorito
-                sessionStorage.setItem("favoritos", JSON.stringify(favoritos));
-              }
-            }
-
-            createNotification(
-              `${resultado.message}`,
-              "#1d1830",
-              "darkgreen",
-              successGifUrl
-            );
-          } else {
-            createNotification(
-              `Erro: ${resultado.message}`,
-              "#1d1830",
-              "darkred",
-              errorGifUrl
-            );
+        // Atualiza os favoritos no localStorage
+        const favoritosJson = localStorage.getItem("favoritos");
+        if (favoritosJson) {
+          const favoritos = JSON.parse(favoritosJson);
+          if (favoritos.includes(idFuncao)) {
+            favoritos.splice(favoritos.indexOf(idFuncao), 1); // Remove o favorito
+            localStorage.setItem("favoritos", JSON.stringify(favoritos));
           }
-        } catch (error) {
-          createNotification(
-            `Erro ao remover dos favoritos. ${error}`,
-            "red",
-            "darkred"
-          );
         }
+
+        createNotification(
+          "Item removido dos favoritos.",
+          "#1d1830",
+          "darkgreen",
+          successGifUrl
+        );
       });
 
       // Adiciona o card ao container
