@@ -679,6 +679,7 @@ function conciliarPagosBanco(caminhoBanco, caminhoPagos) {
       pythonPath, // Caminho para o Python
       [
         path.join(__dirname, "scripts/conciliar.py"),
+        "conciliar_pagos_banco", // Ação a ser executada
         caminhoBanco,
         caminhoPagos,
       ],

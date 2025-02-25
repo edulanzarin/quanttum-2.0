@@ -43,12 +43,20 @@ def carregar_planilha(caminho_arquivo):
             raise ValueError("O caminho do arquivo não pode ser None.")
 
         if caminho_arquivo.endswith('.csv'):
-            return pd.read_csv(caminho_arquivo, delimiter=';', encoding='utf-8-sig')
+            df = pd.read_csv(caminho_arquivo, delimiter=';', encoding='latin1')
         elif caminho_arquivo.endswith('.xlsx'):
-            return pd.read_excel(caminho_arquivo)
+            df = pd.read_excel(caminho_arquivo)
         else:
-            raise ValueError(
-                "Formato de arquivo não suportado. Use CSV ou XLSX.")
+            raise ValueError("Formato de arquivo não suportado. Use CSV ou XLSX.")
+
+        # Verifica se o DataFrame tem pelo menos 3 colunas
+        if df.shape[1] < 3:
+            raise ValueError("A planilha deve ter pelo menos 3 colunas (DATA, DESCRICAO, VALOR).")
+
+        # Renomeia as colunas para garantir consistência
+        df.columns = ["DATA", "DESCRICAO", "VALOR"] + list(df.columns[3:])
+        return df
+
     except Exception as e:
         raise Exception(f"Erro ao carregar a planilha: {e}")
 
@@ -64,9 +72,13 @@ def conciliar_pagos_banco(planilha_banco, planilha_pagos):
         if banco_df.shape[1] < 3 or pagos_df.shape[1] < 3:
             return {"status": "erro", "message": "As planilhas devem ter pelo menos 3 colunas (DATA, DESCRICAO, VALOR)."}
 
-        # Renomeia colunas para facilitar o acesso
-        banco_df.columns = ["DATA", "DESCRICAO_BANCO", "VALOR"]
-        pagos_df.columns = ["DATA", "DESCRICAO_PAGOS", "VALOR"]
+        # Converte as colunas DATA para o mesmo tipo (datetime)
+        banco_df["DATA"] = pd.to_datetime(banco_df["DATA"], format="%d/%m/%Y", errors="coerce")
+        pagos_df["DATA"] = pd.to_datetime(pagos_df["DATA"], format="%d/%m/%Y", errors="coerce")
+
+        # Converte as colunas VALOR para o mesmo tipo (float)
+        banco_df["VALOR"] = pd.to_numeric(banco_df["VALOR"], errors="coerce")
+        pagos_df["VALOR"] = pd.to_numeric(pagos_df["VALOR"], errors="coerce")
 
         # Lista para armazenar os resultados
         resultado = []
@@ -84,7 +96,7 @@ def conciliar_pagos_banco(planilha_banco, planilha_pagos):
 
             if not correspondencia.empty:
                 # Substitui a descrição do banco pela descrição de pagos
-                linha_banco["DESCRICAO_BANCO"] = correspondencia.iloc[0]["DESCRICAO_PAGOS"]
+                linha_banco["DESCRICAO"] = correspondencia.iloc[0]["DESCRICAO"]
                 # Remove a linha de pagos para evitar duplicações
                 pagos_df.drop(correspondencia.index, inplace=True)
 
@@ -163,9 +175,13 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
         if banco_df.shape[1] < 3 or pagos_df.shape[1] < 3:
             return {"status": "erro", "message": "As planilhas devem ter pelo menos 3 colunas (DATA, DESCRICAO, VALOR)."}
 
-        # Renomeia colunas para facilitar o acesso
-        banco_df.columns = ["DATA", "DESCRICAO_BANCO", "VALOR"]
-        pagos_df.columns = ["DATA", "DESCRICAO_PAGOS", "VALOR"]
+        # Converte as colunas DATA para o mesmo tipo (datetime)
+        banco_df["DATA"] = pd.to_datetime(banco_df["DATA"], format="%d/%m/%Y", errors="coerce")
+        pagos_df["DATA"] = pd.to_datetime(pagos_df["DATA"], format="%d/%m/%Y", errors="coerce")
+
+        # Converte as colunas VALOR para o mesmo tipo (float)
+        banco_df["VALOR"] = pd.to_numeric(banco_df["VALOR"], errors="coerce")
+        pagos_df["VALOR"] = pd.to_numeric(pagos_df["VALOR"], errors="coerce")
 
         # Obtém as conciliações da empresa
         conciliacoes = obter_conciliacao(numeroEmpresa)
@@ -250,21 +266,35 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
 
 
 def main():
-    if sys.argv[1] == 'conciliar_pagos_banco':
-        caminho_banco = sys.argv[1]
-        caminho_pagos = sys.argv[2]
-        result = conciliar_pagos_banco(caminho_banco, caminho_pagos)
+    try:
+        if len(sys.argv) < 2:
+            raise ValueError("Argumentos insuficientes.")
+
+        action = sys.argv[1]
+
+        if action == 'conciliar_pagos_banco':
+            if len(sys.argv) < 4:
+                raise ValueError("Caminho do banco e pagos não fornecidos.")
+            caminho_banco = sys.argv[2]
+            caminho_pagos = sys.argv[3]
+            result = conciliar_pagos_banco(caminho_banco, caminho_pagos)
+
+        elif action == 'conciliar_pagos_banco_conta':
+            if len(sys.argv) < 6:
+                raise ValueError("Argumentos insuficientes para conciliar com conta.")
+            caminho_banco = sys.argv[2]
+            caminho_pagos = sys.argv[3]
+            numeroEmpresa = int(sys.argv[4])
+            numeroBanco = int(sys.argv[5])
+            result = conciliar_pagos_banco_conta(caminho_banco, caminho_pagos, numeroEmpresa, numeroBanco)
+
+        else:
+            raise ValueError("Ação desconhecida.")
+
         print(json.dumps(result))
 
-    elif sys.argv[1] == 'conciliar_pagos_banco_conta':
-        caminho_banco = sys.argv[2]
-        caminho_pagos = sys.argv[3]
-        numeroEmpresa = int(sys.argv[4])
-        numeroBanco = int(sys.argv[5])
-        result = conciliar_pagos_banco_conta(
-            caminho_banco, caminho_pagos, numeroEmpresa, numeroBanco)
-        print(json.dumps(result))
-
+    except Exception as e:
+        print(json.dumps({"status": "erro", "message": str(e)}))
 
 if __name__ == '__main__':
     main()

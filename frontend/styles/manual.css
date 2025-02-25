@@ -1,0 +1,47 @@
+/* Main Content */
+main {
+  margin-left: 70px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+}
+
+/* Seções do Manual */
+.manual-section {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+/* Container Glass */
+.glass-container {
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+.glass-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #6f00ff;
+}
+
+.glass-container .subtitle {
+  font-size: 1.25rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.glass-container .content {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.6;
+}
