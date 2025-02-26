@@ -22,7 +22,7 @@ function createWindow() {
   });
 
   // Carregar o HTML com o caminho correto
-  mainWindow.loadFile(path.join(__dirname, "../frontend/pages/index.html"));
+  mainWindow.loadFile(path.join(__dirname, "../frontend/pages/auth.html"));
   mainWindow.maximize();
 }
 
