@@ -16,45 +16,55 @@ def verificar_renomeacao(caminho):
 
     return f"{base} ({contador}){ext}"
 
-# Função para normalizar o caminho
-def normalizar_caminho(caminho):
-    return os.path.normpath(caminho)
-
-# Função para mover arquivos
 def mover_arquivos(origem, destino, incluir_subpastas):
     try:
+        # Verifica se o destino está dentro da origem para evitar loops
+        destino = os.path.abspath(destino)
+        origem_abs = os.path.abspath(origem)
+
+        if destino.startswith(origem_abs):
+            return json.dumps({
+                "status": "fail",
+                "message": "A pasta de destino não pode estar dentro da pasta de origem."
+            })
+
         if not os.path.exists(destino):
             os.makedirs(destino)
 
         arquivos_processados = []
+        pastas_processadas = set()
 
-        if incluir_subpastas:
-            # Percorre diretórios e subdiretórios
-            for root, dirs, files in os.walk(origem):
-                for file in files:
-                    caminho_origem = os.path.join(root, file)
-                    caminho_destino = os.path.join(destino, os.path.relpath(caminho_origem, origem))
-                    caminho_destino = verificar_renomeacao(caminho_destino)
-                    os.makedirs(os.path.dirname(caminho_destino), exist_ok=True)
-                    shutil.move(caminho_origem, caminho_destino)
-                    arquivos_processados.append(caminho_origem)
-        else:
-            # Somente o diretório origem
-            for item in os.listdir(origem):
-                caminho_origem = os.path.join(origem, item)
+        def processar_pasta(pasta):
+            """Função recursiva para processar uma pasta."""
+            if pasta in pastas_processadas:
+                return
+
+            pastas_processadas.add(pasta)
+
+            for item in os.listdir(pasta):
+                caminho_origem = os.path.join(pasta, item)
+
+                # Ignora a pasta de destino
+                if os.path.abspath(caminho_origem) == destino:
+                    continue
+
                 if os.path.isfile(caminho_origem):
                     caminho_destino = os.path.join(destino, item)
                     caminho_destino = verificar_renomeacao(caminho_destino)
-                    shutil.move(caminho_origem, caminho_destino)
+                    shutil.copy2(caminho_origem, caminho_destino)
                     arquivos_processados.append(caminho_origem)
+                elif incluir_subpastas and os.path.isdir(caminho_origem):
+                    processar_pasta(caminho_origem)
+
+        processar_pasta(origem_abs)
 
         return json.dumps({
             "status": "success",
-            "message": f"Arquivos movidos: {', '.join(arquivos_processados)}"
+            "message": f"Arquivos copiados: {', '.join(arquivos_processados)}"
         })
 
     except Exception as e:
-        return json.dumps({"status": "fail", "message": f"Erro ao mover os arquivos: {e}"})
+        return json.dumps({"status": "fail", "message": f"Erro ao copiar os arquivos: {e}"})
 
 def main():
     if sys.argv[1] == 'mover_arquivos':
