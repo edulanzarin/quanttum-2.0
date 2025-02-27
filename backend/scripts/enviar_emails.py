@@ -2,6 +2,7 @@ import win32com.client
 import sys
 import json
 import pandas as pd
+import os
 
 def ler_conteudo_email(caminho_arquivo):
     """Lê o conteúdo de um arquivo .txt."""
@@ -48,8 +49,18 @@ def enviar_emails(email_autorizado, caminho_planilha, caminho_arquivo_email):
 
             # Substituir placeholders pelos valores da planilha
             corpo_email = corpo_email_template
+            anexos = []  # Lista para armazenar caminhos de arquivos a serem anexados
+
             for coluna in df.columns[4:]:  # As colunas a partir da quinta para os placeholders
-                corpo_email = corpo_email.replace(f"${{{coluna}}}", str(linha[coluna]))
+                valor = str(linha[coluna])
+                placeholder = f"${{{coluna}}}"
+
+                # Verificar se o valor é um caminho de arquivo válido
+                if os.path.isfile(valor):
+                    anexos.append(valor)  # Adiciona o arquivo à lista de anexos
+                
+                # Substituir o placeholder no corpo do e-mail, independentemente de ser um arquivo
+                corpo_email = corpo_email.replace(placeholder, "" if os.path.isfile(valor) else valor)
 
             # Criar e enviar e-mail
             mail = outlook.CreateItem(0)
@@ -66,6 +77,10 @@ def enviar_emails(email_autorizado, caminho_planilha, caminho_arquivo_email):
                 resposta_recipients = mail.ReplyRecipients  # Corrigido para 'ReplyRecipients'
                 for email in emails_resposta.split(';'):
                     recipient = resposta_recipients.Add(email.strip())  # Adiciona cada email de resposta
+
+            # Anexar arquivos ao e-mail
+            for anexo in anexos:
+                mail.Attachments.Add(anexo)
 
             mail.Send()
 

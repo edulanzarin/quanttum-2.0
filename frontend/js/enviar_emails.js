@@ -4,7 +4,7 @@ const planilhaReferencia = document.getElementById("planilhaReferencia");
 const conteudoEmail = document.getElementById("conteudoEmail");
 
 // Função para abrir o seletor de arquivos usando o Electron
-document.querySelectorAll(".file-label").forEach((label) => {
+document.querySelectorAll(".file-button").forEach((label) => {
   label.addEventListener("click", (event) => {
     const inputField = event.target.previousElementSibling;
     if (inputField === planilhaReferencia) {

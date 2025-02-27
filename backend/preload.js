@@ -91,4 +91,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
   gerarPDFsReinf: (caminhoArquivo) => {
     return ipcRenderer.invoke("gerar-pdfs-reinf", caminhoArquivo);
   },
+  criarSugestao: (idUsuario, textoSugestao) => {
+    return ipcRenderer.invoke("criar-sugestao", idUsuario, textoSugestao);
+  },
+  obterSugestoes: () => {
+    return ipcRenderer.invoke("obter-sugestoes");
+  },
 });

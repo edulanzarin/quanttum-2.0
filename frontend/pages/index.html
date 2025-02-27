@@ -10,69 +10,7 @@
     />
     <link
       rel="stylesheet"
-      data-purpose="Layout StyleSheet"
-      title="Web Awesome"
-      href="/css/app-wa-025281ccfe06a9d63cd35694641e07d3.css?vsn=d"
-    />
-
-    <link
-      rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-thin.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-solid.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-regular.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-light.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-thin.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-thin.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css"
     />
     <link rel="stylesheet" href="../styles/utils.css" />
     <link rel="stylesheet" href="../styles/index.css" />
@@ -154,6 +92,73 @@
         <div class="notices-container"></div>
       </div>
     </main>
+
+    <!-- Modal de Notícias -->
+    <div id="modal-noticia" class="modal">
+      <div class="modal-content">
+        <span class="close-modal-noticia">&times;</span>
+        <h3 id="modal-noticia-title"></h3>
+        <p id="modal-noticia-description"></p>
+        <span id="modal-noticia-date"></span>
+      </div>
+    </div>
+
+    <!-- Modal de Sugestões -->
+    <div id="sugestao-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal-sugestao">&times;</span>
+        <h2>Sugestões</h2>
+        <div class="tabs">
+          <!-- <button class="tab-link active" data-tab="enviar-sugestao">
+            Enviar Sugestão
+          </button> -->
+          <!-- <button class="tab-link" data-tab="ver-sugestoes">
+            Ver Sugestões
+          </button> -->
+        </div>
+        <div id="enviar-sugestao" class="tab-content active">
+          <textarea
+            id="sugestao-texto"
+            placeholder="Digite sua sugestão..."
+          ></textarea>
+          <button id="enviar-sugestao-btn">Enviar</button>
+        </div>
+        <div id="ver-sugestoes" class="tab-content">
+          <div id="sugestoes-lista"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botão Flutuante de Sugestão -->
+    <button id="sugestao-btn" class="floating-btn">
+      <span class="material-symbols-rounded">lightbulb</span>
+    </button>
+
+    <!-- Modal de Sugestões -->
+    <div id="sugestao-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Sugestões</h2>
+        <div class="tabs">
+          <button class="tab-link active" data-tab="enviar-sugestao">
+            Enviar Sugestão
+          </button>
+          <button class="tab-link" data-tab="ver-sugestoes">
+            Ver Sugestões
+          </button>
+        </div>
+        <div id="enviar-sugestao" class="tab-content active">
+          <textarea
+            id="sugestao-texto"
+            placeholder="Digite sua sugestão..."
+          ></textarea>
+          <button id="enviar-sugestao-btn">Enviar</button>
+        </div>
+        <div id="ver-sugestoes" class="tab-content">
+          <div id="sugestoes-lista"></div>
+        </div>
+      </div>
+    </div>
 
     <!-- Scripts -->
     <script src="../js/utils.js"></script>

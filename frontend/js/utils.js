@@ -49,19 +49,27 @@ function createNotification(message, backgroundColor, borderColor, gifUrl) {
   // Cria um novo elemento de notificação
   const notification = document.createElement("div");
   notification.classList.add("notification");
-  notification.textContent = message;
-  notification.style.backgroundColor = " #333333;";
-  notification.style.position = "fixed";
-  notification.style.right = "10px";
-  notification.style.padding = "10px";
-  notification.style.zIndex = 1000;
+  notification.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+  notification.style.borderColor = "#6f00ff";
 
   // Adiciona o GIF de sucesso ou erro
   const gif = document.createElement("img");
   gif.src = gifUrl;
-  gif.style.width = "20px";
+  gif.style.width = "24px";
+  gif.style.height = "24px";
   gif.style.marginRight = "10px";
-  notification.prepend(gif);
+  notification.appendChild(gif);
+
+  // Adiciona o texto da notificação
+  const text = document.createElement("span");
+  text.textContent = message;
+  notification.appendChild(text);
+
+  // Adiciona o ícone de "copiar"
+  const copyIcon = document.createElement("span");
+  copyIcon.classList.add("copy-icon", "material-symbols-rounded");
+  copyIcon.textContent = "content_copy";
+  notification.appendChild(copyIcon);
 
   // Define a posição 'top' com base nas notificações existentes
   const topOffset = calculateNotificationOffset();
@@ -69,6 +77,31 @@ function createNotification(message, backgroundColor, borderColor, gifUrl) {
 
   // Adiciona a notificação ao body
   document.body.appendChild(notification);
+
+  // Adiciona o evento de clique para copiar o conteúdo
+  notification.addEventListener("click", () => {
+    navigator.clipboard
+      .writeText(message)
+      .then(() => {
+        console.log("Conteúdo copiado para a área de transferência: ", message);
+        // Mostra uma mensagem de confirmação
+        const confirmation = document.createElement("div");
+        confirmation.textContent = "Copiado!";
+        confirmation.style.position = "absolute";
+        confirmation.style.bottom = "2px";
+        confirmation.style.right = "10px";
+        confirmation.style.fontSize = "8px";
+        confirmation.style.color = "#6f00ff";
+        notification.appendChild(confirmation);
+
+        setTimeout(() => {
+          confirmation.remove();
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error("Erro ao copiar o conteúdo: ", err);
+      });
+  });
 
   // Remove a notificação após 5 segundos e atualiza as posições
   setTimeout(() => {

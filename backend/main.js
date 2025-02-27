@@ -1083,3 +1083,81 @@ ipcMain.handle("gerar-pdfs-reinf", async (event, caminhoArquivo) => {
     return { success: false, message: error };
   }
 });
+
+// Função para enviar sugestão
+async function criarSugestao(idUsuario, texto) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/sugestoes.py"), // Caminho para o script Python
+        "criar_sugestao", // Comando para o script Python
+        idUsuario,
+        texto,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim();
+
+        if (result.includes("Erro")) {
+          reject(result);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// Função para obter sugestões
+async function obterSugestoes() {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/sugestoes.py"), // Caminho para o script Python
+        "obter_sugestoes", // Comando para o script Python
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao executar script Python: ${error.message}`);
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+
+        const result = stdout.trim();
+
+        if (result.includes("Erro")) {
+          reject(result);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido para enviar sugestão no frontend via IPC
+ipcMain.handle("criar-sugestao", async (event, idUsuario, texto) => {
+  try {
+    const result = await criarSugestao(idUsuario, texto);
+    return { success: true, message: result };
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+// Recebendo o pedido para obter sugestões no frontend via IPC
+ipcMain.handle("obter-sugestoes", async () => {
+  try {
+    const result = await obterSugestoes();
+    return { success: true, message: result };
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});

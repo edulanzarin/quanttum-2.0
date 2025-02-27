@@ -130,20 +130,27 @@ body {
   top: 80px;
   min-width: 250px;
   max-width: 300px;
-  padding: 12px;
+  padding: 10px;
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 14px;
   font-weight: 500;
   color: #333;
-  background: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid #6f00ff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-out;
   z-index: 1000;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notification:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .notification img {
@@ -151,10 +158,22 @@ body {
   height: 24px;
 }
 
+.notification .copy-icon {
+  margin-left: auto; /* Coloca o ícone no canto direito */
+  font-size: 18px;
+  color: #6f00ff;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.notification:hover .copy-icon {
+  opacity: 1;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -188,17 +207,45 @@ body {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
 }
 
 .loading-content img {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
 }
 
 .loading-content p {
-  color: white;
-  font-size: 1rem;
-  font-weight: 500;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.5px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
 }
 
 /* Main Content */
