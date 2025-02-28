@@ -97,4 +97,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   obterSugestoes: () => {
     return ipcRenderer.invoke("obter-sugestoes");
   },
+  gerarLancamentos: (valorTotal, dataInicio, dataFim, tipo) =>
+    ipcRenderer.invoke(
+      "gerar-lancamentos",
+      valorTotal,
+      dataInicio,
+      dataFim,
+      tipo
+    ),
 });

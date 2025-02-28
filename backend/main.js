@@ -1161,3 +1161,54 @@ ipcMain.handle("obter-sugestoes", async () => {
     return { success: false, message: error };
   }
 });
+
+// Função para chamar o script Python e gerar lançamentos
+function gerarLancamentos(valorTotal, dataInicio, dataFim, tipo) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/gerar_lancamentos.py"),
+        "gerar_lancamentos",
+        valorTotal.toString(),
+        dataInicio,
+        dataFim,
+        tipo,
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de gerar lançamentos do frontend
+ipcMain.handle(
+  "gerar-lancamentos",
+  async (event, valorTotal, dataInicio, dataFim, tipo) => {
+    try {
+      const result = await gerarLancamentos(
+        valorTotal,
+        dataInicio,
+        dataFim,
+        tipo
+      );
+      return result;
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);

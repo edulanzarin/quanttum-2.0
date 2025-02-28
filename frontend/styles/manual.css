@@ -1,47 +1,35 @@
-/* Main Content */
 main {
-  margin-left: 70px;
-  min-height: 100vh;
+  flex: 1;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: auto;
 }
 
-/* Seções do Manual */
 .manual-section {
-  min-height: 100vh;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
-}
-
-/* Container Glass */
-.glass-container {
-  backdrop-filter: blur(15px);
-  border-radius: 15px;
-  padding: 40px;
   max-width: 800px;
-  width: 100%;
-  text-align: center;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.glass-container h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+h1 {
+  font-size: 2rem;
   color: #6f00ff;
+  margin-bottom: 10px;
 }
 
-.glass-container .subtitle {
-  font-size: 1.25rem;
-  color: #555;
-  margin-bottom: 30px;
+.subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
 }
 
-.glass-container .content {
+.content {
   font-size: 1rem;
-  color: #333;
+  color: #444;
   line-height: 1.6;
 }

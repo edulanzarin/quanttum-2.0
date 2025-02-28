@@ -139,3 +139,14 @@ h1 {
 .footer a:hover {
   text-decoration: underline;
 }
+
+/* Date Inputs */
+.date-inputs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.date-inputs .file-input {
+  flex: 1; /* Cada campo ocupa 50% da largura */
+}

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quanttum - Manuais</title>
+    <title>Quanttum - Gerar Lançamentos</title>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
@@ -14,56 +14,68 @@
       title="Web Awesome"
       href="/css/app-wa-025281ccfe06a9d63cd35694641e07d3.css?vsn=d"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-thin.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-solid.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-regular.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-light.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-thin.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-thin.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css"
     />
+
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css"
     />
     <link rel="stylesheet" href="../styles/utils.css" />
-    <link rel="stylesheet" href="../styles/manual.css" />
+    <link rel="stylesheet" href="../styles/chocoleite.css" />
   </head>
   <body>
     <!-- Sidebar -->
@@ -129,83 +141,45 @@
     </aside>
 
     <main>
-      <!-- Seção de Enviar Emails -->
-      <section id="enviar_emails" class="manual-section">
-        <div class="glass-container">
-          <h1>Enviar Emails</h1>
-          <p class="subtitle">Manual sobre o funcionamento da função.</p>
-          <div class="content">
-            <p>
-              A função de envio de e-mails permite que você se conecte
-              facilmente ao Outlook e envie mensagens em massa para seus
-              clientes. Aqui estão as principais funcionalidades:<br /><br />
-            </p>
-            <p>
-              <strong>Conexão com o Outlook:</strong> A função estabelece uma
-              conexão automática com sua conta do Outlook, eliminando a
-              necessidade de configurações complexas.<br /><br />
+      <div class="glass-container">
+        <h1>Gerar Lançamentos</h1>
+        <p class="subtitle">Gerar lançamentos contábeis.</p>
 
-              <strong>Verificação de Autorização:</strong> Antes de enviar os
-              e-mails, a função verifica se você está logado com o e-mail
-              autorizado, garantindo segurança no processo.<br /><br />
+        <div class="file-input">
+          <input type="text" id="valor" placeholder="Informe o valor" />
+        </div>
 
-              <strong>Leitura de Planilhas:</strong> Você pode usar uma planilha
-              para definir os destinatários, o assunto e o conteúdo dos e-mails.
-              A função organiza essas informações para facilitar o envio.<br /><br />
-
-              <strong>Personalização do Conteúdo:</strong> O corpo do e-mail
-              pode incluir placeholders, que serão automaticamente preenchidos
-              com dados da planilha, tornando cada mensagem única.<br /><br />
-
-              <strong>Envio Controlado:</strong> Os e-mails são enviados um por
-              um, garantindo que todas as informações estejam corretas. Você
-              também pode incluir cópias e definir endereços para respostas.<br /><br />
-
-              <strong>Confirmação de Envio:</strong> Ao final do processo, você
-              receberá uma confirmação sobre o status do envio, informando se
-              tudo ocorreu conforme esperado ou se houve algum erro.<br /><br />
-            </p>
+        <div class="date-inputs">
+          <div class="file-input">
+            <input type="date" id="data_inicio" placeholder="Data Inicial" />
+          </div>
+          <div class="file-input">
+            <input type="date" id="data_fim" placeholder="Data Final" />
           </div>
         </div>
-      </section>
 
-      <!-- Seção de Extrair Arquivos -->
-      <section id="extrair_arquivos" class="manual-section">
-        <div class="glass-container">
-          <h1>Extrair Arquivos</h1>
-          <p class="subtitle">Manual sobre o funcionamento da função.</p>
-          <div class="content">
-            <p>
-              Descubra como extrair arquivos ZIP e RAR para organizar seus dados
-              de forma eficiente.<br /><br />
-            </p>
-            <p>
-              <strong>Verificação de Nomes:</strong> O sistema garante que, ao
-              extrair arquivos, não haja sobrescritas indesejadas. Se um arquivo
-              com o mesmo nome já existir, um sufixo será adicionado
-              automaticamente, como (1), (2), e assim por diante.<br /><br />
-
-              <strong>Extração de Arquivos:</strong> Você pode extrair
-              facilmente arquivos ZIP e RAR. O programa se encarrega de mover os
-              arquivos extraídos para o destino escolhido, mantendo tudo
-              organizado.<br /><br />
-
-              <strong>Subpastas:</strong> A função permite que você escolha se
-              deseja incluir arquivos de subpastas durante a extração. Assim,
-              você pode extrair todos os arquivos relevantes de uma só vez, sem
-              se preocupar em perder nada.<br /><br />
-
-              <strong>Resultados:</strong> Ao final do processo, você receberá
-              uma confirmação sobre os arquivos extraídos e movidos, permitindo
-              que você verifique rapidamente o que foi processado.
-            </p>
-          </div>
+        <div class="options">
+          <label>
+            <input type="checkbox" id="pagamento" />
+            <span>Pagamento</span>
+          </label>
+          <label>
+            <input type="checkbox" id="recebimento" />
+            <span>Recebimento</span>
+          </label>
         </div>
-      </section>
+
+        <button class="process-btn">Processar</button>
+
+        <p class="footer">
+          <a href="manual.html">Dúvidas sobre o funcionamento?</a>
+        </p>
+      </div>
     </main>
 
-    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js/dist/cleave.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js/dist/addons/cleave-phone.br.js"></script>
     <script src="../js/utils.js"></script>
-    <script src="../js/manual.js"></script>
+    <script src="../js/gerar_lancamento.js"></script>
   </body>
 </html>
