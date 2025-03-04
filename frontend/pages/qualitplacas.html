@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quanttum - Fiscal</title>
+    <title>Quanttum - Qualitplacas</title>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
@@ -75,7 +75,7 @@
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css"
     />
     <link rel="stylesheet" href="../styles/utils.css" />
-    <link rel="stylesheet" href="../styles/menus.css" />
+    <link rel="stylesheet" href="../styles/chocoleite.css" />
   </head>
   <body>
     <!-- Sidebar -->
@@ -141,27 +141,29 @@
     </aside>
 
     <main>
-      <h1>Fiscal</h1>
-      <!-- Seção Empresas -->
-      <div class="card-section"></div>
+      <div class="glass-container">
+        <h1>Qualitplacas</h1>
+        <p class="subtitle">Processar relatórios da Qualitplacas</p>
 
-      <!-- Seção Extratos -->
-      <div class="card-section"></div>
+        <div class="file-input">
+          <input
+            type="text"
+            id="filePath"
+            placeholder="Selecione o relatório"
+          />
+          <button id="fileInput" class="file-button">...</button>
+        </div>
+        <p class="file-hint">Arquivos suportados: .pdf</p>
 
-      <!-- Seção Arquivos -->
-      <div class="card-section">
-        <h2>Arquivos</h2>
-        <div class="card-grid"></div>
-        <a href="renomear_das.html" class="card" id="renomear-das">
-          <span class="material-symbols-rounded card-icon">edit_document</span>
-          <span class="material-symbols-rounded card-favorite">star</span>
-          <h3 class="card-title">Renomear DAS</h3>
-          <p class="card-description">Renomear guias de DAS em massa.</p>
-        </a>
+        <button class="process-btn">Processar</button>
+
+        <p class="footer">
+          <a href="manual.html">Dúvidas sobre o funcionamento?</a>
+        </p>
       </div>
     </main>
-    <!-- Script -->
+
     <script src="../js/utils.js"></script>
-    <script src="../js/menus.js"></script>
+    <script src="../js/qualitplacas.js"></script>
   </body>
 </html>

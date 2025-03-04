@@ -105,4 +105,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
       dataFim,
       tipo
     ),
+  processarSafraQualitplacas: (caminho_pdf) =>
+    ipcRenderer.invoke("processar-safra-qualitplacas", caminho_pdf),
+  processarRelatorioEmpresas: () =>
+    ipcRenderer.invoke("processar-relatorio-empresas"),
 });

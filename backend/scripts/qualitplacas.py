@@ -3,10 +3,9 @@ import json
 import sys
 import tkinter as tk
 from tkinter import filedialog
-
 import pdfplumber
 import unicodedata
-
+import re
 
 def normalizar_texto(texto):
     if texto:
@@ -14,7 +13,6 @@ def normalizar_texto(texto):
         texto = texto.encode("utf-8", "ignore").decode("utf-8")
         return texto.strip()
     return ""
-
 
 def salvar_dados(nome_sugerido):
     try:
@@ -34,77 +32,70 @@ def salvar_dados(nome_sugerido):
     except Exception:
         return None
 
-
-def processar_pagos_qualitplacas(caminho_pdf):
+def processar_safra_qualitplacas(caminho_pdf):
     try:
+        dados = []
         with pdfplumber.open(caminho_pdf) as pdf:
-            dados = []
-            for pagina in pdf.pages:
-                tabela = pagina.extract_table()
-                if tabela:
-                    for linha in tabela:
-                        if linha and len(linha) >= 7:
-                            (
-                                data,
-                                conta,
-                                nome_conta,
-                                hist,
-                                nome_hist,
-                                credito,
-                                debito,
-                                saldo,
-                            ) = linha[:8]
-                            credito = normalizar_texto(credito).replace(",", ".")
-                            debito = normalizar_texto(debito).replace(",", ".")
-                            if debito and debito != "0.00":
-                                dados.append(
-                                    [
-                                        data,
-                                        conta,
-                                        nome_conta,
-                                        hist,
-                                        nome_hist,
-                                        credito,
-                                        debito,
-                                        saldo,
-                                    ]
-                                )
+            for i, page in enumerate(pdf.pages):
+                lines = page.extract_text().split('\n')
+                start_line = 6 if i == 0 else 3  # Começa na linha 6 na primeira página, depois na linha 3
+                
+                j = start_line
+                while j < len(lines):
+                    line = lines[j]
+                    parts = line.split()
+                    
+                    # Verifica se a linha tem mais de 7 partes e se a primeira parte é uma data
+                    if len(parts) > 7 and re.match(r'\d{2}/\d{2}/\d{4}', parts[0]):
+                        data = parts[0]
+                        valor = parts[-2]
+                        
+                        # Verifica se o valor não é zero
+                        if valor.replace(',', '.') not in ['0.00', '0.0', '0']:
+                            # Extrai a descrição da próxima linha (ou linhas)
+                            descricao_completa = ""
+                            nota = "0"  # Valor padrão para a nota fiscal
+                            k = j + 1
+                            while k < len(lines):
+                                descricao_line = lines[k]
+                                nota_match = re.search(r'DOC\.:(\d+)-', descricao_line)
+                                cedente_match = re.search(r'CEDENTE:\s*(\d+-)?(.+)', descricao_line)
+                                
+                                if cedente_match:
+                                    descricao = cedente_match.group(2).strip()
+                                    descricao = re.sub(r'\d+', '', descricao).strip()
+                                    if nota_match:
+                                        nota = nota_match.group(1)  # Atualiza a nota se encontrada
+                                    descricao_completa = f"{descricao} - NF {nota}"
+                                    break  # Sai do loop após encontrar a descrição
+                                k += 1
+                            
+                            if descricao_completa:
+                                dados.append([data, valor, descricao_completa])
+                    j += 1
 
-        if not dados:
-            return {"status": "fail", "message": "Nenhuma linha com débito encontrada."}
-
-        caminho_csv = salvar_dados("dados_filtrados.csv")
-        if not caminho_csv:
-            return {"status": "fail", "message": "Usuário cancelou a operação."}
-
-        with open(caminho_csv, "w", newline="", encoding="utf-8") as arquivo_csv:
-            escritor = csv.writer(arquivo_csv, delimiter=";")
-            escritor.writerow(
-                [
-                    "Data",
-                    "Conta",
-                    "Nome Conta",
-                    "Histórico",
-                    "Nome Histórico",
-                    "Crédito",
-                    "Débito",
-                    "Saldo",
-                ]
-            )
-            escritor.writerows(dados)
-
-        return {"status": "success", "message": "Arquivo CSV gerado com sucesso!"}
+        # Salvar os dados em um arquivo CSV
+        nome_sugerido = "dados_extraidos.csv"
+        caminho_arquivo = salvar_dados(nome_sugerido)
+        
+        if caminho_arquivo:
+            with open(caminho_arquivo, mode='w', newline='', encoding='utf-8-sig') as file:
+                writer = csv.writer(file, delimiter=';', quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(["Data", "Valor", "Descrição"])
+                writer.writerows(dados)
+            
+            return {"status": "success", "message": "Arquivo CSV gerado com sucesso!"}
+        else:
+            return {"status": "fail", "message": "Nenhum arquivo selecionado para salvar."}
 
     except Exception as e:
         return {"status": "fail", "message": f"Erro ao processar o PDF: {e}"}
 
-
 def main():
-    if len(sys.argv) > 2 and sys.argv[1] == "processar_pagos_qualitplacas":
+    if len(sys.argv) > 2 and sys.argv[1] == "processar_safra_qualitplacas":
         caminho_pdf = sys.argv[2]
-        result = processar_pagos_qualitplacas(caminho_pdf)
+        result = processar_safra_qualitplacas(caminho_pdf)
         print(json.dumps(result))
-
 
 if __name__ == "__main__":
     main()

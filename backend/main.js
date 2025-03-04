@@ -1212,3 +1212,81 @@ ipcMain.handle(
     }
   }
 );
+
+// Função para chamar o script Python e processar os pagamentos
+function processarSafraQualitplacas(caminho_pdf) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/qualitplacas.py"), // Caminho para o script Python
+        "processar_safra_qualitplacas", // Argumento para o script Python
+        caminho_pdf, // Caminho do PDF passado pelo frontend
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout); // Parseia a resposta do Python
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de processar o pagamento do frontend
+ipcMain.handle("processar-safra-qualitplacas", async (event, caminho_pdf) => {
+  try {
+    const result = await processarSafraQualitplacas(caminho_pdf);
+    return result;
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});
+
+function processarRelatorioEmpresas() {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/dashboard.py"),
+        "processar_relatorio_empresas",
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de processar o relatório do frontend
+ipcMain.handle("processar-relatorio-empresas", async () => {
+  try {
+    const result = await processarRelatorioEmpresas();
+    return result;
+  } catch (error) {
+    return { success: false, message: error };
+  }
+});

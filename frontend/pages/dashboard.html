@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quanttum - Fiscal</title>
+    <title>Quanttum - Dashboard</title>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
@@ -14,68 +14,56 @@
       title="Web Awesome"
       href="/css/app-wa-025281ccfe06a9d63cd35694641e07d3.css?vsn=d"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-thin.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-solid.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-regular.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-light.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-thin.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-thin.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css"
     />
-
     <link
       rel="stylesheet"
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css"
     />
     <link rel="stylesheet" href="../styles/utils.css" />
-    <link rel="stylesheet" href="../styles/menus.css" />
+    <link rel="stylesheet" href="../styles/dashboard.css" />
   </head>
   <body>
     <!-- Sidebar -->
@@ -140,28 +128,65 @@
       </nav>
     </aside>
 
+    <!-- Main Content -->
     <main>
-      <h1>Fiscal</h1>
-      <!-- Seção Empresas -->
-      <div class="card-section"></div>
+      <div class="dashboard">
+        <!-- Primeira Linha -->
+        <div class="dashboard-row">
+          <div class="dashboard-card">
+            <h3>Total de Empresas</h3>
+            <p id="total-empresas">0</p>
+          </div>
+          <div class="dashboard-card">
+            <h3>Empresas com Sigla L</h3>
+            <p id="total-empresas-L">0</p>
+          </div>
+        </div>
 
-      <!-- Seção Extratos -->
-      <div class="card-section"></div>
+        <!-- Segunda Linha -->
+        <div class="dashboard-row">
+          <div class="dashboard-card">
+            <h3>Supermercados (L)</h3>
+            <canvas id="chart-supermercados-L"></canvas>
+          </div>
+          <div class="dashboard-card">
+            <h3>Comércio (L)</h3>
+            <canvas id="chart-comercio-L"></canvas>
+          </div>
+          <div class="dashboard-card">
+            <h3>Indústrias (L)</h3>
+            <canvas id="chart-industrias-L"></canvas>
+          </div>
+          <div class="dashboard-card">
+            <h3>Express (L)</h3>
+            <canvas id="chart-express-L"></canvas>
+          </div>
+        </div>
 
-      <!-- Seção Arquivos -->
-      <div class="card-section">
-        <h2>Arquivos</h2>
-        <div class="card-grid"></div>
-        <a href="renomear_das.html" class="card" id="renomear-das">
-          <span class="material-symbols-rounded card-icon">edit_document</span>
-          <span class="material-symbols-rounded card-favorite">star</span>
-          <h3 class="card-title">Renomear DAS</h3>
-          <p class="card-description">Renomear guias de DAS em massa.</p>
-        </a>
+        <!-- Terceira Linha -->
+        <div class="dashboard-row">
+          <div class="dashboard-card">
+            <h3>Supermercados (DG)</h3>
+            <canvas id="chart-supermercados-DG"></canvas>
+          </div>
+          <div class="dashboard-card">
+            <h3>Comércio (DG)</h3>
+            <canvas id="chart-comercio-DG"></canvas>
+          </div>
+          <div class="dashboard-card">
+            <h3>Indústrias (DG)</h3>
+            <canvas id="chart-industrias-DG"></canvas>
+          </div>
+          <div class="dashboard-card">
+            <h3>Express (DG)</h3>
+            <canvas id="chart-express-DG"></canvas>
+          </div>
+        </div>
       </div>
     </main>
-    <!-- Script -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/utils.js"></script>
-    <script src="../js/menus.js"></script>
+    <script src="../js/dashboard.js"></script>
   </body>
 </html>
