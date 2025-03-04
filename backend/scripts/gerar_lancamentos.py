@@ -24,15 +24,11 @@ def salvar_dados(nome_sugerido, extensao=".txt"):
         return None
 
 def gerar_valor_proporcional(valor_restante, dias_restantes):
-    # Calcula o valor médio por dia
-    valor_medio = valor_restante / dias_restantes
+    # Define o valor máximo como 30 mil reais
+    valor_maximo = 30000
 
-    # Define limites mínimos e máximos
-    valor_minimo = max(1, valor_medio * 0.5)  # Pelo menos 50% do valor médio
-    valor_maximo = min(30000, valor_medio * 1.5)  # No máximo 150% do valor médio
-
-    # Gera um valor aleatório dentro dos limites
-    valor_dia = round(random.uniform(valor_minimo, valor_maximo), 2)  # Arredonda para 2 casas decimais
+    # Gera um valor aleatório entre 1 e o valor máximo
+    valor_dia = round(random.uniform(1, valor_maximo), 2)  # Arredonda para 2 casas decimais
 
     # Garante que o valor não ultrapasse o valor restante
     valor_dia = min(valor_dia, valor_restante)
@@ -77,26 +73,21 @@ def gerar_lancamentos(valor_total, data_inicio, data_fim, tipo):
         valor_restante = valor_total
         dias_restantes = len(dias_uteis)
 
-        while valor_restante > 0 and dias_restantes > 0:
+        while valor_restante > 0:
             # Gera um valor proporcional
             valor_dia = gerar_valor_proporcional(valor_restante, dias_restantes)
 
             # Adiciona o lançamento
             lancamentos.append({
-                "data": dias_uteis[len(dias_uteis) - dias_restantes].strftime("%d%m%Y"),  # Formato ddmmyyyy
+                "data": dias_uteis[len(lancamentos) % len(dias_uteis)].strftime("%d%m%Y"),  # Repete os dias se necessário
                 "debito": debito,
                 "credito": credito,
                 "valor": valor_dia,
                 "descricao": descricao
             })
 
-            # Atualiza o valor restante e o número de dias restantes
+            # Atualiza o valor restante
             valor_restante -= valor_dia
-            dias_restantes -= 1
-
-        # Ajusta o último valor para garantir que o total seja exato
-        if valor_restante > 0:
-            lancamentos[-1]["valor"] += valor_restante
 
         # Gera o nome sugerido para o arquivo TXT
         nome_sugerido = f"lancamentos_{tipo.lower()}.txt"
