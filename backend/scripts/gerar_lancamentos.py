@@ -23,10 +23,7 @@ def salvar_dados(nome_sugerido, extensao=".txt"):
     except Exception:
         return None
 
-def gerar_valor_proporcional(valor_restante, dias_restantes):
-    # Define o valor máximo como 30 mil reais
-    valor_maximo = 30000
-
+def gerar_valor_proporcional(valor_restante, dias_restantes, valor_maximo):
     # Gera um valor aleatório entre 1 e o valor máximo
     valor_dia = round(random.uniform(1, valor_maximo), 2)  # Arredonda para 2 casas decimais
 
@@ -35,11 +32,11 @@ def gerar_valor_proporcional(valor_restante, dias_restantes):
 
     return valor_dia
 
-def gerar_lancamentos(valor_total, data_inicio, data_fim, tipo):
+def gerar_lancamentos(valor_total, valor_maximo, data_inicio, data_fim, tipo):
     try:
         # Converte as strings de data para objetos datetime
-        data_inicio = datetime.strptime(data_inicio, "%d/%m/%Y")
-        data_fim = datetime.strptime(data_fim, "%d/%m/%Y")
+        data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
+        data_fim = datetime.strptime(data_fim, "%Y-%m-%d")
 
         # Lista para armazenar os dias úteis
         dias_uteis = []
@@ -75,7 +72,7 @@ def gerar_lancamentos(valor_total, data_inicio, data_fim, tipo):
 
         while valor_restante > 0:
             # Gera um valor proporcional
-            valor_dia = gerar_valor_proporcional(valor_restante, dias_restantes)
+            valor_dia = gerar_valor_proporcional(valor_restante, dias_restantes, valor_maximo)
 
             # Adiciona o lançamento
             lancamentos.append({
@@ -110,14 +107,75 @@ def gerar_lancamentos(valor_total, data_inicio, data_fim, tipo):
 
     except Exception as e:
         return {"status": "fail", "message": f"Erro ao gerar lançamentos: {e}"}
+    
+def gerar_despesas(valor_total, valor_maximo, data_inicio, data_fim, contas):
+    try:
+        data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
+        data_fim = datetime.strptime(data_fim, "%Y-%m-%d")
+        
+        dias_uteis = []
+        data_atual = data_inicio
+        while data_atual <= data_fim:
+            if data_atual.weekday() < 5:
+                dias_uteis.append(data_atual)
+            data_atual += timedelta(days=1)
+        
+        if not dias_uteis:
+            return {"status": "fail", "message": "Nenhum dia útil no intervalo informado."}
+
+        lancamentos = []
+        valor_restante = valor_total
+        dias_restantes = len(dias_uteis)
+        
+        while valor_restante > 0:
+            valor_dia = gerar_valor_proporcional(valor_restante, dias_restantes, valor_maximo)
+            conta_debito = random.choice(contas)
+
+            lancamentos.append({
+                "data": dias_uteis[len(lancamentos) % len(dias_uteis)].strftime("%d%m%Y"),
+                "debito": conta_debito,
+                "credito": 1496,
+                "valor": valor_dia,
+                "descricao": f"Valor NF {random.randint(10000, 99999)}"
+            })
+
+            valor_restante -= valor_dia
+
+        nome_sugerido = "lancamentos_despesas.txt"
+        caminho_arquivo = salvar_dados(nome_sugerido, ".txt")
+        if not caminho_arquivo:
+            return {"status": "fail", "message": "Operação de salvar arquivo cancelada pelo usuário."}
+
+        with open(caminho_arquivo, mode="w", encoding="utf-8") as arquivo_txt:
+            for lancamento in lancamentos:
+                linha = (
+                    f"{lancamento['data']};{lancamento['debito']};{lancamento['credito']};"
+                    f"{lancamento['valor']:.2f}".replace(".", ",") + f";{lancamento['descricao']}\n"
+                )
+                arquivo_txt.write(linha)
+
+        return {"status": "success", "message": "Arquivo TXT gerado com sucesso!"}
+    
+    except Exception as e:
+        return {"status": "fail", "message": f"Erro ao gerar despesas: {e}"}
 
 def main():
     if sys.argv[1] == 'gerar_lancamentos':
         valor_total = float(sys.argv[2])  # Valor total a ser diluído
-        data_inicio = sys.argv[3]  # Data de início no formato "dd/mm/yyyy"
-        data_fim = sys.argv[4]  # Data de fim no formato "dd/mm/yyyy"
-        tipo = sys.argv[5]  # Tipo: "pagamento" ou "recebimento"
-        result = gerar_lancamentos(valor_total, data_inicio, data_fim, tipo)
+        valor_maximo = float(sys.argv[3])  # Valor máximo por lançamento
+        data_inicio = sys.argv[4]  # Data de início no formato "yyyy-mm-dd"
+        data_fim = sys.argv[5]  # Data de fim no formato "yyyy-mm-dd"
+        tipo = sys.argv[6]  # Tipo: "pagamento" ou "recebimento"
+        result = gerar_lancamentos(valor_total, valor_maximo, data_inicio, data_fim, tipo)
+        print(json.dumps(result))
+        
+    elif sys.argv[1] == 'gerar_despesas':
+        valor_total = float(sys.argv[2])
+        valor_maximo = float(sys.argv[3])
+        data_inicio = sys.argv[4]
+        data_fim = sys.argv[5]
+        contas = list(map(int, sys.argv[6].split(',')))
+        result = gerar_despesas(valor_total, valor_maximo, data_inicio, data_fim, contas)
         print(json.dumps(result))
 
 if __name__ == '__main__':

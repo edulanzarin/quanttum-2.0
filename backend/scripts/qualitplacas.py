@@ -54,18 +54,17 @@ def processar_safra_qualitplacas(caminho_pdf):
                         if valor.replace(',', '.') not in ['0.00', '0.0', '0']:
                             # Extrai a descrição da próxima linha (ou linhas)
                             descricao_completa = ""
-                            nota = "0"  # Valor padrão para a nota fiscal
+                            nota = ""
                             k = j + 1
                             while k < len(lines):
                                 descricao_line = lines[k]
                                 nota_match = re.search(r'DOC\.:(\d+)-', descricao_line)
                                 cedente_match = re.search(r'CEDENTE:\s*(\d+-)?(.+)', descricao_line)
                                 
-                                if cedente_match:
+                                if nota_match and cedente_match:
+                                    nota = nota_match.group(1)
                                     descricao = cedente_match.group(2).strip()
                                     descricao = re.sub(r'\d+', '', descricao).strip()
-                                    if nota_match:
-                                        nota = nota_match.group(1)  # Atualiza a nota se encontrada
                                     descricao_completa = f"{descricao} - NF {nota}"
                                     break  # Sai do loop após encontrar a descrição
                                 k += 1

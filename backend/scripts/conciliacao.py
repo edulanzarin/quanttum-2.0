@@ -102,7 +102,7 @@ def adicionar_conciliacao(empresa, banco, descricao, debito=None, credito=None):
 def cadastrar_conciliacao_em_massa(empresa, banco, caminho_planilha):
     try:
         if not os.path.exists(caminho_planilha):
-            return {"status": "fail", "message": "Arquivo da planilha não encontrado."}
+            return {"success": False, "message": "Arquivo da planilha não encontrado."}
 
         planilha = pd.read_excel(caminho_planilha)
 
@@ -127,16 +127,15 @@ def cadastrar_conciliacao_em_massa(empresa, banco, caminho_planilha):
                     except ValueError:
                         pass  # Mantém como string se não for possível converter
 
-
                 resultado = adicionar_conciliacao(empresa, banco, descricao, debito, credito)
                 print(json.dumps(resultado))
 
             except Exception as e:
-               return {"status": "fail", "message": f"Erro ao processar a linha: {e}"}
-           
-        return {"status": "success", "message": "Conciliações em massa adicionadas com sucesso!"}
+                return {"success": False, "message": f"Erro ao processar a linha: {e}"}
+
+        return {"success": True, "message": "Conciliações em massa adicionadas com sucesso!"}
     except Exception as e:
-        return {"status": "fail", "message": f"Erro ao processar a planilha: {e}"}
+        return {"success": False, "message": f"Erro ao processar a planilha: {e}"}
 
 def gerenciar_conciliacao(operacao, dados):
     try:

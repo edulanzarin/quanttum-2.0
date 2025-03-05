@@ -263,6 +263,58 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
 
     except Exception as e:
         return {"status": "erro", "message": f"Erro ao processar as planilhas: {str(e)}"}
+    
+def conciliar_apenas_banco(planilha_banco, numeroEmpresa, numeroBanco):
+    """Concilia a planilha do banco com as informações do Firebase, sem a planilha de pagos."""
+    try:
+        # Carrega a planilha do banco
+        banco_df = carregar_planilha(planilha_banco)
+
+        # Renomeia dinamicamente as três primeiras colunas
+        banco_df.columns = ["DATA", "DESCRICAO", "VALOR"] + list(banco_df.columns[3:])
+
+        # Converte as colunas para os tipos corretos
+        banco_df["DATA"] = pd.to_datetime(banco_df["DATA"], format="%d/%m/%Y", errors="coerce")
+        banco_df["VALOR"] = banco_df["VALOR"].astype(str).replace(r'\.0$', '', regex=True)
+
+        # Obtém as conciliações da empresa
+        conciliacoes = obter_conciliacao(numeroEmpresa)
+        if not conciliacoes["success"]:
+            return {"status": "erro", "message": conciliacoes["message"]}
+
+        # Filtra as conciliações pelo número do banco
+        conciliacoes_filtradas = [
+            conc for conc in conciliacoes["conciliacoes"] if conc.get("banco") == numeroBanco
+        ]
+
+        # Aplica as conciliações na planilha do banco
+        for conc in conciliacoes_filtradas:
+            descricao_firebase = conc.get("descricao", "")
+            debito_firebase = conc.get("debito", "")
+
+            # Verifica se a descrição do Firebase está contida na descrição do banco
+            banco_df.loc[
+                banco_df["DESCRICAO"].str.contains(descricao_firebase, case=False, na=False),
+                "DEBITO"
+            ] = int(float(debito_firebase))
+
+        # Substitui NaN por string vazia na coluna DEBITO
+        banco_df["DEBITO"] = banco_df["DEBITO"].fillna("")
+
+        # Garante que a coluna DEBITO seja tratada como string (formato geral)
+        banco_df["DEBITO"] = banco_df["DEBITO"].astype(str).replace(r'\.0', '', regex=True)
+
+        # Salva o resultado em um arquivo CSV
+        caminho_arquivo = salvar_dados("banco_conciliado.csv")
+        if caminho_arquivo:
+            banco_df.to_csv(caminho_arquivo, index=False, sep=';', encoding='utf-8-sig')
+            return {"status": "success", "message": "Planilha conciliada salva com sucesso!"}
+        else:
+            return {"status": "erro", "message": "Nenhum arquivo foi selecionado para salvar."}
+
+    except Exception as e:
+        return {"status": "erro", "message": f"Erro ao processar a planilha: {str(e)}"}
+
 
 
 def main():
@@ -287,6 +339,14 @@ def main():
             numeroEmpresa = int(sys.argv[4])
             numeroBanco = int(sys.argv[5])
             result = conciliar_pagos_banco_conta(caminho_banco, caminho_pagos, numeroEmpresa, numeroBanco)
+            
+        elif action == 'conciliar_apenas_banco':
+            if len(sys.argv) < 5:
+                raise ValueError("Argumentos insuficientes para conciliar apenas o banco.")
+            caminho_banco = sys.argv[2]
+            numeroEmpresa = int(sys.argv[3])
+            numeroBanco = int(sys.argv[4])
+            result = conciliar_apenas_banco(caminho_banco, numeroEmpresa, numeroBanco)
 
         else:
             raise ValueError("Ação desconhecida.")

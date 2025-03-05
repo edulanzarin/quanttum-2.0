@@ -3,42 +3,41 @@ const valor = document.getElementById("valor");
 const valorMaximo = document.getElementById("valor_maximo");
 const dataInicio = document.getElementById("data_inicio");
 const dataFim = document.getElementById("data_fim");
-const pagamentoCheckbox = document.getElementById("pagamento");
-const recebimentoCheckbox = document.getElementById("recebimento");
+const contasInput = document.getElementById("contas");
 
-// Formata o campo de valor em reais
+// Formatação dos campos de valor
 new Cleave("#valor", {
   numeral: true,
   numeralThousandsGroupStyle: "thousand",
-  numeralDecimalMark: ",", // Usa vírgula como separador decimal
-  delimiter: ".", // Usa ponto como separador de milhar
+  numeralDecimalMark: ",",
+  delimiter: ".",
   prefix: "R$ ",
-  rawValueTrimPrefix: true, // Remove o prefixo ao obter o valor
+  rawValueTrimPrefix: true,
 });
 
 new Cleave("#valor_maximo", {
   numeral: true,
   numeralThousandsGroupStyle: "thousand",
-  numeralDecimalMark: ",", // Usa vírgula como separador decimal
-  delimiter: ".", // Usa ponto como separador de milhar
+  numeralDecimalMark: ",",
+  delimiter: ".",
   prefix: "R$ ",
-  rawValueTrimPrefix: true, // Remove o prefixo ao obter o valor
+  rawValueTrimPrefix: true,
 });
 
 processarBtn.addEventListener("click", async () => {
-  // Captura os valores dos campos
   const valorTotal = parseFloat(
     valor.value.replace("R$ ", "").replace(/\./g, "").replace(",", ".")
   );
-
   const valorMaximoTotal = parseFloat(
     valorMaximo.value.replace("R$ ", "").replace(/\./g, "").replace(",", ".")
   );
+  const dataInicioValue = dataInicio.value;
+  const dataFimValue = dataFim.value;
+  const contas = contasInput.value
+    .split(";")
+    .map((conta) => conta.trim())
+    .filter((conta) => conta !== "");
 
-  const dataInicioValue = dataInicio.value; // Já está no formato yyyy-mm-dd
-  const dataFimValue = dataFim.value; // Já está no formato yyyy-mm-dd
-
-  // Verifica se o valor é válido
   if (isNaN(valorTotal) || valorTotal <= 0) {
     createNotification(
       "Informe um valor válido.",
@@ -59,7 +58,6 @@ processarBtn.addEventListener("click", async () => {
     return;
   }
 
-  // Verifica se as datas foram informadas
   if (!dataInicioValue || !dataFimValue) {
     createNotification(
       "Informe o intervalo de datas.",
@@ -70,7 +68,6 @@ processarBtn.addEventListener("click", async () => {
     return;
   }
 
-  // Verifica se o intervalo de datas é válido
   const inicio = new Date(dataInicioValue);
   const fim = new Date(dataFimValue);
   if (inicio > fim) {
@@ -83,46 +80,27 @@ processarBtn.addEventListener("click", async () => {
     return;
   }
 
-  // Verifica se nenhuma checkbox foi marcada
-  if (!pagamentoCheckbox.checked && !recebimentoCheckbox.checked) {
+  if (contas.length === 0) {
     createNotification(
-      "Selecione o tipo de lançamento (Pagamento ou Recebimento).",
+      "Informe ao menos uma conta.",
       "#1d1830",
       "darkred",
       errorGifUrl
     );
     return;
   }
-
-  // Verifica se ambas as checkboxes estão marcadas
-  if (pagamentoCheckbox.checked && recebimentoCheckbox.checked) {
-    createNotification(
-      "Selecione apenas um tipo de lançamento.",
-      "#1d1830",
-      "darkred",
-      errorGifUrl
-    );
-    return;
-  }
-
-  // Define o tipo de lançamento
-  const tipo = pagamentoCheckbox.checked ? "pagamento" : "recebimento";
 
   try {
-    showLoadingModal(); // Exibe o modal de carregamento
-
-    // Chama a função do Electron para gerar os lançamentos
-    const resultado = await window.electronAPI.gerarLancamentos(
+    showLoadingModal();
+    const resultado = await window.electronAPI.gerarDespesas(
       valorTotal,
       valorMaximoTotal,
-      dataInicioValue, // Já está no formato yyyy-mm-dd
-      dataFimValue, // Já está no formato yyyy-mm-dd
-      tipo
+      dataInicioValue,
+      dataFimValue,
+      contas
     );
+    hideLoadingModal();
 
-    hideLoadingModal(); // Oculta o modal de carregamento
-
-    // Exibe o retorno
     if (resultado.status === "success") {
       createNotification(
         resultado.message,
@@ -139,10 +117,10 @@ processarBtn.addEventListener("click", async () => {
       );
     }
   } catch (erro) {
-    console.error("Erro ao gerar lançamentos:", erro);
-    hideLoadingModal(); // Oculta o modal de carregamento em caso de erro
+    console.error("Erro ao gerar despesas:", erro);
+    hideLoadingModal();
     createNotification(
-      "Ocorreu um erro ao gerar os lançamentos.",
+      "Ocorreu um erro ao gerar as despesas.",
       "#1d1830",
       "darkred",
       errorGifUrl

@@ -1,8 +1,10 @@
 const processarBtn = document.querySelector(".process-btn");
 const filePlanilha = document.getElementById("filePlanilha");
+const debitoCheckbox = document.getElementById("debito");
+const creditoCheckbox = document.getElementById("credito");
 
 // Função para abrir o seletor de arquivos usando o Electron
-document.querySelectorAll(".file-button").forEach((label, index) => {
+document.querySelector(".file-button").addEventListener("click", () => {
   // Abre o seletor de arquivos via Electron API
   window.electronAPI
     .selecionarArquivo()
@@ -30,10 +32,6 @@ processarBtn.addEventListener("click", async () => {
     );
     return;
   }
-
-  // Verifica se nenhuma checkbox foi marcada
-  const debitoCheckbox = document.getElementById("debito");
-  const creditoCheckbox = document.getElementById("credito");
 
   if (!debitoCheckbox.checked && !creditoCheckbox.checked) {
     createNotification(

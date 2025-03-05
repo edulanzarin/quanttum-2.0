@@ -1163,7 +1163,13 @@ ipcMain.handle("obter-sugestoes", async () => {
 });
 
 // Função para chamar o script Python e gerar lançamentos
-function gerarLancamentos(valorTotal, dataInicio, dataFim, tipo) {
+function gerarLancamentos(
+  valorTotal,
+  valorMaximoTotal,
+  dataInicio,
+  dataFim,
+  tipo
+) {
   return new Promise((resolve, reject) => {
     execFile(
       pythonPath,
@@ -1171,6 +1177,7 @@ function gerarLancamentos(valorTotal, dataInicio, dataFim, tipo) {
         path.join(__dirname, "scripts/gerar_lancamentos.py"),
         "gerar_lancamentos",
         valorTotal.toString(),
+        valorMaximoTotal.toString(),
         dataInicio,
         dataFim,
         tipo,
@@ -1198,13 +1205,73 @@ function gerarLancamentos(valorTotal, dataInicio, dataFim, tipo) {
 // Recebendo o pedido de gerar lançamentos do frontend
 ipcMain.handle(
   "gerar-lancamentos",
-  async (event, valorTotal, dataInicio, dataFim, tipo) => {
+  async (event, valorTotal, valorMaximoTotal, dataInicio, dataFim, tipo) => {
     try {
       const result = await gerarLancamentos(
         valorTotal,
+        valorMaximoTotal,
         dataInicio,
         dataFim,
         tipo
+      );
+      return result;
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);
+
+// Função para chamar o script Python e gerar despesas
+function gerarDespesas(
+  valorTotal,
+  valorMaximoTotal,
+  dataInicio,
+  dataFim,
+  contas
+) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath,
+      [
+        path.join(__dirname, "scripts/gerar_lancamentos.py"),
+        "gerar_despesas",
+        valorTotal.toString(),
+        valorMaximoTotal.toString(),
+        dataInicio,
+        dataFim,
+        contas.join(","), // Passa a lista de contas como string separada por vírgula
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de gerar despesas do frontend
+ipcMain.handle(
+  "gerar-despesas",
+  async (event, valorTotal, valorMaximoTotal, dataInicio, dataFim, contas) => {
+    try {
+      const result = await gerarDespesas(
+        valorTotal,
+        valorMaximoTotal,
+        dataInicio,
+        dataFim,
+        contas
       );
       return result;
     } catch (error) {
@@ -1290,3 +1357,51 @@ ipcMain.handle("processar-relatorio-empresas", async () => {
     return { success: false, message: error };
   }
 });
+
+function conciliarApenasBanco(caminhoBanco, numeroEmpresa, numeroBanco) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath, // Caminho para o Python
+      [
+        path.join(__dirname, "scripts/conciliar.py"), // Caminho para o script Python
+        "conciliar_apenas_banco", // Ação a ser executada
+        caminhoBanco,
+        numeroEmpresa.toString(), // Converte para string
+        numeroBanco.toString(), // Converte para string
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de conciliação do frontend
+ipcMain.handle(
+  "conciliar-apenas-banco",
+  async (event, caminhoBanco, numeroEmpresa, numeroBanco) => {
+    try {
+      const result = await conciliarApenasBanco(
+        caminhoBanco,
+        numeroEmpresa,
+        numeroBanco
+      );
+      return result;
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);

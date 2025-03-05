@@ -97,16 +97,33 @@ contextBridge.exposeInMainWorld("electronAPI", {
   obterSugestoes: () => {
     return ipcRenderer.invoke("obter-sugestoes");
   },
-  gerarLancamentos: (valorTotal, dataInicio, dataFim, tipo) =>
+  gerarLancamentos: (valorTotal, valorMaximoTotal, dataInicio, dataFim, tipo) =>
     ipcRenderer.invoke(
       "gerar-lancamentos",
       valorTotal,
+      valorMaximoTotal,
       dataInicio,
       dataFim,
       tipo
+    ),
+  gerarDespesas: (valorTotal, valorMaximoTotal, dataInicio, dataFim, contas) =>
+    ipcRenderer.invoke(
+      "gerar-despesas",
+      valorTotal,
+      valorMaximoTotal,
+      dataInicio,
+      dataFim,
+      contas
     ),
   processarSafraQualitplacas: (caminho_pdf) =>
     ipcRenderer.invoke("processar-safra-qualitplacas", caminho_pdf),
   processarRelatorioEmpresas: () =>
     ipcRenderer.invoke("processar-relatorio-empresas"),
+  conciliarApenasBanco: (caminhoBanco, numeroEmpresa, numeroBanco) =>
+    ipcRenderer.invoke(
+      "conciliar-apenas-banco",
+      caminhoBanco,
+      numeroEmpresa,
+      numeroBanco
+    ),
 });

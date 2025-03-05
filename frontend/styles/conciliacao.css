@@ -17,7 +17,7 @@ main {
   padding: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
-  max-width: 500px;
+  max-width: 650px;
   width: 100%;
 }
 
@@ -56,7 +56,8 @@ h1 {
   outline: none;
 }
 
-.file-button {
+.file-button,
+.filter-button {
   padding: 10px 15px;
   border: none;
   border-radius: 8px;
@@ -67,7 +68,8 @@ h1 {
   transition: background 0.3s ease;
 }
 
-.file-button:hover {
+.file-button:hover,
+.filter-button:hover {
   background: #8b66dc;
 }
 
@@ -139,6 +141,32 @@ h1 {
 
 .footer a:hover {
   text-decoration: underline;
+}
+
+.button-container {
+  display: flex;
+  width: 100%;
+}
+
+/* Menu de Alternância */
+.menu-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.menu-alternar {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.menu-alternar:hover {
+  background: #f5f5f5;
 }
 
 /* Tabela */
