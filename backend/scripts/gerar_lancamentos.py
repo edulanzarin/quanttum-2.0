@@ -24,8 +24,17 @@ def salvar_dados(nome_sugerido, extensao=".txt"):
         return None
 
 def gerar_valor_proporcional(valor_restante, dias_restantes, valor_maximo):
-    # Gera um valor aleatório entre 1 e o valor máximo
-    valor_dia = round(random.uniform(1, valor_maximo), 2)  # Arredonda para 2 casas decimais
+    if dias_restantes <= 0:
+        return valor_restante  # Retorna o valor restante se não houver mais dias
+
+    # Calcula o valor médio por dia
+    valor_medio = valor_restante / dias_restantes
+
+    # Define um intervalo aceitável para o valor do dia
+    intervalo = valor_medio * 0.2  # 20% do valor médio como margem
+
+    # Gera um valor aleatório dentro do intervalo aceitável
+    valor_dia = round(random.uniform(valor_medio - intervalo, valor_medio + intervalo), 2)
 
     # Garante que o valor não ultrapasse o valor restante
     valor_dia = min(valor_dia, valor_restante)
@@ -68,15 +77,17 @@ def gerar_lancamentos(valor_total, valor_maximo, data_inicio, data_fim, tipo):
 
         # Distribui o valor total em dias úteis
         valor_restante = valor_total
-        dias_restantes = len(dias_uteis)
 
         while valor_restante > 0:
-            # Gera um valor proporcional
-            valor_dia = gerar_valor_proporcional(valor_restante, dias_restantes, valor_maximo)
+            # Escolhe um dia aleatório da lista de dias úteis
+            dia_aleatorio = random.choice(dias_uteis)
+
+            # Gera um valor proporcional, respeitando o valor máximo
+            valor_dia = round(random.uniform(1, min(valor_maximo, valor_restante)), 2)
 
             # Adiciona o lançamento
             lancamentos.append({
-                "data": dias_uteis[len(lancamentos) % len(dias_uteis)].strftime("%d%m%Y"),  # Repete os dias se necessário
+                "data": dia_aleatorio.strftime("%d%m%Y"),
                 "debito": debito,
                 "credito": credito,
                 "valor": valor_dia,
@@ -110,42 +121,57 @@ def gerar_lancamentos(valor_total, valor_maximo, data_inicio, data_fim, tipo):
     
 def gerar_despesas(valor_total, valor_maximo, data_inicio, data_fim, contas):
     try:
+        # Converte as strings de data para objetos datetime
         data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
         data_fim = datetime.strptime(data_fim, "%Y-%m-%d")
         
+        # Lista para armazenar os dias úteis
         dias_uteis = []
         data_atual = data_inicio
         while data_atual <= data_fim:
-            if data_atual.weekday() < 5:
+            if data_atual.weekday() < 5:  # 0 = segunda, 4 = sexta
                 dias_uteis.append(data_atual)
             data_atual += timedelta(days=1)
         
+        # Verifica se há dias úteis no intervalo
         if not dias_uteis:
             return {"status": "fail", "message": "Nenhum dia útil no intervalo informado."}
 
+        # Dicionário para armazenar os lançamentos
         lancamentos = []
         valor_restante = valor_total
-        dias_restantes = len(dias_uteis)
-        
+
         while valor_restante > 0:
-            valor_dia = gerar_valor_proporcional(valor_restante, dias_restantes, valor_maximo)
+            # Escolhe um dia aleatório da lista de dias úteis
+            dia_aleatorio = random.choice(dias_uteis)
+
+            # Escolhe uma conta de débito aleatória
             conta_debito = random.choice(contas)
 
+            # Gera um valor proporcional, respeitando o valor máximo
+            valor_dia = round(random.uniform(1, min(valor_maximo, valor_restante)), 2)
+
+            # Adiciona o lançamento
             lancamentos.append({
-                "data": dias_uteis[len(lancamentos) % len(dias_uteis)].strftime("%d%m%Y"),
+                "data": dia_aleatorio.strftime("%d%m%Y"),
                 "debito": conta_debito,
                 "credito": 1496,
                 "valor": valor_dia,
                 "descricao": f"Valor NF {random.randint(10000, 99999)}"
             })
 
+            # Atualiza o valor restante
             valor_restante -= valor_dia
 
+        # Gera o nome sugerido para o arquivo TXT
         nome_sugerido = "lancamentos_despesas.txt"
+
+        # Abre o diálogo para salvar o arquivo
         caminho_arquivo = salvar_dados(nome_sugerido, ".txt")
         if not caminho_arquivo:
             return {"status": "fail", "message": "Operação de salvar arquivo cancelada pelo usuário."}
 
+        # Gera o arquivo TXT
         with open(caminho_arquivo, mode="w", encoding="utf-8") as arquivo_txt:
             for lancamento in lancamentos:
                 linha = (
