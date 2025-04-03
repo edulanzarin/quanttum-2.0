@@ -6,6 +6,7 @@ import sys
 from tkinter import filedialog
 import firebase_admin
 from firebase_admin import credentials, firestore
+from openpyxl import load_workbook
 
 CAMINHO_JSON = os.path.join(os.path.dirname(
     __file__), '..', 'database', 'serviceAccountKey.json')
@@ -26,16 +27,15 @@ def salvar_dados(nome_sugerido):
 
         caminho_arquivo = filedialog.asksaveasfilename(
             initialfile=nome_sugerido,
-            defaultextension=".csv",
-            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
+            defaultextension=".xlsx",  # Alterado para .xlsx
+            filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")]  # Atualizado para Excel
         )
 
         root.destroy()  # Fecha a janela do Tkinter corretamente
         return caminho_arquivo if caminho_arquivo else None
     except Exception:
         return None
-
-
+    
 def carregar_planilha(caminho_arquivo):
     """Carrega uma planilha CSV ou XLSX."""
     try:
@@ -45,7 +45,20 @@ def carregar_planilha(caminho_arquivo):
         if caminho_arquivo.endswith('.csv'):
             df = pd.read_csv(caminho_arquivo, delimiter=';', encoding='latin1')
         elif caminho_arquivo.endswith('.xlsx'):
-            df = pd.read_excel(caminho_arquivo)
+            # Carrega o arquivo Excel com openpyxl para verificar a formatação
+            wb = load_workbook(caminho_arquivo)
+            ws = wb.active
+
+            # Converte a planilha para DataFrame
+            df = pd.DataFrame(ws.values)
+            df.columns = df.iloc[0]  # Define a primeira linha como cabeçalho
+            df = df[1:]  # Remove a primeira linha
+
+            # Verifica a formatação das células para identificar valores em vermelho
+            for row in ws.iter_rows(min_row=2, max_col=3, max_row=ws.max_row):
+                cell = row[2]  # Coluna de VALOR
+                if cell.font.color and cell.font.color.rgb == 'FFFF0000':  # Vermelho
+                    df.at[cell.row - 1, 'VALOR'] = f"-{cell.value}"  # Adiciona um "-" para indicar pagamento
         else:
             raise ValueError("Formato de arquivo não suportado. Use CSV ou XLSX.")
 
@@ -55,6 +68,10 @@ def carregar_planilha(caminho_arquivo):
 
         # Renomeia as colunas para garantir consistência
         df.columns = ["DATA", "DESCRICAO", "VALOR"] + list(df.columns[3:])
+
+        # Converte a coluna VALOR para numérico, tratando valores negativos
+        df["VALOR"] = pd.to_numeric(df["VALOR"], errors="coerce")
+
         return df
 
     except Exception as e:
@@ -119,11 +136,10 @@ def conciliar_pagos_banco(planilha_banco, planilha_pagos):
                 resultado_df = pd.concat(
                     [resultado_df, linha.to_frame().T], ignore_index=True)
 
-        # Salva o resultado em um arquivo CSV
-        caminho_arquivo = salvar_dados("banco_conciliado.csv")
+        # Salva o resultado em um arquivo Excel
+        caminho_arquivo = salvar_dados("banco_conciliado.xlsx")
         if caminho_arquivo:
-            resultado_df.to_csv(caminho_arquivo, index=False,
-                                sep=';', encoding='utf-8-sig')
+            resultado_df.to_excel(caminho_arquivo, index=False)  # Salva como Excel
             return {"status": "success", "message": "Planilha conciliada salva com sucesso!"}
         else:
             return {"status": "erro", "message": "Nenhum arquivo foi selecionado para salvar."}
@@ -193,9 +209,6 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
             conc for conc in conciliacoes["conciliacoes"] if conc.get("banco") == numeroBanco
         ]
 
-        # Lista para armazenar os resultados
-        resultado = []
-
         # Itera sobre as linhas do banco
         for i, linha_banco in banco_df.iterrows():
             data_banco = linha_banco["DATA"]
@@ -203,60 +216,50 @@ def conciliar_pagos_banco_conta(planilha_banco, planilha_pagos, numeroEmpresa, n
 
             # Procura correspondência na planilha de pagos
             correspondencia = pagos_df[
-                (pagos_df["DATA"] == data_banco) & (
-                    pagos_df["VALOR"] == valor_banco)
+                (pagos_df["DATA"] == data_banco) & (pagos_df["VALOR"] == valor_banco)
             ]
 
             if not correspondencia.empty:
                 # Substitui a descrição do banco pela descrição de pagos
-                linha_banco["DESCRICAO_BANCO"] = correspondencia.iloc[0]["DESCRICAO_PAGOS"]
+                banco_df.at[i, "DESCRICAO"] = correspondencia.iloc[0]["DESCRICAO"]
                 # Remove a linha de pagos para evitar duplicações
                 pagos_df.drop(correspondencia.index, inplace=True)
 
-            # Adiciona a linha do banco ao resultado
-            resultado.append(linha_banco)
-
-        # Converte o resultado de volta para um DataFrame
-        resultado_df = pd.DataFrame(resultado)
-
-        # Filtra as linhas do banco que não foram conciliadas
-        linhas_nao_conciliadas = banco_df[
-            ~banco_df.apply(lambda row: (row["DATA"], row["VALOR"]), axis=1).isin(
-                resultado_df[["DATA", "VALOR"]].apply(tuple, axis=1)
-            )
-        ]
-
-        # Adiciona as linhas não conciliadas ao resultado, mantendo a ordem original
-        for i, linha in banco_df.iterrows():
-            if i in linhas_nao_conciliadas.index:
-                resultado_df = pd.concat(
-                    [resultado_df, linha.to_frame().T], ignore_index=True)
+        # Adiciona as colunas DEBITO e CREDITO ao DataFrame, se ainda não existirem
+        if "DEBITO" not in banco_df.columns:
+            banco_df["DEBITO"] = ""  # Inicializa com valores vazios
+        if "CREDITO" not in banco_df.columns:
+            banco_df["CREDITO"] = ""  # Inicializa com valores vazios
 
         # Atualiza a planilha do banco com as informações das conciliações
         for conc in conciliacoes_filtradas:
             descricao_firebase = conc.get("descricao", "")
             debito_firebase = conc.get("debito", "")
+            credito_firebase = conc.get("credito", "")
 
             # Verifica se a descrição do Firebase está contida na descrição do banco
-            resultado_df.loc[
-                resultado_df["DESCRICAO_BANCO"].str.contains(
-                    descricao_firebase, case=False, na=False),
+            banco_df.loc[
+                banco_df["DESCRICAO"].str.contains(descricao_firebase, case=False, na=False, regex=False),
                 "DEBITO"
-                # Converte para inteiro e remove o .0
             ] = int(float(debito_firebase))
 
-        # Substitui NaN por string vazia na coluna DEBITO
-        resultado_df["DEBITO"] = resultado_df["DEBITO"].fillna("")
+            banco_df.loc[
+                banco_df["DESCRICAO"].str.contains(descricao_firebase, case=False, na=False, regex=False),
+                "CREDITO"
+            ] = int(float(credito_firebase))
 
-        # Garante que a coluna DEBITO seja tratada como string (formato geral)
-        resultado_df["DEBITO"] = resultado_df["DEBITO"].astype(
-            str).replace(r'\.0', '', regex=True)
+        # Substitui NaN por string vazia nas colunas DEBITO e CREDITO
+        banco_df["DEBITO"] = banco_df["DEBITO"].fillna("")
+        banco_df["CREDITO"] = banco_df["CREDITO"].fillna("")
 
-        # Salva o resultado em um arquivo CSV
-        caminho_arquivo = salvar_dados("banco_conciliado.csv")
+        # Garante que as colunas DEBITO e CREDITO sejam tratadas como string (formato geral)
+        banco_df["DEBITO"] = banco_df["DEBITO"].astype(str).replace(r'\.0', '', regex=True)
+        banco_df["CREDITO"] = banco_df["CREDITO"].astype(str).replace(r'\.0', '', regex=True)
+
+        # Salva o resultado em um arquivo Excel
+        caminho_arquivo = salvar_dados("banco_conciliado.xlsx")
         if caminho_arquivo:
-            resultado_df.to_csv(caminho_arquivo, index=False,
-                                sep=';', encoding='utf-8-sig')
+            banco_df.to_excel(caminho_arquivo, index=False)  # Salva como Excel
             return {"status": "success", "message": "Planilha conciliada salva com sucesso!"}
         else:
             return {"status": "erro", "message": "Nenhum arquivo foi selecionado para salvar."}

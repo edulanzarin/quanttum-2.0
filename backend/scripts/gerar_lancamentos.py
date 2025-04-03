@@ -139,30 +139,58 @@ def gerar_despesas(valor_total, valor_maximo, data_inicio, data_fim, contas):
 
         # Dicionário para armazenar os lançamentos
         lancamentos = []
-        valor_restante = valor_total
+        
+        # Calcula o número de dias úteis
+        num_dias_uteis = len(dias_uteis)
+        
+        # Valor médio diário aproximado
+        valor_medio_diario = valor_total / num_dias_uteis
+        
+        # Ajusta o valor máximo se necessário
+        valor_maximo = min(valor_maximo, valor_medio_diario * 5)  # Limita a 5x o valor médio
+        
+        # Divide o valor total pelas contas
+        valor_por_conta = valor_total / len(contas)
+        
+        # Para cada conta, gera lançamentos proporcionalmente
+        for conta in contas:
+            valor_restante = valor_por_conta
+            
+            # Enquanto ainda houver valor para distribuir
+            while valor_restante > 0.01:  # Considera centavos
+                # Escolhe um dia aleatório
+                dia_aleatorio = random.choice(dias_uteis)
+                
+                # Filtra dias restantes
+                dias_restantes = len([d for d in dias_uteis if d >= dia_aleatorio])
+                
+                # Calcula valor sugerido
+                valor_sugerido = min(
+                    valor_maximo,
+                    max(1, valor_restante / max(1, dias_restantes * random.uniform(0.8, 1.2)))
+                )
+                
+                # Ajusta para não ultrapassar o valor restante
+                valor_lancamento = round(min(valor_sugerido, valor_restante), 2)
+                
+                # Garante valor mínimo de 1 real
+                valor_lancamento = max(valor_lancamento, 1.00)
+                
+                # Adiciona o lançamento
+                lancamentos.append({
+                    "data": dia_aleatorio.strftime("%d%m%Y"),
+                    "debito": conta,
+                    "credito": 1496,
+                    "valor": valor_lancamento,
+                    "descricao": f"Valor NF {random.randint(10000, 99999)}"
+                })
 
-        while valor_restante > 0:
-            # Escolhe um dia aleatório da lista de dias úteis
-            dia_aleatorio = random.choice(dias_uteis)
+                # Atualiza o valor restante
+                valor_restante -= valor_lancamento
 
-            # Escolhe uma conta de débito aleatória
-            conta_debito = random.choice(contas)
-
-            # Gera um valor proporcional, respeitando o valor máximo
-            valor_dia = round(random.uniform(1, min(valor_maximo, valor_restante)), 2)
-
-            # Adiciona o lançamento
-            lancamentos.append({
-                "data": dia_aleatorio.strftime("%d%m%Y"),
-                "debito": conta_debito,
-                "credito": 1496,
-                "valor": valor_dia,
-                "descricao": f"Valor NF {random.randint(10000, 99999)}"
-            })
-
-            # Atualiza o valor restante
-            valor_restante -= valor_dia
-
+        # Ordena os lançamentos por data
+        lancamentos.sort(key=lambda x: datetime.strptime(x['data'], '%d%m%Y'))
+        
         # Gera o nome sugerido para o arquivo TXT
         nome_sugerido = "lancamentos_despesas.txt"
 
@@ -187,11 +215,11 @@ def gerar_despesas(valor_total, valor_maximo, data_inicio, data_fim, contas):
 
 def main():
     if sys.argv[1] == 'gerar_lancamentos':
-        valor_total = float(sys.argv[2])  # Valor total a ser diluído
-        valor_maximo = float(sys.argv[3])  # Valor máximo por lançamento
-        data_inicio = sys.argv[4]  # Data de início no formato "yyyy-mm-dd"
-        data_fim = sys.argv[5]  # Data de fim no formato "yyyy-mm-dd"
-        tipo = sys.argv[6]  # Tipo: "pagamento" ou "recebimento"
+        valor_total = float(sys.argv[2]) 
+        valor_maximo = float(sys.argv[3]) 
+        data_inicio = sys.argv[4]  
+        data_fim = sys.argv[5] 
+        tipo = sys.argv[6]  
         result = gerar_lancamentos(valor_total, valor_maximo, data_inicio, data_fim, tipo)
         print(json.dumps(result))
         

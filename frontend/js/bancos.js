@@ -1,10 +1,10 @@
 const processarBtn = document.querySelector(".process-btn");
 const filePath = document.getElementById("filePath");
-const bancoSelect = document.getElementById("banco"); // Captura o select do banco
-const contaDebito = document.getElementById("contaDebito"); // Captura o campo de conta débito
+const bancoSelect = document.getElementById("banco");
+const contaDebito = document.getElementById("contaDebito");
 
-// Função para abrir o seletor de arquivos usando o Electron
-document.querySelectorAll(".file-button").forEach((label, index) => {
+document.querySelector(".file-button").addEventListener("click", () => {
+  // Abre o seletor de arquivos via Electron API
   window.electronAPI
     .selecionarArquivo()
     .then((caminho) => {
@@ -17,16 +17,27 @@ document.querySelectorAll(".file-button").forEach((label, index) => {
     });
 });
 
-// Função para processar o arquivo
+// Função para habilitar ou desabilitar a seleção do banco com base no tipo de arquivo
+filePath.addEventListener("input", () => {
+  const extensaoArquivo = filePath.value.split(".").pop().toLowerCase();
+  if (extensaoArquivo === "ofx") {
+    bancoSelect.disabled = true;
+    bancoSelect.value = ""; // Reseta a seleção
+  } else {
+    bancoSelect.disabled = false;
+  }
+});
+
 processarBtn.addEventListener("click", async () => {
   const caminhoArquivo = filePath.value;
   const bancoSelecionado = bancoSelect.value;
-  const numeroContaDebito = contaDebito.value; // Captura o número da conta débito
+  const numeroContaDebito = contaDebito.value;
+  const extensaoArquivo = caminhoArquivo.split(".").pop().toLowerCase();
 
-  // Verifica se um banco foi selecionado
-  if (!bancoSelecionado) {
+  // Se o arquivo for PDF, exige a seleção do banco
+  if (extensaoArquivo === "pdf" && !bancoSelecionado) {
     createNotification(
-      "É necessário selecionar um banco.",
+      "É necessário selecionar um banco para arquivos PDF.",
       "#1d1830",
       "darkred",
       errorGifUrl
@@ -34,7 +45,6 @@ processarBtn.addEventListener("click", async () => {
     return;
   }
 
-  // Verifica se o arquivo foi selecionado
   if (!caminhoArquivo) {
     createNotification(
       "É necessário selecionar um arquivo.",
@@ -45,7 +55,6 @@ processarBtn.addEventListener("click", async () => {
     return;
   }
 
-  // Verifica se o número da conta débito foi preenchido (apenas para Viacredi)
   if (bancoSelecionado === "viacredi" && !numeroContaDebito) {
     createNotification(
       "É necessário informar o número da conta débito.",
@@ -58,33 +67,23 @@ processarBtn.addEventListener("click", async () => {
 
   try {
     showLoadingModal();
-
-    // Verifica a extensão do arquivo
-    const extensaoArquivo = caminhoArquivo.split(".").pop().toLowerCase();
-
     let resultado;
-    if (extensaoArquivo === "ofx" && bancoSelecionado === "viacredi") {
-      // Processa arquivo OFX da Viacredi
+    if (extensaoArquivo === "ofx") {
       resultado = await window.electronAPI.gerenciarBancos(
-        "viacredi_ofx",
-        numeroContaDebito, // Passa o número da conta débito
+        "ofx",
+        numeroContaDebito,
         caminhoArquivo
       );
-    } else if (
-      extensaoArquivo === "pdf" &&
-      bancoSelecionado === "santander_dois"
-    ) {
-      // Processa arquivo PDF do Santander
+    } else if (extensaoArquivo === "pdf") {
       resultado = await window.electronAPI.gerenciarBancos(
         bancoSelecionado,
-        null, // Não precisa de número da conta débito
+        null,
         caminhoArquivo
       );
     } else {
-      // Extensão ou banco não suportado
       hideLoadingModal();
       createNotification(
-        "Formato de arquivo ou banco não suportado.",
+        "Formato de arquivo não suportado.",
         "#1d1830",
         "darkred",
         errorGifUrl
@@ -93,22 +92,14 @@ processarBtn.addEventListener("click", async () => {
     }
 
     hideLoadingModal();
-
-    if (resultado.status === "success") {
-      createNotification(
-        "Relatório processado com sucesso!",
-        "#1d1830",
-        "darkgreen",
-        successGifUrl
-      );
-    } else {
-      createNotification(
-        `Erro: ${resultado.message}`,
-        "#1d1830",
-        "darkred",
-        errorGifUrl
-      );
-    }
+    createNotification(
+      resultado.status === "success"
+        ? "Relatório processado com sucesso!"
+        : `Erro: ${resultado.message}`,
+      "#1d1830",
+      resultado.status === "success" ? "darkgreen" : "darkred",
+      resultado.status === "success" ? successGifUrl : errorGifUrl
+    );
   } catch (erro) {
     console.error("Erro ao processar o arquivo:", erro);
     createNotification(

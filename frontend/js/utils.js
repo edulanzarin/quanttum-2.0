@@ -44,15 +44,13 @@ function redirecionarParaLogin() {
 const successGifUrl = "../assets/animations/success.gif";
 const errorGifUrl = "../assets/animations/error.gif";
 
-// Função para criar notificações empilháveis
 function createNotification(message, backgroundColor, borderColor, gifUrl) {
-  // Cria um novo elemento de notificação
   const notification = document.createElement("div");
   notification.classList.add("notification");
   notification.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
   notification.style.borderColor = "#6f00ff";
 
-  // Adiciona o GIF de sucesso ou erro
+  // Adiciona o GIF
   const gif = document.createElement("img");
   gif.src = gifUrl;
   gif.style.width = "24px";
@@ -71,6 +69,11 @@ function createNotification(message, backgroundColor, borderColor, gifUrl) {
   copyIcon.textContent = "content_copy";
   notification.appendChild(copyIcon);
 
+  // Adiciona a barrinha de carregamento
+  const progressBar = document.createElement("div");
+  progressBar.classList.add("progress-bar");
+  notification.appendChild(progressBar);
+
   // Define a posição 'top' com base nas notificações existentes
   const topOffset = calculateNotificationOffset();
   notification.style.top = `${topOffset}px`;
@@ -84,7 +87,6 @@ function createNotification(message, backgroundColor, borderColor, gifUrl) {
       .writeText(message)
       .then(() => {
         console.log("Conteúdo copiado para a área de transferência: ", message);
-        // Mostra uma mensagem de confirmação
         const confirmation = document.createElement("div");
         confirmation.textContent = "Copiado!";
         confirmation.style.position = "absolute";
@@ -103,13 +105,12 @@ function createNotification(message, backgroundColor, borderColor, gifUrl) {
       });
   });
 
-  // Remove a notificação após 5 segundos e atualiza as posições
+  // Remove a notificação após 7 segundos e atualiza as posições
   setTimeout(() => {
     notification.remove();
     updateNotificationPositions();
   }, 7000);
 }
-
 // Função para calcular a posição 'top' da nova notificação
 function calculateNotificationOffset() {
   const notifications = document.querySelectorAll(".notification");

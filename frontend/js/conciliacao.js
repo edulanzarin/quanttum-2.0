@@ -175,7 +175,7 @@ document
     try {
       showLoadingModal();
       const resultado = await window.electronAPI.gerenciarConciliacao("obter", {
-        empresa: parseInt(empresa, 10),
+        empresa: parseInt(empresa, 10), // Convertendo para inteiro
       });
       hideLoadingModal();
 
@@ -199,7 +199,6 @@ document
     }
   });
 
-// Função para preencher a tabela
 function preencherTabela(conciliacoes) {
   const tabela = document
     .getElementById("conciliationTable")
@@ -217,7 +216,7 @@ function preencherTabela(conciliacoes) {
 
   conciliacoes.forEach((conciliacao) => {
     const row = tabela.insertRow();
-    row.insertCell(0).textContent = empresa || "-";
+    row.insertCell(0).textContent = conciliacao.empresa || "-"; // Corrigido para usar conciliacao.empresa
     row.insertCell(1).textContent = conciliacao.banco || "-";
     row.insertCell(2).textContent = conciliacao.descricao || "-";
     row.insertCell(3).textContent = conciliacao.debito || "-";

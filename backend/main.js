@@ -1405,3 +1405,51 @@ ipcMain.handle(
     }
   }
 );
+
+function renomearDas(caminhoPasta, adicionarData, incluirSubpastas) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      pythonPath, // Caminho para o Python
+      [
+        path.join(__dirname, "scripts/renomear_das.py"), // Caminho para o script Python
+        "renomear_das", // Ação a ser executada
+        caminhoPasta,
+        adicionarData.toString(), // Converte para string
+        incluirSubpastas.toString(), // Converte para string
+      ],
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Erro: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`Erro: ${stderr}`);
+          return;
+        }
+        try {
+          const result = JSON.parse(stdout);
+          resolve(result);
+        } catch (e) {
+          reject("Erro ao processar a resposta do Python.");
+        }
+      }
+    );
+  });
+}
+
+// Recebendo o pedido de renomeação do frontend
+ipcMain.handle(
+  "renomear-das",
+  async (event, caminhoPasta, adicionarData, incluirSubpastas) => {
+    try {
+      const result = await renomearDas(
+        caminhoPasta,
+        adicionarData,
+        incluirSubpastas
+      );
+      return result;
+    } catch (error) {
+      return { success: false, message: error };
+    }
+  }
+);

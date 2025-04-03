@@ -140,12 +140,13 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid #6f00ff;
-  border-radius: 12px;
+  border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-out;
   z-index: 1000;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding-bottom: 14px;
 }
 
 .notification:hover {
@@ -168,6 +169,28 @@ body {
 
 .notification:hover .copy-icon {
   opacity: 1;
+}
+
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background-color: #6f00ff;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  transform-origin: left;
+  animation: progressBar 7s linear forwards;
+}
+
+@keyframes progressBar {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
 }
 
 @keyframes fadeIn {

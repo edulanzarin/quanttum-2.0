@@ -59,15 +59,15 @@ def processar_safra_qualitplacas(caminho_pdf):
                             k = j + 1
                             while k < len(lines):
                                 descricao_line = lines[k]
-                                nota_match = re.search(r'DOC\.:(\d+)-', descricao_line)
+                                nota_match = re.search(r'DOC\.:([^\s]+)', descricao_line)
                                 cedente_match = re.search(r'CEDENTE:\s*(\d+-)?(.+)', descricao_line)
-                                
+
                                 if nota_match and cedente_match:
                                     nota = nota_match.group(1)
                                     descricao = cedente_match.group(2).strip()
                                     descricao = re.sub(r'\d+', '', descricao).strip()
                                     descricao_completa = f"{descricao} - NF {nota}"
-                                    break  # Sai do loop após encontrar a descrição
+                                    break
                                 k += 1
                             
                             if descricao_completa:

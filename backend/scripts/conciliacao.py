@@ -22,6 +22,10 @@ except Exception as e:
 
 def obter_conciliacao(empresa):
     try:
+        # Verifica se o valor da empresa é um número inteiro
+        if not isinstance(empresa, int):
+            return {"success": False, "message": "O valor da empresa deve ser um número inteiro."}
+
         # Referência ao documento da empresa
         empresa_ref = db.collection('empresas').document(str(empresa))
         empresa_doc = empresa_ref.get()

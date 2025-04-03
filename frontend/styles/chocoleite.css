@@ -40,7 +40,8 @@ h1 {
   margin-bottom: 20px;
 }
 
-.file-input input {
+.file-input input,
+.file-input select {
   flex: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -50,7 +51,8 @@ h1 {
   color: #333;
 }
 
-.file-input input:focus {
+.file-input input:focus,
+.file-input select:focus {
   border-color: #6f00ff;
   outline: none;
 }

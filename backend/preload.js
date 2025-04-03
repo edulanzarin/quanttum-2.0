@@ -126,4 +126,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
       numeroEmpresa,
       numeroBanco
     ),
+  renomearDas: (caminhoPasta, adicionarData, incluirSubpastas) =>
+    ipcRenderer.invoke(
+      "renomear-das",
+      caminhoPasta,
+      adicionarData,
+      incluirSubpastas
+    ),
 });

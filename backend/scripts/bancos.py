@@ -1,4 +1,3 @@
-import csv
 import json
 import re
 import sys
@@ -8,6 +7,7 @@ from tkinter import filedialog
 import pdfplumber
 import unicodedata
 from xml.etree import ElementTree as ET
+import pandas as pd  # Adicionado para salvar em Excel
 
 
 def normalizar_texto(texto):
@@ -21,17 +21,17 @@ def normalizar_texto(texto):
 def salvar_dados(nome_sugerido):
     try:
         root = tk.Tk()
-        root.withdraw()
-        root.attributes("-topmost", 1)
+        root.withdraw()  # Não exibe a janela principal do Tkinter
+        root.attributes("-topmost", 1)  # Mantém a janela de diálogo no topo
         root.after(100, lambda: root.attributes("-topmost", 0))
 
         caminho_arquivo = filedialog.asksaveasfilename(
             initialfile=nome_sugerido,
-            defaultextension=".csv",
-            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+            defaultextension=".xlsx",  # Alterado para .xlsx
+            filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")]  # Atualizado para Excel
         )
 
-        root.destroy()
+        root.destroy()  # Fecha a janela do Tkinter corretamente
         return caminho_arquivo if caminho_arquivo else None
     except Exception:
         return None
@@ -83,7 +83,7 @@ def processar_santander_dois(caminho):
         return {"status": "fail", "message": f"Erro ao processar o PDF: {e}"}
 
 
-def processar_viacredi_ofx(caminho, numero_banco):
+def processar_ofx(caminho, numero_banco):
     try:
         with open(caminho, 'r', encoding='utf-8') as file:
             ofx_content = file.read()
@@ -105,10 +105,10 @@ def processar_viacredi_ofx(caminho, numero_banco):
             data = f"{dtposted[:4]}-{dtposted[4:6]}-{dtposted[6:8]}"
             trnamt = stmttrn.find("TRNAMT").text.replace(",", ".")
             memo = stmttrn.find("MEMO").text if stmttrn.find("MEMO") is not None else ""
-            trntype = stmttrn.find("TRNTYPE").text
-
-            debito = numero_banco if trntype == "DEBIT" else ""
-            credito = numero_banco if trntype == "CREDIT" else ""
+            
+            # Verifica se é débito ou crédito com base no valor
+            debito = numero_banco if float(trnamt) > 0 else ""
+            credito = numero_banco if float(trnamt) < 0 else ""
 
             dados.append([data, debito, credito, trnamt, memo])
 
@@ -117,32 +117,29 @@ def processar_viacredi_ofx(caminho, numero_banco):
     except Exception as e:
         return {"status": "fail", "message": f"Erro ao processar o OFX: {e}"}
 
+
 def salvar_arquivo(dados):
     if dados:
-        caminho_arquivo = salvar_dados("santander_dois.csv")
+        caminho_arquivo = salvar_dados("santander_dois.xlsx")
         if caminho_arquivo:
-            with open(
-                caminho_arquivo, mode="w", newline="", encoding="utf-8-sig"
-            ) as file:
-                writer = csv.writer(file, delimiter=";", quoting=csv.QUOTE_MINIMAL)
-                writer.writerow(["Data", "Descrição", "Valor"])
-                writer.writerows(dados)
-        return {"status": "success", "message": "Arquivo CSV gerado com sucesso!"}
+            # Cria um DataFrame com os dados
+            df = pd.DataFrame(dados, columns=["Data", "Descrição", "Valor"])
+            # Salva o DataFrame em um arquivo Excel
+            df.to_excel(caminho_arquivo, index=False)
+            return {"status": "success", "message": "Arquivo Excel gerado com sucesso!"}
     else:
         return {"status": "fail", "message": "Nenhum dado encontrado."}
 
 
 def salvar_arquivo_ofx(dados):
     if dados:
-        caminho_arquivo = salvar_dados("viacredi_ofx.csv")
+        caminho_arquivo = salvar_dados("extrato.xlsx")
         if caminho_arquivo:
-            with open(
-                caminho_arquivo, mode="w", newline="", encoding="utf-8-sig"
-            ) as file:
-                writer = csv.writer(file, delimiter=";", quoting=csv.QUOTE_MINIMAL)
-                writer.writerow(["Data", "Débito", "Crédito", "Valor", "Descrição"])
-                writer.writerows(dados)
-        return {"status": "success", "message": "Arquivo CSV gerado com sucesso!"}
+            # Cria um DataFrame com os dados
+            df = pd.DataFrame(dados, columns=["Data", "Débito", "Crédito", "Valor", "Descrição"])
+            # Salva o DataFrame em um arquivo Excel
+            df.to_excel(caminho_arquivo, index=False)
+            return {"status": "success", "message": "Arquivo Excel gerado com sucesso!"}
     else:
         return {"status": "fail", "message": "Nenhum dado encontrado."}
 
@@ -150,8 +147,8 @@ def salvar_arquivo_ofx(dados):
 def gerenciar_bancos(banco, numero_banco, caminho_pdf):
     if banco == "santander_dois":
         return processar_santander_dois(caminho_pdf)
-    elif banco == "viacredi_ofx":
-        return processar_viacredi_ofx(caminho_pdf, numero_banco)
+    elif banco == "ofx":
+        return processar_ofx(caminho_pdf, numero_banco)
     else:
         return {"status": "fail", "message": "Banco não suportado."}
 

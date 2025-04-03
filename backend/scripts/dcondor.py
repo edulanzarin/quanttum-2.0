@@ -22,7 +22,7 @@ def verificar_contabilidade(nota, descricao, valor, contabilidade_df):
         nota_formatada = nota_str.zfill(i)
         
         # Filtrando contabilidade_df de forma vetorizada para verificar se essa nota existe na contabilidade
-        mask = contabilidade_df.iloc[:, 6].str.contains(descricao) & contabilidade_df.iloc[:, 6].str.contains(nota_formatada)
+        mask = contabilidade_df.iloc[:, 6].str.contains('|'.join(descricao)) & contabilidade_df.iloc[:, 6].str.contains(nota_formatada)
         
         matching_rows = contabilidade_df[mask]
         
@@ -60,22 +60,23 @@ def processar_planilhas(caminho_livros_fiscais, caminho_contabilidade_gerencial)
     indices_remover_fiscais = []
     indices_remover_contabilidade = []
 
-    for cfop, descricao in cfops.items():
-        # Buscar as linhas correspondentes diretamente
-        linhas_livros_fiscais = livros_fiscais_df[livros_fiscais_df.iloc[:, 6] == int(cfop)]
-        
-        # Agrupar por número de nota para somar os valores
-        grupo_notas = linhas_livros_fiscais.groupby(linhas_livros_fiscais.iloc[:, 2])  # Agrupa pelo número da nota fiscal
-        
-        for numero_nota, grupo in grupo_notas:
-            valor_total_nota = grupo.iloc[:, 12].sum()  # Somando os valores das notas fiscais agrupadas
-            linha_contabilidade_idx = verificar_contabilidade(numero_nota, descricao, valor_total_nota, contabilidade_df)
+    for cfop, descricoes in cfops.items():
+        for descricao in descricoes:
+            # Buscar as linhas correspondentes diretamente
+            linhas_livros_fiscais = livros_fiscais_df[livros_fiscais_df.iloc[:, 6] == int(cfop)]
+            
+            # Agrupar por número de nota para somar os valores
+            grupo_notas = linhas_livros_fiscais.groupby(linhas_livros_fiscais.iloc[:, 2])  # Agrupa pelo número da nota fiscal
+            
+            for numero_nota, grupo in grupo_notas:
+                valor_total_nota = grupo.iloc[:, 12].sum()  # Somando os valores das notas fiscais agrupadas
+                linha_contabilidade_idx = verificar_contabilidade(numero_nota, descricao, valor_total_nota, contabilidade_df)
 
-            if linha_contabilidade_idx is not None:
-                # Acessar a linha com o índice retornado
-                linhas_encontradas.append(contabilidade_df.iloc[linha_contabilidade_idx])
-                indices_remover_fiscais.extend(grupo.index)  # Marca todas as linhas do grupo para remover
-                indices_remover_contabilidade.append(linha_contabilidade_idx)
+                if linha_contabilidade_idx is not None:
+                    # Acessar a linha com o índice retornado
+                    linhas_encontradas.append(contabilidade_df.iloc[linha_contabilidade_idx])
+                    indices_remover_fiscais.extend(grupo.index)  # Marca todas as linhas do grupo para remover
+                    indices_remover_contabilidade.append(linha_contabilidade_idx)
     
     livros_fiscais_df.drop(indices_remover_fiscais, inplace=True)
     contabilidade_df.drop(indices_remover_contabilidade, inplace=True)
@@ -109,7 +110,7 @@ def obter_cfop():
         if not cfops:
             return {"success": False, "message": "Arquivo JSON está vazio!"}
 
-        cfop_lista = [{"cfop": k, "descricao": v} for k, v in cfops.items()]
+        cfop_lista = [{"cfop": k, "descricao": ", ".join(v)} for k, v in cfops.items()]
         
         return {"success": True, "cfops": cfop_lista}
 
@@ -136,9 +137,12 @@ def adicionar_cfop(cfop, referencia):
 
         # Adiciona a nova CFOP
         if cfop in cfops:
-            return {"success": False, "message": "CFOP já existe no arquivo."}
-        
-        cfops[cfop] = referencia
+            # Se a CFOP já existe, adiciona a nova descrição à lista existente
+            if referencia not in cfops[cfop]:
+                cfops[cfop].append(referencia)
+        else:
+            # Se a CFOP não existe, cria uma nova entrada com a descrição
+            cfops[cfop] = [referencia]
 
         # Salva o arquivo com o novo CFOP adicionado
         with open(CAMINHO_JSON, "w", encoding="utf-8") as file:
