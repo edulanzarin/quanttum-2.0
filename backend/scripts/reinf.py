@@ -6,14 +6,29 @@ from fpdf import FPDF
 import sys
 import tkinter as tk
 from tkinter import filedialog
+import datetime 
 
 def normalizar_texto(texto):
-    """Normaliza o texto removendo caracteres especiais e espaços extras."""
-    if texto:
-        texto = str(texto)  # Converte para string
-        texto = re.sub(r'[\\/:"*?<>|]', '', texto)
-        return texto.strip()
-    return ""
+    """Normaliza o texto removendo/reemplazando caracteres problemáticos"""
+    if pd.isna(texto):
+        return "SEM_NOME"
+    
+    # Substitui caracteres Unicode problemáticos
+    texto = str(texto).strip()
+    replacements = {
+        '–': '-',  # Travessão para hífen
+        '’': "'",  # Aspas curvadas para simples
+        '‘': "'",
+        '“': '"',
+        '”': '"',
+        '…': '...'
+    }
+    for char, replacement in replacements.items():
+        texto = texto.replace(char, replacement)
+    
+    # Remove outros caracteres especiais
+    texto = re.sub(r'[\\/:"*?<>|]', '_', texto)
+    return texto if texto else "SEM_NOME"
 
 def salvar_dados(nome_sugerido):
     """Abre uma janela de diálogo para o usuário escolher onde salvar o arquivo."""
@@ -33,22 +48,21 @@ def salvar_dados(nome_sugerido):
         return None
 
 def gerar_pdfs_reinf(caminho_arquivo):
+    log_errors = []  # Lista para armazenar todos os erros
+    
     try:
         if not os.path.exists(caminho_arquivo):
             return {"status": "fail", "message": "Arquivo não encontrado."}
 
-        # Abre a janela de diálogo para escolher a pasta de saída
         pasta_saida = salvar_dados("PDFs_Gerados")
         if not pasta_saida:
             return {"status": "fail", "message": "Nenhuma pasta selecionada."}
 
-        # Verifica se o arquivo Excel pode ser lido
         try:
             df = pd.read_excel(caminho_arquivo)
         except Exception as e:
             return {"status": "fail", "message": f"Erro ao ler o arquivo Excel: {e}"}
 
-        # Verifica se as colunas necessárias existem
         if df.shape[1] < 3:
             return {"status": "fail", "message": "O arquivo Excel não tem colunas suficientes."}
 
@@ -65,71 +79,102 @@ def gerar_pdfs_reinf(caminho_arquivo):
         logo_path = os.path.join(script_dir, "../../frontend/assets/images/icon.png")
 
         for index, row in df.iterrows():
-            company = row[0]
-            cnpj = cnpjs[index]
-            nmr_empresa = nmr_empresas[index]
+            try:
+                company = str(row[0]) if not pd.isna(row[0]) else "EMPRESA_DESCONHECIDA"
+                cnpj = str(cnpjs[index]) if not pd.isna(cnpjs[index]) else "SEM_CNPJ"
+                nmr_empresa = str(nmr_empresas[index]) if not pd.isna(nmr_empresas[index]) else "SEM_NUMERO"
 
-            for header in headers:
-                value = row[header]
-                if pd.isnull(value):
-                    continue
-                if "Aluguel" in header and value == "Possui":
-                    continue
+                for header in headers:
+                    try:
+                        value = row[header]
+                        if pd.isnull(value):
+                            continue
 
-                pdf = FPDF()
-                pdf.add_page()
-                pdf.set_auto_page_break(auto=True, margin=15)
+                        # Criação do PDF
+                        pdf = FPDF()
+                        pdf.add_page()
+                        pdf.set_auto_page_break(auto=True, margin=15)
 
-                # Configurações de fonte e cores
-                pdf.set_font("Helvetica", size=12)
-                pdf.set_text_color(0, 0, 0)  # Cor do texto: preto
+                        # Configurações de fonte e cores
+                        pdf.set_font("Helvetica", size=12)
+                        pdf.set_text_color(0, 0, 0)  # Cor do texto: preto
 
-                # Adicionar logo (com tratamento de erro)
-                try:
-                    pdf.image(logo_path, x=10, y=10, w=20)  # Logo no canto superior esquerdo, pequena
-                except FileNotFoundError:
-                    pass  # Continua sem a logo
+                        # Adicionar logo (com tratamento de erro)
+                        try:
+                            pdf.image(logo_path, x=10, y=10, w=20)  # Logo no canto superior esquerdo, pequena
+                        except FileNotFoundError:
+                            pass  # Continua sem a logo
 
-                # Adicionar título
-                pdf.set_font("Helvetica", 'B', 18)
-                pdf.set_text_color(0, 51, 102)  # Cor azul escuro
-                pdf.cell(0, 30, txt="Relatório de Dados", ln=True, align="C")
+                        # Adicionar título
+                        pdf.set_font("Helvetica", 'B', 18)
+                        pdf.set_text_color(0, 51, 102)  # Cor azul escuro
+                        pdf.cell(0, 30, txt="Relatório de Dados", ln=True, align="C")
 
-                # Adicionar informações da empresa em uma tabela
-                pdf.set_font("Helvetica", size=12)
-                pdf.set_text_color(0, 0, 0)  # Cor do texto: preto
+                        # Adicionar informações da empresa em uma tabela
+                        pdf.set_font("Helvetica", size=12)
+                        pdf.set_text_color(0, 0, 0)  # Cor do texto: preto
 
-                # Cabeçalho da tabela
-                pdf.set_fill_color(230, 230, 230)  # Cor de fundo cinza claro
-                pdf.set_font("Helvetica", 'B', 12)
-                pdf.cell(95, 10, txt="Informações", border=1, fill=True)
-                pdf.cell(95, 10, txt="Valores", border=1, fill=True, ln=True)
+                        # Cabeçalho da tabela
+                        pdf.set_fill_color(230, 230, 230)  # Cor de fundo cinza claro
+                        pdf.set_font("Helvetica", 'B', 12)
+                        pdf.cell(95, 10, txt="Informações", border=1, fill=True)
+                        pdf.cell(95, 10, txt="Valores", border=1, fill=True, ln=True)
 
-                # Dados da tabela
-                pdf.set_font("Helvetica", size=12)
-                pdf.cell(95, 10, txt="Empresa", border=1)
-                pdf.cell(95, 10, txt=str(company), border=1, ln=True)  # Converte para string
-                pdf.cell(95, 10, txt="CNPJ", border=1)
-                pdf.cell(95, 10, txt=str(cnpj), border=1, ln=True)  # Converte para string
-                pdf.cell(95, 10, txt="Número", border=1)
-                pdf.cell(95, 10, txt=str(nmr_empresa), border=1, ln=True)  # Converte para string
-                pdf.cell(95, 10, txt=str(header), border=1)  # Converte para string
-                pdf.cell(95, 10, txt=str(value), border=1, ln=True)  # Converte para string
+                        # Dados da tabela
+                        pdf.set_font("Helvetica", size=12)
+                        pdf.cell(95, 10, txt="Empresa", border=1)
+                        pdf.cell(95, 10, txt=str(company), border=1, ln=True)  # Converte para string
+                        pdf.cell(95, 10, txt="CNPJ", border=1)
+                        pdf.cell(95, 10, txt=str(cnpj), border=1, ln=True)  # Converte para string
+                        pdf.cell(95, 10, txt="Número", border=1)
+                        pdf.cell(95, 10, txt=str(nmr_empresa), border=1, ln=True)  # Converte para string
+                        pdf.cell(95, 10, txt=str(header), border=1)  # Converte para string
+                        pdf.cell(95, 10, txt=str(value), border=1, ln=True)  # Converte para string
 
-                # Rodapé
-                pdf.set_y(-15)
-                pdf.set_font("Helvetica", 'I', 8)
-                pdf.set_text_color(128, 128, 128)  # Cor cinza
-                pdf.cell(0, 10, txt="Gerado automaticamente pelo sistema", align="C")
+                        # Rodapé
+                        pdf.set_y(-15)
+                        pdf.set_font("Helvetica", 'I', 8)
+                        pdf.set_text_color(128, 128, 128)  # Cor cinza
+                        pdf.cell(0, 10, txt="Gerado automaticamente pelo sistema", align="C")
 
-                clean_company_name = normalizar_texto(company)
-                clean_header_name = normalizar_texto(header)
+                        # Geração do nome do arquivo
+                        clean_company_name = normalizar_texto(company)
+                        clean_header_name = normalizar_texto(header)
+                        pdf_file_name = f"{clean_company_name} - {clean_header_name}.pdf"
+                        pdf_path = os.path.join(pasta_saida, pdf_file_name)
+                        # Verificação final antes de salvar
+                        if not os.access(pasta_saida, os.W_OK):
+                            raise PermissionError(f"Sem permissão para escrever em {pasta_saida}")
+                        
+                        pdf.output(pdf_path)
+                        
+                    except Exception as e:
+                        error_msg = f"Erro ao gerar PDF para {company} - {header}: {str(e)}"
+                        log_errors.append(error_msg)
+                        continue
 
-                pdf_file_name = f"{clean_company_name} - {clean_header_name}.pdf"
-                pdf_path = os.path.join(pasta_saida, pdf_file_name)
-                pdf.output(pdf_path)
-
-        return {"status": "success", "message": "PDFs gerados com sucesso!"}
+            except Exception as e:
+                error_msg = f"Erro ao processar linha {index + 1} (Empresa: {row[0]}): {str(e)}"
+                log_errors.append(error_msg)
+                continue
+            
+        # Salva o log de erros se houver falhas
+        if log_errors:
+            timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            log_path = f"logs_{timestamp}.log"
+            try:
+                with open(log_path, "a", encoding="utf-8") as log_file:
+                    log_file.write(f"\n\n╔{'═'*78}╗\n")
+                    log_file.write(f"║ {'ERROS DE GERAÇÃO DE PDFS':^76} ║\n")
+                    log_file.write(f"║ {'Data/Hora: ' + timestamp:^76} ║\n")
+                    log_file.write(f"╚{'═'*78}╝\n\n")
+                    
+                    for error in log_errors:
+                        log_file.write(f"• {datetime.datetime.now().strftime('%H:%M:%S')} - {error}\n")
+                    
+                    log_file.write(f"\nTotal de erros: {len(log_errors)}\n")
+            except Exception as e:
+                pass  # Falha silenciosa na escrita do log
 
     except Exception as e:
         return {"status": "fail", "message": f"Erro ao gerar PDFs: {e}"}
