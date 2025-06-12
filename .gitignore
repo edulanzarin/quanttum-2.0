@@ -5,3 +5,4 @@ dist
 dist/Quanttum v2.0/quanttum.exe
 node_modules
 backend/database/serviceAccountKey.json
+.idea/
