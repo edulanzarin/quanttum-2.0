@@ -7,3 +7,4 @@ node_modules
 backend/database/serviceAccountKey.json
 .idea/
 package-lock.json
+.venv/
