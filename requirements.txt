@@ -1,0 +1,8 @@
+pandas
+pypdf2
+pdfplumber
+firebase-admin
+openpyxl
+pywin32
+rarfile
+google-cloud-firestore
